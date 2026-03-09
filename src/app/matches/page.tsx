@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import MatchCard from "@/components/MatchCard";
+import PlayoffSection from "@/components/PlayoffSection";
 import SourceAttribution from "@/components/SourceAttribution";
 import Icon from "@/components/Icon";
 import { SportsEventJsonLd, BreadcrumbJsonLd } from "@/components/JsonLd";
@@ -48,14 +50,26 @@ export default function MatchesPage() {
           グループH
         </h2>
         <p className="text-sm text-gray-500 mb-4">
-          日本はグループHに所属。オランダ、チュニジア、UEFA PO B勝者と対戦。
+          日本はオランダ、チュニジア、UEFA PO B勝者と同組。
         </p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {wcMatches.map((match) => (
             <MatchCard key={match.id} match={match} />
           ))}
         </div>
+        <div className="mt-3">
+          <Link
+            href="/results"
+            className="inline-flex items-center gap-1 text-sm text-blue-600 font-medium hover:text-blue-800"
+          >
+            <Icon name="scoreboard" size={16} />
+            試合結果・順位表を見る →
+          </Link>
+        </div>
       </section>
+
+      {/* UEFA PO B */}
+      <PlayoffSection />
 
       {/* その他の試合 */}
       <section>
