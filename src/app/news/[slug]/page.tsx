@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Icon from "@/components/Icon";
 import SourceAttribution from "@/components/SourceAttribution";
+import { ArticleJsonLd, BreadcrumbJsonLd } from "@/components/JsonLd";
 import { getPostBySlug, getAllSlugs } from "@/lib/notion";
 
 // ISR: 5分ごとに再生成
@@ -49,7 +50,22 @@ export default async function NewsArticlePage({
     notFound();
   }
 
+  const articleUrl = `https://www.wc2026report.com/news/${post.slug}`;
+
   return (
+    <>
+    <ArticleJsonLd
+      title={post.title}
+      description={post.summary || post.title}
+      publishedAt={post.publishedAt || ""}
+      url={articleUrl}
+      category={post.category}
+    />
+    <BreadcrumbJsonLd items={[
+      { name: "トップ", url: "https://www.wc2026report.com" },
+      { name: "ニュース", url: "https://www.wc2026report.com/news" },
+      { name: post.title, url: articleUrl },
+    ]} />
     <article className="max-w-3xl mx-auto px-4 py-8 sm:py-12">
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm text-gray-400 mb-6">
@@ -133,6 +149,7 @@ export default async function NewsArticlePage({
         </Link>
       </div>
     </article>
+    </>
   );
 }
 

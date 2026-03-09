@@ -5,8 +5,9 @@ import SourceAttribution from "@/components/SourceAttribution";
 import { japanMatches } from "@/data/matches";
 
 export const metadata: Metadata = {
-  title: "totoゾーン｜W杯対象試合・購入ガイド",
-  description: "FIFA ワールドカップ 2026 のtoto対象試合一覧と購入方法。toto・toto WINNER・BIGの買い方をわかりやすく解説。",
+  title: "totoゾーン｜W杯2026 toto対象試合・購入ガイド・予想のコツ",
+  description: "FIFA ワールドカップ 2026 のtoto対象試合一覧と購入方法を完全ガイド。toto・mini toto・toto GOAL3・WINNERの違い、ネット購入方法、W杯toto予想のコツを解説。",
+  alternates: { canonical: "https://www.wc2026report.com/toto" },
 };
 
 export default function TotoPage() {

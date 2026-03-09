@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import MatchCard from "@/components/MatchCard";
 import SourceAttribution from "@/components/SourceAttribution";
 import Icon from "@/components/Icon";
+import { SportsEventJsonLd, BreadcrumbJsonLd } from "@/components/JsonLd";
 import { japanMatches } from "@/data/matches";
 
 export const metadata: Metadata = {
-  title: "日本代表 試合日程",
-  description: "日本代表の2026年全試合日程。W杯グループリーグ、キリンチャレンジカップ、親善試合の日程・キックオフ時間・放映情報を一覧で確認。",
+  title: "日本代表 2026年 試合日程｜W杯・親善試合・キリンカップ",
+  description: "日本代表の2026年全試合日程。W杯グループリーグ（vsオランダ・vsチュニジア）、キリンチャレンジカップ、親善試合のキックオフ時間・会場・放映情報を一覧で確認。",
+  alternates: { canonical: "https://www.wc2026report.com/matches" },
 };
 
 export default function MatchesPage() {
@@ -14,6 +16,23 @@ export default function MatchesPage() {
   const otherMatches = japanMatches.filter((m) => m.type !== "worldcup_gl" && m.type !== "worldcup_ko");
 
   return (
+    <>
+      <BreadcrumbJsonLd items={[
+        { name: "トップ", url: "https://www.wc2026report.com" },
+        { name: "試合日程", url: "https://www.wc2026report.com/matches" },
+      ]} />
+      {wcMatches.map((m) => (
+        <SportsEventJsonLd
+          key={m.id}
+          name={`${m.homeTeam} vs ${m.awayTeam}`}
+          startDate={m.kickoff !== "未定" ? `${m.date}T${m.kickoff}:00+09:00` : m.date}
+          location={m.venue}
+          homeTeam={m.homeTeam}
+          awayTeam={m.awayTeam}
+          description={`${m.typeLabel} — ${m.venue}（${m.city}）`}
+          url="https://www.wc2026report.com/matches"
+        />
+      ))}
     <div className="max-w-6xl mx-auto px-4 py-8 sm:py-12">
       <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
         日本代表 2026年 試合日程
@@ -72,5 +91,6 @@ export default function MatchesPage() {
         updatedAt="2026年3月9日"
       />
     </div>
+    </>
   );
 }

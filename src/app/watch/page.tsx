@@ -2,15 +2,42 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Icon from "@/components/Icon";
 import SourceAttribution from "@/components/SourceAttribution";
+import { FAQJsonLd, BreadcrumbJsonLd } from "@/components/JsonLd";
 import { broadcastInfo } from "@/data/matches";
+
+const faqData = [
+  {
+    question: "W杯を全試合見るにはどうすればいい？",
+    answer: "DAZNに加入すれば全104試合をライブ配信で視聴できます。NHK BSプレミアム4Kでも全試合を放送しますが、4K対応BS環境が必要です。",
+  },
+  {
+    question: "無料で見れる試合はある？",
+    answer: "日本代表のグループリーグ3試合はDAZNで無料配信されます。また、NHK総合で33試合、日本テレビで15試合、フジテレビで10試合が地上波で無料放送されます。",
+  },
+  {
+    question: "DAZNの日本代表戦無料配信の見方は？",
+    answer: "DAZNの無料アカウントを作成するだけでOK。有料プランに加入しなくても、日本代表戦は視聴できます。",
+  },
+  {
+    question: "海外から視聴できる？",
+    answer: "DAZNは契約地域のみでの視聴となります。海外在住の方は現地のDAZNまたは放映局をご確認ください。",
+  },
+];
 
 export const metadata: Metadata = {
   title: "W杯 2026 視聴ガイド｜DAZN・地上波の放送予定",
-  description: "FIFA ワールドカップ 2026 をどこで見る？DAZN全104試合配信、NHK・日テレ・フジの地上波放送予定、お得な視聴方法を徹底解説。",
+  description: "FIFA ワールドカップ 2026 をどこで見る？DAZN全104試合配信、NHK33試合・日テレ15試合・フジ10試合の地上波放送予定、日本代表戦の無料視聴方法を徹底解説。",
+  alternates: { canonical: "https://www.wc2026report.com/watch" },
 };
 
 export default function WatchPage() {
   return (
+    <>
+    <BreadcrumbJsonLd items={[
+      { name: "トップ", url: "https://www.wc2026report.com" },
+      { name: "視聴ガイド", url: "https://www.wc2026report.com/watch" },
+    ]} />
+    <FAQJsonLd questions={faqData} />
     <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
       <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 flex items-center gap-2">
         <Icon name="live_tv" size={32} className="text-gray-700" />
@@ -172,30 +199,13 @@ export default function WatchPage() {
           よくある質問
         </h2>
         <div className="space-y-4">
-          {[
-            {
-              q: "W杯を全試合見るにはどうすればいい？",
-              a: "DAZNに加入すれば全104試合をライブ配信で視聴できます。NHK BSプレミアム4Kでも全試合を放送しますが、4K対応BS環境が必要です。",
-            },
-            {
-              q: "無料で見れる試合はある？",
-              a: "日本代表のグループリーグ3試合はDAZNで無料配信されます。また、NHK総合で33試合、日本テレビで15試合、フジテレビで10試合が地上波で無料放送されます。",
-            },
-            {
-              q: "DAZNの日本代表戦無料配信の見方は？",
-              a: "DAZNの無料アカウントを作成するだけでOK。有料プランに加入しなくても、日本代表戦は視聴できます。",
-            },
-            {
-              q: "海外から視聴できる？",
-              a: "DAZNは契約地域のみでの視聴となります。海外在住の方は現地のDAZNまたは放映局をご確認ください。",
-            },
-          ].map(({ q, a }) => (
-            <div key={q} className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+          {faqData.map(({ question, answer }) => (
+            <div key={question} className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
               <h3 className="font-bold text-gray-900 mb-2 flex items-start gap-2">
                 <Icon name="quiz" size={20} className="text-blue-500 mt-0.5" />
-                {q}
+                {question}
               </h3>
-              <p className="text-sm text-gray-600 ml-7">{a}</p>
+              <p className="text-sm text-gray-600 ml-7">{answer}</p>
             </div>
           ))}
         </div>
@@ -210,5 +220,6 @@ export default function WatchPage() {
         updatedAt="2026年3月9日"
       />
     </div>
+    </>
   );
 }

@@ -4,8 +4,9 @@ import SourceAttribution from "@/components/SourceAttribution";
 import { worldCupGroups } from "@/data/matches";
 
 export const metadata: Metadata = {
-  title: "グループステージ一覧",
-  description: "FIFA ワールドカップ 2026 全12グループの組み合わせ。48カ国の振り分け、開催都市情報を一覧で確認。",
+  title: "W杯 2026 グループステージ一覧｜全12グループ・48カ国の組み合わせ",
+  description: "FIFA ワールドカップ 2026 全12グループの組み合わせ一覧。日本はグループH（オランダ・チュニジア・UEFA PO B）。48カ国の振り分け、開催都市、大会レギュレーションを解説。",
+  alternates: { canonical: "https://www.wc2026report.com/groups" },
 };
 
 export default function GroupsPage() {
