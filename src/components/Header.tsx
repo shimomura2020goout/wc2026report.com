@@ -10,6 +10,7 @@ const navItems = [
   { href: "/groups", label: "グループ", icon: "groups" },
   { href: "/toto", label: "totoゾーン", icon: "confirmation_number" },
   { href: "/watch", label: "視聴ガイド", icon: "live_tv" },
+  { href: "/news", label: "ニュース", icon: "article" },
 ];
 
 export default function Header() {
