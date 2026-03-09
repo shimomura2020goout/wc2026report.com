@@ -244,12 +244,13 @@ export const broadcastInfo = {
 };
 
 export function formatMatchDate(dateStr: string): string {
-  const date = new Date(dateStr + "T00:00:00+09:00");
+  // タイムゾーンに依存しないようパースする
+  const [year, month, day] = dateStr.split("-").map(Number);
   const days = ["日", "月", "火", "水", "木", "金", "土"];
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  const dayOfWeek = days[date.getDay()];
-  return `${date.getFullYear()}/${month}/${day}（${dayOfWeek}）`;
+  // UTC正午で作成してgetUTCDay()を使うことでズレを防ぐ
+  const date = new Date(Date.UTC(year, month - 1, day, 12, 0, 0));
+  const dayOfWeek = days[date.getUTCDay()];
+  return `${year}/${month}/${day}（${dayOfWeek}）`;
 }
 
 export function getMatchTypeColor(type: MatchType): string {
