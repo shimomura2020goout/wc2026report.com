@@ -18,6 +18,20 @@ export interface Match {
 
 export const japanMatches: Match[] = [
   {
+    id: "jp-0",
+    date: "2026-03-29",
+    kickoff: "02:00",
+    homeTeam: "スコットランド",
+    awayTeam: "日本",
+    venue: "ハムデン・パーク",
+    city: "グラスゴー（スコットランド）",
+    type: "friendly",
+    typeLabel: "国際親善試合",
+    broadcast: "NHK総合（生中継）、NHK ONE・U-NEXT（配信）",
+    isTotoTarget: false,
+    isJapan: true,
+  },
+  {
     id: "jp-1",
     date: "2026-04-01",
     kickoff: "03:45",
@@ -27,7 +41,7 @@ export const japanMatches: Match[] = [
     city: "ロンドン（イングランド）",
     type: "friendly",
     typeLabel: "国際親善試合",
-    broadcast: "調整中（※欧州遠征）",
+    broadcast: "NHK Eテレ（生中継）、NHK ONE・U-NEXT（配信）",
     isTotoTarget: false,
     isJapan: true,
   },

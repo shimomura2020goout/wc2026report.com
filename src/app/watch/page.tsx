@@ -158,6 +158,38 @@ export default function WatchPage() {
         </div>
       </section>
 
+      {/* W杯前 親善試合の放映 */}
+      <section className="bg-blue-50 border border-blue-200 rounded-2xl p-6 sm:p-8 mb-8">
+        <h2 className="text-xl font-bold text-blue-900 mb-4 flex items-center gap-2">
+          <Icon name="sports_soccer" size={24} className="text-blue-700" />
+          W杯直前 欧州遠征の視聴方法
+        </h2>
+        <p className="text-sm text-blue-700 mb-4">
+          W杯本大会まで100日を切り、森保ジャパンがスコットランド・イングランドと対戦。いずれもW杯出場国との真剣勝負です。
+        </p>
+        <div className="space-y-3 text-sm">
+          <div className="bg-white rounded-lg p-4 border border-blue-100">
+            <p className="font-bold text-gray-900 mb-1">vs スコットランド（3/29 02:00 KO）</p>
+            <p className="text-gray-500 text-xs mb-1">ハムデン・パーク（グラスゴー）</p>
+            <p className="text-gray-600 flex items-center gap-1">
+              <Icon name="live_tv" size={16} className="text-gray-400" />
+              NHK総合（生中継）、NHK ONE・U-NEXT（配信）
+            </p>
+          </div>
+          <div className="bg-white rounded-lg p-4 border border-blue-100">
+            <p className="font-bold text-gray-900 mb-1">vs イングランド（4/1 03:45 KO）</p>
+            <p className="text-gray-500 text-xs mb-1">ウェンブリー・スタジアム（ロンドン）</p>
+            <p className="text-gray-600 flex items-center gap-1">
+              <Icon name="live_tv" size={16} className="text-gray-400" />
+              NHK Eテレ（生中継）、NHK ONE・U-NEXT（配信）
+            </p>
+          </div>
+        </div>
+        <p className="text-xs text-blue-600 mt-3">
+          出典: JFA公式発表（2026年3月12日）
+        </p>
+      </section>
+
       {/* 日本代表戦の放映 */}
       <section className="bg-red-50 border border-red-200 rounded-2xl p-6 sm:p-8 mb-8">
         <h2 className="text-xl font-bold text-red-900 mb-4 flex items-center gap-2">
@@ -217,7 +249,7 @@ export default function WatchPage() {
           { label: "NHK — FIFA ワールドカップ 放送予定", url: "https://www.nhk.or.jp/" },
           { label: "日本テレビ — W杯放送予定", url: "https://www.ntv.co.jp/" },
         ]}
-        updatedAt="2026年3月9日"
+        updatedAt="2026年3月16日"
       />
     </div>
     </>
