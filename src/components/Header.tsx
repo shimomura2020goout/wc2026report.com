@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import Icon from "./Icon";
 
@@ -14,8 +15,14 @@ const navItems = [
   { href: "/news", label: "ニュース", icon: "article" },
 ];
 
+function isActive(pathname: string, href: string): boolean {
+  if (href === "/") return pathname === "/";
+  return pathname.startsWith(href);
+}
+
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
     <header className="bg-[#1a1a2e] text-white sticky top-0 z-50 shadow-lg">
@@ -29,16 +36,26 @@ export default function Header() {
 
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-1">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 transition-colors"
-              >
-                <Icon name={item.icon} size={18} />
-                {item.label}
-              </Link>
-            ))}
+            {navItems.map((item) => {
+              const active = isActive(pathname, item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`relative flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    active
+                      ? "bg-white/15 text-white"
+                      : "text-white/70 hover:bg-white/10 hover:text-white"
+                  }`}
+                >
+                  <Icon name={item.icon} size={18} />
+                  {item.label}
+                  {active && (
+                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-red-400 rounded-full" />
+                  )}
+                </Link>
+              );
+            })}
           </nav>
 
           {/* Mobile menu button */}
@@ -54,17 +71,24 @@ export default function Header() {
         {/* Mobile nav */}
         {isOpen && (
           <nav className="md:hidden pb-4 border-t border-white/10 pt-2">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium hover:bg-white/10 transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                <Icon name={item.icon} size={20} />
-                {item.label}
-              </Link>
-            ))}
+            {navItems.map((item) => {
+              const active = isActive(pathname, item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
+                    active
+                      ? "bg-white/15 text-white border-l-3 border-red-400"
+                      : "text-white/70 hover:bg-white/10 hover:text-white"
+                  }`}
+                  onClick={() => setIsOpen(false)}
+                >
+                  <Icon name={item.icon} size={20} />
+                  {item.label}
+                </Link>
+              );
+            })}
           </nav>
         )}
       </div>
