@@ -6,19 +6,18 @@ import { useState } from "react";
 import Icon from "./Icon";
 
 const navItems = [
-  { href: "/", label: "トップ", icon: "home" },
-  { href: "/matches", label: "試合日程", icon: "calendar_month" },
-  { href: "/results", label: "結果・順位", icon: "scoreboard" },
-  { href: "/groups", label: "グループ", icon: "groups" },
-  { href: "/teams", label: "チーム", icon: "flag" },
-  { href: "/toto", label: "totoゾーン", icon: "confirmation_number" },
-  { href: "/watch", label: "視聴ガイド", icon: "live_tv" },
-  { href: "/news", label: "ニュース", icon: "article" },
+  { href: "/", label: "トップ", icon: "home", also: [] as string[] },
+  { href: "/matches", label: "試合", icon: "sports_soccer", also: ["/results"] },
+  { href: "/teams", label: "出場国", icon: "flag", also: ["/groups"] },
+  { href: "/toto", label: "toto", icon: "confirmation_number", also: [] as string[] },
+  { href: "/watch", label: "視聴ガイド", icon: "live_tv", also: [] as string[] },
+  { href: "/news", label: "ニュース", icon: "article", also: [] as string[] },
 ];
 
-function isActive(pathname: string, href: string): boolean {
-  if (href === "/") return pathname === "/";
-  return pathname.startsWith(href);
+function isActive(pathname: string, item: typeof navItems[number]): boolean {
+  if (item.href === "/") return pathname === "/";
+  if (pathname.startsWith(item.href)) return true;
+  return item.also.some((p) => pathname.startsWith(p));
 }
 
 export default function Header() {
@@ -38,7 +37,7 @@ export default function Header() {
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-1">
             {navItems.map((item) => {
-              const active = isActive(pathname, item.href);
+              const active = isActive(pathname, item);
               return (
                 <Link
                   key={item.href}
@@ -73,7 +72,7 @@ export default function Header() {
         {isOpen && (
           <nav className="md:hidden pb-4 border-t border-white/10 pt-2">
             {navItems.map((item) => {
-              const active = isActive(pathname, item.href);
+              const active = isActive(pathname, item);
               return (
                 <Link
                   key={item.href}

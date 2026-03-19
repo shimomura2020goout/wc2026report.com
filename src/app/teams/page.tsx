@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import TeamsView from "@/components/TeamsView";
 import SourceAttribution from "@/components/SourceAttribution";
+import Icon from "@/components/Icon";
 import { BreadcrumbJsonLd } from "@/components/JsonLd";
 import { allTeams } from "@/data/teams";
 
@@ -27,6 +29,24 @@ export default function TeamsPage() {
         </p>
 
         <TeamsView teams={allTeams} />
+
+        {/* 関連リンク */}
+        <div className="mt-8 flex flex-wrap gap-3">
+          <Link
+            href="/groups"
+            className="inline-flex items-center gap-1 text-sm text-blue-600 font-medium hover:text-blue-800 bg-blue-50 px-3 py-2 rounded-lg"
+          >
+            <Icon name="shield" size={16} />
+            グループ一覧・試合日程 →
+          </Link>
+          <Link
+            href="/matches"
+            className="inline-flex items-center gap-1 text-sm text-blue-600 font-medium hover:text-blue-800 bg-blue-50 px-3 py-2 rounded-lg"
+          >
+            <Icon name="calendar_month" size={16} />
+            全104試合の日程 →
+          </Link>
+        </div>
 
         <SourceAttribution
           sources={[
