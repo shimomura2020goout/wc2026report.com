@@ -10,6 +10,7 @@ const navItems = [
   { href: "/matches", label: "試合日程", icon: "calendar_month" },
   { href: "/results", label: "結果・順位", icon: "scoreboard" },
   { href: "/groups", label: "グループ", icon: "groups" },
+  { href: "/teams", label: "チーム", icon: "flag" },
   { href: "/toto", label: "totoゾーン", icon: "confirmation_number" },
   { href: "/watch", label: "視聴ガイド", icon: "live_tv" },
   { href: "/news", label: "ニュース", icon: "article" },

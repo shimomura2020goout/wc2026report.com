@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import MatchCard from "@/components/MatchCard";
 import Icon from "@/components/Icon";
 import SourceAttribution from "@/components/SourceAttribution";
-import { japanMatches } from "@/data/matches";
+import { japanMatches, allWorldCupMatches } from "@/data/matches";
 
 export const metadata: Metadata = {
   title: "totoゾーン｜W杯2026 toto対象試合・購入ガイド・予想のコツ",
@@ -34,9 +34,15 @@ export default function TotoPage() {
             <MatchCard key={match.id} match={match} />
           ))}
         </div>
-        <p className="text-sm text-gray-500">
-          ※ W杯全試合のtoto対象試合情報は、toto公式サイトの発表後に随時更新します。
-        </p>
+        <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 text-sm text-purple-800">
+          <div className="flex items-start gap-2">
+            <Icon name="info" size={18} className="text-purple-500 mt-0.5" />
+            <div>
+              <p className="font-medium">W杯の全{allWorldCupMatches.length}試合がtoto対象となる可能性があります</p>
+              <p className="text-purple-600 mt-1">toto公式サイトの発表後に、対象試合を随時更新します。全試合の日程は<a href="/matches" className="underline font-medium">試合日程ページ</a>でご確認いただけます。</p>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* toto購入ガイド */}

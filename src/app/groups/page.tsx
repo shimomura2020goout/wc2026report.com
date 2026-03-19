@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import Icon from "@/components/Icon";
 import SourceAttribution from "@/components/SourceAttribution";
-import { worldCupGroups } from "@/data/matches";
+import { worldCupGroups, getGroupMatches, formatMatchDate } from "@/data/matches";
 
 export const metadata: Metadata = {
   title: "W杯 2026 グループステージ一覧｜全12グループ・48カ国の組み合わせ",
-  description: "FIFA ワールドカップ 2026 全12グループの組み合わせ一覧。日本はグループH（オランダ・チュニジア・UEFA PO B）。48カ国の振り分け、開催都市、大会レギュレーションを解説。",
+  description: "FIFA ワールドカップ 2026 全12グループの組み合わせ一覧。日本はグループF（オランダ・チュニジア・UEFA PO B）。48カ国の振り分け、試合日程、開催都市、大会レギュレーションを解説。",
   alternates: { canonical: "https://www.wc2026report.com/groups" },
 };
 
@@ -20,46 +20,81 @@ export default function GroupsPage() {
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {worldCupGroups.map((group) => (
-          <div
-            key={group.name}
-            id={`group-${group.name}`}
-            className={`bg-white rounded-xl shadow-sm border p-5 ${group.name === "H" ? "border-red-300 ring-2 ring-red-200" : "border-gray-100"}`}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                <Icon name="shield" size={20} className="text-gray-400" />
-                グループ {group.name}
-              </h2>
-              {group.name === "H" && (
-                <span className="text-xs bg-red-100 text-red-700 px-3 py-1 rounded-full font-bold">
-                  日本所属
-                </span>
-              )}
-            </div>
-
-            <div className="space-y-2 mb-4">
-              {group.teams.map((team, i) => (
-                <div
-                  key={team}
-                  className={`flex items-center gap-3 py-2 px-3 rounded-lg ${
-                    team === "日本" ? "bg-red-50 border border-red-200" : "bg-gray-50"
-                  }`}
-                >
-                  <span className="text-sm text-gray-400 font-mono w-4">{i + 1}</span>
-                  <span className={`font-medium ${team === "日本" ? "text-red-700" : "text-gray-800"}`}>
-                    {team}
+        {worldCupGroups.map((group) => {
+          const matches = getGroupMatches(group.name);
+          return (
+            <div
+              key={group.name}
+              id={`group-${group.name}`}
+              className={`bg-white rounded-xl shadow-sm border p-5 ${group.name === "F" ? "border-red-300 ring-2 ring-red-200" : "border-gray-100"}`}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                  <Icon name="shield" size={20} className="text-gray-400" />
+                  グループ {group.name}
+                </h2>
+                {group.name === "F" && (
+                  <span className="text-xs bg-red-100 text-red-700 px-3 py-1 rounded-full font-bold">
+                    日本所属
                   </span>
-                </div>
-              ))}
-            </div>
+                )}
+              </div>
 
-            <div className="flex items-center gap-1 text-sm text-gray-500 border-t border-gray-100 pt-3">
-              <Icon name="location_on" size={16} className="text-gray-400" />
-              開催地: {group.venue}
+              {/* チーム一覧 */}
+              <div className="space-y-2 mb-4">
+                {group.teams.map((team, i) => (
+                  <div
+                    key={team}
+                    className={`flex items-center gap-3 py-2 px-3 rounded-lg ${
+                      team === "日本" ? "bg-red-50 border border-red-200" : "bg-gray-50"
+                    }`}
+                  >
+                    <span className="text-sm text-gray-400 font-mono w-4">{i + 1}</span>
+                    <span className={`font-medium ${
+                      team === "日本" ? "text-red-700" :
+                      /PO|勝者/.test(team) ? "text-gray-400 italic text-sm" :
+                      "text-gray-800"
+                    }`}>
+                      {team}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              {/* 試合日程 */}
+              {matches.length > 0 && (
+                <div className="border-t border-gray-100 pt-3 mt-3">
+                  <h3 className="text-xs font-bold text-gray-500 mb-2 uppercase tracking-wide">試合日程</h3>
+                  <div className="space-y-1.5">
+                    {[1, 2, 3].map((md) => {
+                      const mdMatches = matches.filter((m) => m.matchday === md);
+                      if (mdMatches.length === 0) return null;
+                      return (
+                        <div key={md}>
+                          <div className="text-xs text-gray-400 font-medium mb-1">第{md}節</div>
+                          {mdMatches.map((m) => (
+                            <div key={m.id} className={`text-xs py-1 px-2 rounded ${
+                              m.isJapan ? "bg-red-50 text-red-800" : "text-gray-600"
+                            }`}>
+                              <span className="text-gray-400 mr-1">{formatMatchDate(m.date).slice(5, -1).split("（")[0]}</span>
+                              <span className="font-medium mr-1">{m.kickoff}</span>
+                              <span className={m.isJapan ? "font-bold" : ""}>{m.homeTeam} vs {m.awayTeam}</span>
+                            </div>
+                          ))}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              <div className="flex items-center gap-1 text-sm text-gray-500 border-t border-gray-100 pt-3 mt-3">
+                <Icon name="location_on" size={16} className="text-gray-400" />
+                開催地: {group.venue}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* レギュレーション説明 */}
@@ -94,7 +129,7 @@ export default function GroupsPage() {
           { label: "FIFA公式 — FIFA World Cup 26 組み合わせ", url: "https://www.fifa.com/fifaplus/en/tournaments/mens/worldcup/canadamexicousa2026" },
           { label: "FIFA公式 — 大会レギュレーション", url: "https://www.fifa.com/fifaplus/en/tournaments/mens/worldcup/canadamexicousa2026/articles/fifa-world-cup-26-all-you-need-to-know" },
         ]}
-        updatedAt="2026年3月9日"
+        updatedAt="2026年3月19日"
       />
     </div>
   );

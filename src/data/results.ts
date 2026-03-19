@@ -1,10 +1,12 @@
+import { getGroupMatches, type Match } from "./matches";
+
 export interface MatchResult {
   id: string;
   date: string;
   kickoff: string;
   homeTeam: string;
   awayTeam: string;
-  homeScore: number | null; // nullなら未実施
+  homeScore: number | null;
   awayScore: number | null;
   venue: string;
   group: string;
@@ -65,90 +67,25 @@ export function getInitialStandings(teams: string[]): GroupStanding[] {
   }));
 }
 
-// グループFの試合日程（日本所属グループ）
-export const groupFMatches: MatchResult[] = [
-  // 第1節
-  {
-    id: "gf-1",
-    date: "2026-06-14",
-    kickoff: "05:00",
-    homeTeam: "オランダ",
-    awayTeam: "日本",
-    homeScore: null,
-    awayScore: null,
-    venue: "AT&Tスタジアム（ダラス）",
-    group: "F",
-    matchday: 1,
-    status: "scheduled",
-  },
-  {
-    id: "gf-2",
-    date: "2026-06-14",
-    kickoff: "08:00",
-    homeTeam: "チュニジア",
-    awayTeam: "UEFA PO B勝者",
-    homeScore: null,
-    awayScore: null,
-    venue: "エスタディオBBVA（モンテレイ）",
-    group: "F",
-    matchday: 1,
-    status: "scheduled",
-  },
-  // 第2節
-  {
-    id: "gf-3",
-    date: "2026-06-21",
-    kickoff: "13:00",
-    homeTeam: "チュニジア",
-    awayTeam: "日本",
-    homeScore: null,
-    awayScore: null,
-    venue: "エスタディオBBVA（モンテレイ）",
-    group: "F",
-    matchday: 2,
-    status: "scheduled",
-  },
-  {
-    id: "gf-4",
-    date: "2026-06-21",
-    kickoff: "05:00",
-    homeTeam: "オランダ",
-    awayTeam: "UEFA PO B勝者",
-    homeScore: null,
-    awayScore: null,
-    venue: "AT&Tスタジアム（ダラス）",
-    group: "F",
-    matchday: 2,
-    status: "scheduled",
-  },
-  // 第3節
-  {
-    id: "gf-5",
-    date: "2026-06-26",
-    kickoff: "08:00",
-    homeTeam: "日本",
-    awayTeam: "UEFA PO B勝者",
-    homeScore: null,
-    awayScore: null,
-    venue: "AT&Tスタジアム（ダラス）",
-    group: "F",
-    matchday: 3,
-    status: "scheduled",
-  },
-  {
-    id: "gf-6",
-    date: "2026-06-26",
-    kickoff: "08:00",
-    homeTeam: "チュニジア",
-    awayTeam: "オランダ",
-    homeScore: null,
-    awayScore: null,
-    venue: "エスタディオBBVA（モンテレイ）",
-    group: "F",
-    matchday: 3,
-    status: "scheduled",
-  },
-];
+// Match → MatchResult 変換（results ページとの互換用）
+export function toMatchResult(match: Match): MatchResult {
+  return {
+    id: match.id,
+    date: match.date,
+    kickoff: match.kickoff,
+    homeTeam: match.homeTeam,
+    awayTeam: match.awayTeam,
+    homeScore: match.homeScore ?? null,
+    awayScore: match.awayScore ?? null,
+    venue: `${match.venue}（${match.city}）`,
+    group: match.group || "",
+    matchday: match.matchday || 0,
+    status: match.status,
+  };
+}
+
+// グループFの試合日程（日本所属グループ） — matches.ts の統合データから取得
+export const groupFMatches: MatchResult[] = getGroupMatches("F").map(toMatchResult);
 
 // 現時点でのグループ突破シナリオ（大会開始後に更新）
 export const groupFScenarios: GroupScenario[] = [
