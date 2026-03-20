@@ -4,6 +4,7 @@ import MatchCard from "@/components/MatchCard";
 import SourceAttribution from "@/components/SourceAttribution";
 import Icon from "@/components/Icon";
 import { japanMatches, worldCupGroups } from "@/data/matches";
+import { getTeamByName } from "@/data/teams";
 
 export default function Home() {
   const worldCupMatches = japanMatches.filter((m) => m.type === "worldcup_gl");
@@ -110,36 +111,55 @@ export default function Home() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {worldCupGroups.map((group) => (
-              <Link
+              <div
                 key={group.name}
-                href={`/groups#group-${group.name}`}
-                className={`match-card bg-white rounded-xl shadow-sm border p-4 ${group.name === "H" ? "border-red-300 ring-2 ring-red-200" : "border-gray-100"}`}
+                className={`match-card bg-white rounded-xl shadow-sm border p-4 ${group.name === "F" ? "border-red-300 ring-2 ring-red-200" : "border-gray-100"}`}
               >
-                <div className="flex items-center justify-between mb-3">
+                <Link href={`/groups#group-${group.name}`} className="flex items-center justify-between mb-3 hover:opacity-80">
                   <h3 className="font-bold text-lg">
                     グループ {group.name}
                   </h3>
-                  {group.name === "H" && (
+                  {group.name === "F" && (
                     <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full font-medium">
                       日本
                     </span>
                   )}
-                </div>
+                </Link>
                 <ul className="space-y-1">
-                  {group.teams.map((team) => (
-                    <li
-                      key={team}
-                      className={`text-sm py-1 px-2 rounded ${team === "日本" ? "bg-red-50 text-red-700 font-bold" : "text-gray-700"}`}
-                    >
-                      {team}
-                    </li>
-                  ))}
+                  {group.teams.map((team) => {
+                    const teamData = getTeamByName(team);
+                    const isPlaceholder = /PO|勝者/.test(team);
+
+                    return isPlaceholder || !teamData ? (
+                      <li
+                        key={team}
+                        className="text-sm py-1 px-2 rounded text-gray-400 italic"
+                      >
+                        {team}
+                      </li>
+                    ) : (
+                      <li key={team}>
+                        <Link
+                          href={`/teams/${teamData.code.toLowerCase()}`}
+                          className={`flex items-center gap-2 text-sm py-1 px-2 rounded transition-colors ${
+                            team === "日本"
+                              ? "bg-red-50 text-red-700 font-bold hover:bg-red-100"
+                              : "text-gray-700 hover:bg-gray-100"
+                          }`}
+                        >
+                          <span>{teamData.flag}</span>
+                          <span className="flex-1">{team}</span>
+                          <Icon name="chevron_right" size={12} className="text-gray-300" />
+                        </Link>
+                      </li>
+                    );
+                  })}
                 </ul>
                 <p className="flex items-center gap-1 text-xs text-gray-400 mt-2">
                   <Icon name="location_on" size={14} />
                   {group.venue}
                 </p>
-              </Link>
+              </div>
             ))}
           </div>
 

@@ -24,9 +24,24 @@ export default function TeamsPage() {
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
           参加48カ国 チーム一覧
         </h1>
-        <p className="text-gray-500 mb-8">
+        <p className="text-gray-500 mb-4">
           史上初の48カ国が参加するFIFA W杯 2026。FIFAランキング、W杯出場回数、過去の成績を確認。
         </p>
+
+        {/* ページ切り替えタブ */}
+        <div className="flex gap-2 mb-8">
+          <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold bg-gray-900 text-white">
+            <Icon name="flag" size={16} />
+            チーム一覧
+          </span>
+          <Link
+            href="/groups"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors"
+          >
+            <Icon name="shield" size={16} />
+            グループ一覧
+          </Link>
+        </div>
 
         <TeamsView teams={allTeams} />
 

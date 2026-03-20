@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import Icon from "@/components/Icon";
 import SourceAttribution from "@/components/SourceAttribution";
 import { worldCupGroups, getGroupMatches, formatMatchDate } from "@/data/matches";
+import { getTeamByName } from "@/data/teams";
 
 export const metadata: Metadata = {
   title: "W杯 2026 グループステージ一覧｜全12グループ・48カ国の組み合わせ",
@@ -15,9 +17,24 @@ export default function GroupsPage() {
       <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
         グループステージ 全12グループ
       </h1>
-      <p className="text-gray-500 mb-8">
+      <p className="text-gray-500 mb-4">
         史上初の48カ国参加。12グループに分かれ、各グループ上位2チーム（計24チーム）+3位のうち8チームがノックアウトステージ進出。
       </p>
+
+      {/* ページ切り替えタブ */}
+      <div className="flex gap-2 mb-8">
+        <Link
+          href="/teams"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors"
+        >
+          <Icon name="flag" size={16} />
+          チーム一覧
+        </Link>
+        <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold bg-gray-900 text-white">
+          <Icon name="shield" size={16} />
+          グループ一覧
+        </span>
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {worldCupGroups.map((group) => {
@@ -42,23 +59,47 @@ export default function GroupsPage() {
 
               {/* チーム一覧 */}
               <div className="space-y-2 mb-4">
-                {group.teams.map((team, i) => (
-                  <div
-                    key={team}
-                    className={`flex items-center gap-3 py-2 px-3 rounded-lg ${
-                      team === "日本" ? "bg-red-50 border border-red-200" : "bg-gray-50"
-                    }`}
-                  >
-                    <span className="text-sm text-gray-400 font-mono w-4">{i + 1}</span>
-                    <span className={`font-medium ${
-                      team === "日本" ? "text-red-700" :
-                      /PO|勝者/.test(team) ? "text-gray-400 italic text-sm" :
-                      "text-gray-800"
-                    }`}>
-                      {team}
-                    </span>
-                  </div>
-                ))}
+                {group.teams.map((team, i) => {
+                  const teamData = getTeamByName(team);
+                  const isPlaceholder = /PO|勝者/.test(team);
+                  const content = (
+                    <>
+                      <span className="text-sm text-gray-400 font-mono w-4">{i + 1}</span>
+                      {teamData && <span className="text-lg">{teamData.flag}</span>}
+                      <span className={`font-medium flex-1 ${
+                        team === "日本" ? "text-red-700" :
+                        isPlaceholder ? "text-gray-400 italic text-sm" :
+                        "text-gray-800"
+                      }`}>
+                        {team}
+                      </span>
+                      {!isPlaceholder && teamData && (
+                        <Icon name="chevron_right" size={14} className="text-gray-300" />
+                      )}
+                    </>
+                  );
+
+                  return isPlaceholder || !teamData ? (
+                    <div
+                      key={team}
+                      className={`flex items-center gap-3 py-2 px-3 rounded-lg ${
+                        team === "日本" ? "bg-red-50 border border-red-200" : "bg-gray-50"
+                      }`}
+                    >
+                      {content}
+                    </div>
+                  ) : (
+                    <Link
+                      key={team}
+                      href={`/teams/${teamData.code.toLowerCase()}`}
+                      className={`flex items-center gap-3 py-2 px-3 rounded-lg transition-colors hover:bg-gray-100 ${
+                        team === "日本" ? "bg-red-50 border border-red-200 hover:bg-red-100" : "bg-gray-50"
+                      }`}
+                    >
+                      {content}
+                    </Link>
+                  );
+                })}
               </div>
 
               {/* 試合日程 */}
