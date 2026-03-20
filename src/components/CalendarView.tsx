@@ -7,12 +7,13 @@ import {
   calendarEvents,
   categoryConfig,
   getEventsForDate,
+  buildGoogleCalendarUrl,
+  downloadSingleIcs,
+  downloadAllIcs,
   type CalendarEvent,
   type EventCategory,
 } from "@/data/events";
 import {
-  allWorldCupMatches,
-  japanNonWcMatches,
   formatMatchDate,
 } from "@/data/matches";
 
@@ -227,6 +228,28 @@ function EventDetail({ events, dateStr }: { events: CalendarEvent[]; dateStr: st
                       <Icon name="arrow_forward" size={12} />
                     </Link>
                   )}
+
+                  {/* カレンダー追加ボタン */}
+                  <div className="flex items-center gap-2 mt-2 pt-2 border-t border-gray-100">
+                    <a
+                      href={buildGoogleCalendarUrl(evt)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-[11px] text-green-700 hover:text-green-900 bg-green-50 hover:bg-green-100 px-2 py-1 rounded transition-colors"
+                      title="Googleカレンダーに追加"
+                    >
+                      <Icon name="event" size={12} />
+                      Google
+                    </a>
+                    <button
+                      onClick={() => downloadSingleIcs(evt)}
+                      className="inline-flex items-center gap-1 text-[11px] text-indigo-700 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 px-2 py-1 rounded transition-colors"
+                      title=".icsファイルをダウンロード（Apple/Outlook対応）"
+                    >
+                      <Icon name="download" size={12} />
+                      .ics
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -305,12 +328,23 @@ function MonthListView({
               )}
             </div>
 
-            {/* リンク */}
-            {evt.link && (
-              <Link href={evt.link} className="shrink-0 text-gray-400 hover:text-blue-500">
-                <Icon name="arrow_forward" size={16} />
-              </Link>
-            )}
+            {/* アクション */}
+            <div className="flex flex-col gap-1 shrink-0">
+              <a
+                href={buildGoogleCalendarUrl(evt)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-green-500 hover:text-green-700 transition-colors"
+                title="Googleカレンダーに追加"
+              >
+                <Icon name="event" size={16} />
+              </a>
+              {evt.link && (
+                <Link href={evt.link} className="text-gray-400 hover:text-blue-500">
+                  <Icon name="arrow_forward" size={16} />
+                </Link>
+              )}
+            </div>
           </div>
         );
       })}
@@ -449,6 +483,20 @@ export default function CalendarView() {
             <Icon name="view_list" size={18} />
           </button>
         </div>
+      </div>
+
+      {/* ── カレンダー連携ボタン ── */}
+      <div className="mb-4 flex flex-wrap items-center gap-2">
+        <button
+          onClick={() => downloadAllIcs(filteredEvents)}
+          className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-lg transition-colors"
+        >
+          <Icon name="download" size={16} />
+          全イベントを .ics でダウンロード
+        </button>
+        <span className="text-[11px] text-gray-400">
+          Google / Apple / Outlook カレンダーに一括取り込み可能
+        </span>
       </div>
 
       {/* ── カテゴリフィルター ── */}

@@ -332,3 +332,115 @@ export function getEventsForDate(dateStr: string): CalendarEvent[] {
     return false;
   });
 }
+
+// ========================================
+// Googleカレンダー & iCalエクスポート
+// ========================================
+
+/** YYYY-MM-DD → YYYYMMDD（終日イベント用） */
+function toICalDate(dateStr: string): string {
+  return dateStr.replace(/-/g, "");
+}
+
+/** 翌日の日付を取得（終日イベントのDTEND用） */
+function nextDay(dateStr: string): string {
+  const d = new Date(dateStr + "T00:00:00");
+  d.setDate(d.getDate() + 1);
+  return d.toISOString().split("T")[0];
+}
+
+/** Googleカレンダー追加URL を生成 */
+export function buildGoogleCalendarUrl(event: CalendarEvent): string {
+  const title = event.title.replace(/🇯🇵 |⚽ |🏆 /g, "");
+  const startDate = toICalDate(event.startDate);
+  const endDate = event.endDate
+    ? toICalDate(nextDay(event.endDate))
+    : toICalDate(nextDay(event.startDate));
+
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: title,
+    dates: `${startDate}/${endDate}`,
+    details: event.description
+      ? `${event.description}\n\n📅 W杯2026 × toto カレンダー\nhttps://www.wc2026report.com/calendar`
+      : "📅 W杯2026 × toto カレンダー\nhttps://www.wc2026report.com/calendar",
+  });
+
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+}
+
+/** iCalendar (.ics) テキストを生成 — 単一イベント */
+function buildICalEvent(event: CalendarEvent): string {
+  const title = event.title.replace(/🇯🇵 |⚽ |🏆 /g, "");
+  const uid = `${event.id}@wc2026report.com`;
+  const stamp = new Date().toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+  const startDate = toICalDate(event.startDate);
+  const endDate = event.endDate
+    ? toICalDate(nextDay(event.endDate))
+    : toICalDate(nextDay(event.startDate));
+
+  const lines = [
+    "BEGIN:VEVENT",
+    `UID:${uid}`,
+    `DTSTAMP:${stamp}`,
+    `DTSTART;VALUE=DATE:${startDate}`,
+    `DTEND;VALUE=DATE:${endDate}`,
+    `SUMMARY:${title}`,
+  ];
+
+  if (event.description) {
+    // iCal spec: fold long lines, escape commas/semicolons/newlines
+    const desc = event.description.replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,");
+    lines.push(`DESCRIPTION:${desc}`);
+  }
+
+  lines.push(
+    `URL:https://www.wc2026report.com/calendar`,
+    `CATEGORIES:${categoryConfig[event.category].label}`,
+    "END:VEVENT",
+  );
+
+  return lines.join("\r\n");
+}
+
+/** 指定イベント群の .ics ファイル内容を生成 */
+export function buildICalFile(events: CalendarEvent[]): string {
+  const header = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//W杯2026 × toto//Soccer Calendar//JA",
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
+    "X-WR-CALNAME:W杯2026 サッカーカレンダー",
+    "X-WR-TIMEZONE:Asia/Tokyo",
+  ].join("\r\n");
+
+  const body = events.map(buildICalEvent).join("\r\n");
+
+  return `${header}\r\n${body}\r\nEND:VCALENDAR\r\n`;
+}
+
+/** 単一イベントの .ics ダウンロードを実行（ブラウザ用） */
+export function downloadSingleIcs(event: CalendarEvent): void {
+  const content = buildICalFile([event]);
+  triggerIcsDownload(content, `wc2026-${event.id}.ics`);
+}
+
+/** 全イベントの .ics ダウンロードを実行（ブラウザ用） */
+export function downloadAllIcs(events: CalendarEvent[]): void {
+  const content = buildICalFile(events);
+  triggerIcsDownload(content, "wc2026-soccer-calendar.ics");
+}
+
+/** .ics ファイルのダウンロードをトリガー */
+function triggerIcsDownload(content: string, filename: string): void {
+  const blob = new Blob([content], { type: "text/calendar;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
