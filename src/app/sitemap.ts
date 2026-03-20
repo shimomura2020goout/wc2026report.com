@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { allTeams } from "@/data/teams";
 
 const BASE_URL = "https://www.wc2026report.com";
 
@@ -70,5 +71,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Notion API未設定時はスキップ
   }
 
-  return [...staticPages, ...articlePages];
+  // チーム詳細ページ
+  const teamPages: MetadataRoute.Sitemap = allTeams
+    .filter((t) => !t.isPlaceholder)
+    .map((t) => ({
+      url: `${BASE_URL}/teams/${t.code.toLowerCase()}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    }));
+
+  return [...staticPages, ...teamPages, ...articlePages];
 }

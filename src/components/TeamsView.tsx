@@ -124,16 +124,16 @@ export default function TeamsView({ teams }: TeamsViewProps) {
                   {section.teams.map((team) => (
                     <tr
                       key={team.code}
-                      className={`border-t border-gray-50 ${team.name === "日本" ? "bg-red-50/50" : ""}`}
+                      className={`border-t border-gray-50 hover:bg-gray-50 transition-colors ${team.name === "日本" ? "bg-red-50/50" : ""}`}
                     >
                       <td className="text-center px-3 py-3 font-bold text-gray-700">{team.fifaRanking}</td>
                       <td className="px-4 py-3">
-                        <span className="flex items-center gap-2">
+                        <Link href={`/teams/${team.code.toLowerCase()}`} className="flex items-center gap-2 hover:underline">
                           <span className="text-lg">{team.flag}</span>
                           <span className={`font-medium ${team.name === "日本" ? "text-red-700" : "text-gray-900"}`}>
                             {team.name}
                           </span>
-                        </span>
+                        </Link>
                       </td>
                       <td className="text-center px-3 py-3 hidden sm:table-cell">
                         <Link href={`/groups#group-${team.group}`} className="text-amber-600 font-medium hover:underline">
@@ -151,59 +151,73 @@ export default function TeamsView({ teams }: TeamsViewProps) {
           ) : (
             /* グループ別・大陸別 — カード形式 */
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              {section.teams.map((team) => (
-                <div
-                  key={team.code}
-                  className={`bg-white rounded-xl shadow-sm border p-4 transition hover:shadow-md ${
-                    team.name === "日本" ? "border-red-300 ring-2 ring-red-200" :
-                    team.isPlaceholder ? "border-dashed border-gray-200 bg-gray-50/50" :
-                    "border-gray-100"
-                  }`}
-                >
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-2xl">{team.flag}</span>
-                    <div>
-                      <h3 className={`font-bold ${
-                        team.name === "日本" ? "text-red-700" :
-                        team.isPlaceholder ? "text-gray-400 italic" :
-                        "text-gray-900"
-                      }`}>
-                        {team.name}
-                      </h3>
+              {section.teams.map((team) => {
+                const cardClassName = `block bg-white rounded-xl shadow-sm border p-4 transition hover:shadow-md ${
+                  team.name === "日本" ? "border-red-300 ring-2 ring-red-200" :
+                  team.isPlaceholder ? "border-dashed border-gray-200 bg-gray-50/50" :
+                  "border-gray-100"
+                }`;
+
+                const cardContent = (
+                  <>
+                    <div className="flex items-center gap-3 mb-3">
+                      <span className="text-2xl">{team.flag}</span>
+                      <div className="flex-1 min-w-0">
+                        <h3 className={`font-bold ${
+                          team.name === "日本" ? "text-red-700" :
+                          team.isPlaceholder ? "text-gray-400 italic" :
+                          "text-gray-900"
+                        }`}>
+                          {team.name}
+                        </h3>
+                        {!team.isPlaceholder && (
+                          <span className="text-xs text-gray-400">{team.code}</span>
+                        )}
+                      </div>
                       {!team.isPlaceholder && (
-                        <span className="text-xs text-gray-400">{team.code}</span>
+                        <Icon name="chevron_right" size={16} className="text-gray-300 shrink-0" />
                       )}
                     </div>
+
+                    {!team.isPlaceholder && (
+                      <div className="space-y-1.5 text-xs">
+                        <div className="flex items-center justify-between">
+                          <span className="text-gray-500">FIFAランキング</span>
+                          <span className="font-bold text-gray-900 bg-amber-100 px-2 py-0.5 rounded">
+                            {team.fifaRanking}位
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-gray-500">W杯出場</span>
+                          <span className="font-medium text-gray-700">{team.wcAppearances}回</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-gray-500">最高成績</span>
+                          <span className="font-medium text-gray-700 text-right">{team.bestResult}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-gray-500">大陸</span>
+                          <span className="text-gray-600">{team.regionLabel}</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {team.isPlaceholder && (
+                      <p className="text-xs text-gray-400 italic">プレーオフ未確定</p>
+                    )}
+                  </>
+                );
+
+                return team.isPlaceholder ? (
+                  <div key={team.code} className={cardClassName}>
+                    {cardContent}
                   </div>
-
-                  {!team.isPlaceholder && (
-                    <div className="space-y-1.5 text-xs">
-                      <div className="flex items-center justify-between">
-                        <span className="text-gray-500">FIFAランキング</span>
-                        <span className="font-bold text-gray-900 bg-amber-100 px-2 py-0.5 rounded">
-                          {team.fifaRanking}位
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-gray-500">W杯出場</span>
-                        <span className="font-medium text-gray-700">{team.wcAppearances}回</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-gray-500">最高成績</span>
-                        <span className="font-medium text-gray-700 text-right">{team.bestResult}</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-gray-500">大陸</span>
-                        <span className="text-gray-600">{team.regionLabel}</span>
-                      </div>
-                    </div>
-                  )}
-
-                  {team.isPlaceholder && (
-                    <p className="text-xs text-gray-400 italic">プレーオフ未確定</p>
-                  )}
-                </div>
-              ))}
+                ) : (
+                  <Link key={team.code} href={`/teams/${team.code.toLowerCase()}`} className={cardClassName}>
+                    {cardContent}
+                  </Link>
+                );
+              })}
             </div>
           )}
         </div>
