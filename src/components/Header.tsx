@@ -8,6 +8,7 @@ import Icon from "./Icon";
 const navItems = [
   { href: "/", label: "トップ", icon: "home", also: [] as string[] },
   { href: "/matches", label: "試合", icon: "sports_soccer", also: ["/results"] },
+  { href: "/calendar", label: "カレンダー", icon: "calendar_month", also: [] as string[] },
   { href: "/teams", label: "出場国", icon: "flag", also: ["/groups"] },
   { href: "/toto", label: "toto", icon: "confirmation_number", also: [] as string[] },
   { href: "/watch", label: "視聴ガイド", icon: "live_tv", also: [] as string[] },
