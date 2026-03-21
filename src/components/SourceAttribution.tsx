@@ -8,9 +8,10 @@ interface Source {
 interface SourceAttributionProps {
   sources: Source[];
   updatedAt?: string;
+  dataNote?: string;
 }
 
-export default function SourceAttribution({ sources, updatedAt }: SourceAttributionProps) {
+export default function SourceAttribution({ sources, updatedAt, dataNote }: SourceAttributionProps) {
   return (
     <div className="mt-6 pt-4 border-t border-gray-200 text-xs text-gray-400">
       <div className="flex items-center gap-1 mb-1">
@@ -33,6 +34,12 @@ export default function SourceAttribution({ sources, updatedAt }: SourceAttribut
       </ul>
       {updatedAt && (
         <p className="mt-1 text-gray-400">最終更新: {updatedAt}</p>
+      )}
+      {dataNote && (
+        <p className="mt-1 text-gray-400 flex items-center gap-1">
+          <Icon name="update" size={12} />
+          {dataNote}
+        </p>
       )}
     </div>
   );
