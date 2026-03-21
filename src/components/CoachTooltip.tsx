@@ -21,8 +21,8 @@ function getWikipediaUrl(coachName: string): string {
 export default function CoachTooltip({ coachName, coachNationality, teamName }: CoachTooltipProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const tooltipRef = useRef<HTMLDivElement>(null);
-  const triggerRef = useRef<HTMLSpanElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // モバイル判定
   useEffect(() => {
@@ -32,46 +32,62 @@ export default function CoachTooltip({ coachName, coachNationality, teamName }: 
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  // 外側クリックで閉じる
+  // 外側クリックで閉じる（モバイル用）
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || !isMobile) return;
     const handleClickOutside = (e: MouseEvent) => {
-      if (
-        tooltipRef.current &&
-        !tooltipRef.current.contains(e.target as Node) &&
-        triggerRef.current &&
-        !triggerRef.current.contains(e.target as Node)
-      ) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setIsOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isOpen]);
+  }, [isOpen, isMobile]);
+
+  // タイマーのクリーンアップ
+  useEffect(() => {
+    return () => {
+      if (closeTimer.current) clearTimeout(closeTimer.current);
+    };
+  }, []);
+
+  const open = useCallback(() => {
+    if (closeTimer.current) {
+      clearTimeout(closeTimer.current);
+      closeTimer.current = null;
+    }
+    setIsOpen(true);
+  }, []);
+
+  const scheduleClose = useCallback(() => {
+    closeTimer.current = setTimeout(() => {
+      setIsOpen(false);
+    }, 300); // 300ms の猶予
+  }, []);
 
   const handleClick = useCallback(() => {
-    if (isMobile) {
-      setIsOpen((prev) => !prev);
-    }
-  }, [isMobile]);
+    setIsOpen((prev) => !prev);
+  }, []);
 
   const handleMouseEnter = useCallback(() => {
-    if (!isMobile) setIsOpen(true);
-  }, [isMobile]);
+    if (!isMobile) open();
+  }, [isMobile, open]);
 
   const handleMouseLeave = useCallback(() => {
-    if (!isMobile) setIsOpen(false);
-  }, [isMobile]);
+    if (!isMobile) scheduleClose();
+  }, [isMobile, scheduleClose]);
 
   const wikiUrl = getWikipediaUrl(coachName);
 
   return (
-    <div className="relative inline-block">
+    <div
+      ref={containerRef}
+      className="relative inline-block"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       <span
-        ref={triggerRef}
         onClick={handleClick}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
         className="cursor-pointer underline decoration-dotted decoration-gray-400 underline-offset-2 hover:text-blue-700 transition-colors"
       >
         {coachName}（{coachNationality}）
@@ -88,14 +104,11 @@ export default function CoachTooltip({ coachName, coachNationality, teamName }: 
           )}
 
           <div
-            ref={tooltipRef}
             className={`${
               isMobile
                 ? "fixed bottom-0 left-0 right-0 z-50 rounded-t-2xl animate-slide-up"
                 : "absolute left-0 bottom-full mb-2 z-50 w-72 rounded-xl shadow-xl"
             } bg-white border border-gray-200 p-4`}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
           >
             {/* モバイルのドラッグハンドル */}
             {isMobile && (

@@ -16,6 +16,64 @@ import {
 import {
   formatMatchDate,
 } from "@/data/matches";
+import { allTeams } from "@/data/teams";
+
+// ========================================
+// テキスト内のチーム名をリンク化するユーティリティ
+// ========================================
+
+function TeamLinkedText({ text }: { text: string }) {
+  // チーム名を長い順にソート（「南アフリカ」が「アフリカ」にマッチしないように）
+  const confirmedTeams = allTeams
+    .filter((t) => !t.isPlaceholder)
+    .sort((a, b) => b.name.length - a.name.length);
+
+  // テキストからチーム名を探して分割
+  const parts: { text: string; teamCode?: string }[] = [];
+  let remaining = text;
+
+  while (remaining.length > 0) {
+    let earliestIdx = remaining.length;
+    let matchedTeam: (typeof confirmedTeams)[0] | null = null;
+
+    for (const team of confirmedTeams) {
+      const idx = remaining.indexOf(team.name);
+      if (idx !== -1 && idx < earliestIdx) {
+        earliestIdx = idx;
+        matchedTeam = team;
+      }
+    }
+
+    if (matchedTeam && earliestIdx < remaining.length) {
+      if (earliestIdx > 0) {
+        parts.push({ text: remaining.slice(0, earliestIdx) });
+      }
+      parts.push({ text: matchedTeam.name, teamCode: matchedTeam.code.toLowerCase() });
+      remaining = remaining.slice(earliestIdx + matchedTeam.name.length);
+    } else {
+      parts.push({ text: remaining });
+      remaining = "";
+    }
+  }
+
+  return (
+    <>
+      {parts.map((part, i) =>
+        part.teamCode ? (
+          <Link
+            key={i}
+            href={`/teams/${part.teamCode}`}
+            className="text-blue-600 hover:text-blue-800 hover:underline font-semibold"
+          >
+            {part.text}
+          </Link>
+        ) : (
+          <span key={i}>{part.text}</span>
+        )
+      )}
+    </>
+  );
+}
 
 // ========================================
 // カレンダーグリッド生成
@@ -209,9 +267,13 @@ function EventDetail({ events, dateStr }: { events: CalendarEvent[]; dateStr: st
                       <Icon name="star" size={12} className="text-amber-500" />
                     )}
                   </div>
-                  <p className="text-sm font-semibold text-gray-900">{evt.title}</p>
+                  <p className="text-sm font-semibold text-gray-900">
+                    <TeamLinkedText text={evt.title} />
+                  </p>
                   {evt.description && (
-                    <p className="text-xs text-gray-500 mt-1">{evt.description}</p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      <TeamLinkedText text={evt.description} />
+                    </p>
                   )}
                   {evt.endDate && evt.endDate !== evt.startDate && (
                     <p className="text-[10px] text-gray-400 mt-1 flex items-center gap-1">
@@ -322,9 +384,13 @@ function MonthListView({
                 <span className={`w-2 h-2 rounded-full ${config.dotColor}`} />
                 <span className={`text-[10px] ${config.color} font-medium`}>{config.label}</span>
               </div>
-              <p className="text-sm font-medium text-gray-900 truncate">{evt.title}</p>
+              <p className="text-sm font-medium text-gray-900 truncate">
+                <TeamLinkedText text={evt.title} />
+              </p>
               {evt.description && (
-                <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">{evt.description}</p>
+                <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">
+                  <TeamLinkedText text={evt.description} />
+                </p>
               )}
             </div>
 
