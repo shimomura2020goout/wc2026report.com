@@ -1,9 +1,34 @@
+import Link from "next/link";
 import { Match, formatMatchDate, getMatchTypeColor } from "@/data/matches";
+import { getTeamByName } from "@/data/teams";
 import Icon from "./Icon";
 
 interface MatchListItemProps {
   match: Match;
   showGroup?: boolean;
+}
+
+function TeamName({ name, isJapan, isPlaceholderTeam }: { name: string; isJapan: boolean; isPlaceholderTeam: boolean }) {
+  const team = getTeamByName(name);
+  const canLink = team && !team.isPlaceholder;
+
+  const className = `font-medium truncate ${
+    isJapan ? "text-red-700" :
+    isPlaceholderTeam ? "text-gray-400 italic" :
+    "text-gray-900"
+  }`;
+
+  if (canLink) {
+    return (
+      <Link
+        href={`/teams/${team.code.toLowerCase()}`}
+        className={`${className} hover:underline`}
+      >
+        {name}
+      </Link>
+    );
+  }
+  return <span className={className}>{name}</span>;
 }
 
 export default function MatchListItem({ match, showGroup = true }: MatchListItemProps) {
@@ -24,21 +49,17 @@ export default function MatchListItem({ match, showGroup = true }: MatchListItem
       {/* チーム */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 text-sm">
-          <span className={`font-medium truncate ${
-            match.homeTeam === "日本" ? "text-red-700" :
-            isPlaceholder && /PO|勝者|通過|敗者/.test(match.homeTeam) ? "text-gray-400 italic" :
-            "text-gray-900"
-          }`}>
-            {match.homeTeam}
-          </span>
+          <TeamName
+            name={match.homeTeam}
+            isJapan={match.homeTeam === "日本"}
+            isPlaceholderTeam={!!isPlaceholder && /PO|勝者|通過|敗者/.test(match.homeTeam)}
+          />
           <span className="text-gray-400 text-xs flex-shrink-0">vs</span>
-          <span className={`font-medium truncate ${
-            match.awayTeam === "日本" ? "text-red-700" :
-            isPlaceholder && /PO|勝者|通過|敗者/.test(match.awayTeam) ? "text-gray-400 italic" :
-            "text-gray-900"
-          }`}>
-            {match.awayTeam}
-          </span>
+          <TeamName
+            name={match.awayTeam}
+            isJapan={match.awayTeam === "日本"}
+            isPlaceholderTeam={!!isPlaceholder && /PO|勝者|通過|敗者/.test(match.awayTeam)}
+          />
         </div>
         <div className="text-xs text-gray-400 truncate mt-0.5 hidden sm:block">
           {match.venue}

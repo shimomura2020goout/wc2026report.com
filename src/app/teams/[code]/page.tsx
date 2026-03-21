@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Icon from "@/components/Icon";
 import MatchCard from "@/components/MatchCard";
+import CoachTooltip from "@/components/CoachTooltip";
 import SourceAttribution from "@/components/SourceAttribution";
 import { BreadcrumbJsonLd } from "@/components/JsonLd";
 import { allTeams } from "@/data/teams";
@@ -118,7 +119,19 @@ export default async function TeamDetailPage({ params }: Props) {
         {/* ── 基本情報 ── */}
         {detail && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-            <InfoCard icon="person" label="監督" value={`${detail.coach}（${detail.coachNationality}）`} />
+            <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
+              <div className="flex items-center gap-2 mb-1">
+                <Icon name="person" size={16} className="text-gray-400" />
+                <span className="text-xs text-gray-500 font-medium">監督</span>
+              </div>
+              <p className="text-sm font-semibold text-gray-900">
+                <CoachTooltip
+                  coachName={detail.coach}
+                  coachNationality={detail.coachNationality}
+                  teamName={team.name}
+                />
+              </p>
+            </div>
             <InfoCard icon="checkroom" label="ユニフォーム" value={detail.kitColors} />
             <InfoCard icon="emoji_events" label="W杯最高成績" value={team.bestResult} />
             <InfoCard icon="route" label="出場経緯" value={detail.qualificationPath} />

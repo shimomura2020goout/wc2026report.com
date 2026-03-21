@@ -1,9 +1,30 @@
+import Link from "next/link";
 import { Match, formatMatchDate, getMatchTypeColor } from "@/data/matches";
+import { getTeamByName } from "@/data/teams";
 import Icon from "./Icon";
 
 interface MatchCardProps {
   match: Match;
   showType?: boolean;
+}
+
+function CardTeamName({ name, align }: { name: string; align: "left" | "right" }) {
+  const team = getTeamByName(name);
+  const canLink = team && !team.isPlaceholder;
+  const isJapan = name === "日本";
+  const className = `text-base sm:text-lg font-bold ${isJapan ? "text-red-700" : "text-gray-900"}`;
+
+  if (canLink) {
+    return (
+      <Link
+        href={`/teams/${team.code.toLowerCase()}`}
+        className={`${className} hover:underline`}
+      >
+        {name}
+      </Link>
+    );
+  }
+  return <span className={className}>{name}</span>;
 }
 
 export default function MatchCard({ match, showType = true }: MatchCardProps) {
@@ -28,15 +49,11 @@ export default function MatchCard({ match, showType = true }: MatchCardProps) {
         {/* Teams */}
         <div className="flex items-center justify-center gap-4 my-4">
           <div className="flex-1 text-right">
-            <span className={`text-base sm:text-lg font-bold ${match.homeTeam === "日本" ? "text-red-700" : "text-gray-900"}`}>
-              {match.homeTeam}
-            </span>
+            <CardTeamName name={match.homeTeam} align="right" />
           </div>
           <div className="text-gray-400 font-bold text-lg">VS</div>
           <div className="flex-1 text-left">
-            <span className={`text-base sm:text-lg font-bold ${match.awayTeam === "日本" ? "text-red-700" : "text-gray-900"}`}>
-              {match.awayTeam}
-            </span>
+            <CardTeamName name={match.awayTeam} align="left" />
           </div>
         </div>
 

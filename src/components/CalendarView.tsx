@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useCallback } from "react";
 import Link from "next/link";
 import Icon from "./Icon";
 import {
@@ -433,8 +433,36 @@ export default function CalendarView() {
 
   const todayStr = formatDateKey(today.getFullYear(), today.getMonth() + 1, today.getDate());
 
+  // ── スワイプ対応 ──
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  }, []);
+
+  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+    if (touchStartX.current === null || touchStartY.current === null) return;
+    const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+    const deltaY = e.changedTouches[0].clientY - touchStartY.current;
+    // 横方向のスワイプが十分で、縦方向のスクロールでない場合のみ
+    if (Math.abs(deltaX) > 50 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
+      if (deltaX > 0) {
+        goToPrevMonth();
+      } else {
+        goToNextMonth();
+      }
+    }
+    touchStartX.current = null;
+    touchStartY.current = null;
+  }, []);
+
   return (
-    <div>
+    <div
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
       {/* ── ヘッダー: 月ナビ & ビュー切り替え ── */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
