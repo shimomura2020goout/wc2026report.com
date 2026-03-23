@@ -2,11 +2,17 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Icon from "@/components/Icon";
 import { getPublishedPosts } from "@/lib/notion";
+import { getLocaleFromCookies, getDictionary, createTranslator } from "@/i18n/index";
 
-export const metadata: Metadata = {
-  title: "ニュース・コラム",
-  description: "W杯2026に関する最新ニュース、試合プレビュー、チーム分析、toto攻略コラムを毎日更新。",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocaleFromCookies();
+  const dict = await getDictionary(locale);
+  const t = createTranslator(dict);
+  return {
+    title: t("news.metaTitle"),
+    description: t("news.metaDescription"),
+  };
+}
 
 // ISR: 5分ごとに再生成
 export const revalidate = 300;
@@ -21,22 +27,26 @@ const categoryColors: Record<string, string> = {
 };
 
 export default async function NewsPage() {
+  const locale = await getLocaleFromCookies();
+  const dict = await getDictionary(locale);
+  const t = createTranslator(dict);
+
   const posts = await getPublishedPosts();
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
       <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 flex items-center gap-2">
         <Icon name="article" size={32} className="text-gray-700" />
-        ニュース・コラム
+        {t("news.pageTitle")}
       </h1>
       <p className="text-gray-500 mb-8">
-        W杯2026の最新情報、試合プレビュー、toto攻略を毎日更新
+        {t("news.pageDescription")}
       </p>
 
       {posts.length === 0 ? (
         <div className="text-center py-16 text-gray-400">
           <Icon name="edit_note" size={48} className="mb-4" />
-          <p>まだ記事がありません。公開をお待ちください。</p>
+          <p>{t("news.noArticles")}</p>
         </div>
       ) : (
         <div className="space-y-6">
@@ -80,7 +90,7 @@ export default async function NewsPage() {
                 </div>
 
                 <div className="mt-3 flex items-center gap-1 text-sm text-blue-600 font-medium">
-                  記事を読む
+                  {t("news.readArticle")}
                   <Icon name="arrow_forward" size={16} />
                 </div>
               </div>

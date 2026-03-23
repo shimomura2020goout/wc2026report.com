@@ -5,6 +5,7 @@ import Icon from "@/components/Icon";
 import SourceAttribution from "@/components/SourceAttribution";
 import { ArticleJsonLd, BreadcrumbJsonLd } from "@/components/JsonLd";
 import { getPostBySlug, getAllSlugs } from "@/lib/notion";
+import { getLocaleFromCookies, getDictionary, createTranslator } from "@/i18n/index";
 
 // ISR: 5分ごとに再生成
 export const revalidate = 300;
@@ -20,8 +21,12 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
+  const locale = await getLocaleFromCookies();
+  const dict = await getDictionary(locale);
+  const t = createTranslator(dict);
+
   const post = await getPostBySlug(slug);
-  if (!post) return { title: "記事が見つかりません" };
+  if (!post) return { title: t("news.notFound") };
 
   return {
     title: post.title,
@@ -44,6 +49,10 @@ export default async function NewsArticlePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  const locale = await getLocaleFromCookies();
+  const dict = await getDictionary(locale);
+  const t = createTranslator(dict);
+
   const post = await getPostBySlug(slug);
 
   if (!post) {
@@ -62,16 +71,16 @@ export default async function NewsArticlePage({
       category={post.category}
     />
     <BreadcrumbJsonLd items={[
-      { name: "トップ", url: "https://www.wc2026report.com" },
-      { name: "ニュース", url: "https://www.wc2026report.com/news" },
+      { name: t("news.breadcrumbTop"), url: "https://www.wc2026report.com" },
+      { name: t("news.breadcrumbNews"), url: "https://www.wc2026report.com/news" },
       { name: post.title, url: articleUrl },
     ]} />
     <article className="max-w-3xl mx-auto px-4 py-8 sm:py-12">
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm text-gray-400 mb-6">
-        <Link href="/" className="hover:text-gray-600">トップ</Link>
+        <Link href="/" className="hover:text-gray-600">{t("news.breadcrumbTop")}</Link>
         <Icon name="chevron_right" size={16} />
-        <Link href="/news" className="hover:text-gray-600">ニュース</Link>
+        <Link href="/news" className="hover:text-gray-600">{t("news.breadcrumbNews")}</Link>
         <Icon name="chevron_right" size={16} />
         <span className="text-gray-600 truncate">{post.title}</span>
       </nav>
@@ -145,7 +154,7 @@ export default async function NewsArticlePage({
           className="inline-flex items-center gap-1 text-sm text-blue-600 font-medium hover:text-blue-800"
         >
           <Icon name="arrow_back" size={16} />
-          ニュース一覧に戻る
+          {t("news.backToNews")}
         </Link>
       </div>
     </article>

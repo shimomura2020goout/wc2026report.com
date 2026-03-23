@@ -4,53 +4,63 @@ import SourceAttribution from "@/components/SourceAttribution";
 import { BreadcrumbJsonLd } from "@/components/JsonLd";
 import { groupFMatches, getInitialStandings, groupFScenarios } from "@/data/results";
 import { formatMatchDate } from "@/data/matches";
+import { getLocaleFromCookies, getDictionary, createTranslator } from "@/i18n/index";
 
-export const metadata: Metadata = {
-  title: "試合結果・順位表｜W杯2026 グループF 日本代表",
-  description: "FIFA ワールドカップ 2026 グループFの試合結果・順位表・グループ突破シナリオ。日本代表の勝ち点・得失点差・累積警告・出場停止情報を網羅。",
-  alternates: { canonical: "https://www.wc2026report.com/results" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocaleFromCookies();
+  const dict = await getDictionary(locale);
+  const t = createTranslator(dict);
+  return {
+    title: t("results.metaTitle"),
+    description: t("results.metaDescription"),
+    alternates: { canonical: "https://www.wc2026report.com/results" },
+  };
+}
 
 const standings = getInitialStandings(["日本", "オランダ", "チュニジア", "UEFA PO B勝者"]);
 
-export default function ResultsPage() {
+export default async function ResultsPage() {
+  const locale = await getLocaleFromCookies();
+  const dict = await getDictionary(locale);
+  const t = createTranslator(dict);
+
   return (
     <>
       <BreadcrumbJsonLd items={[
-        { name: "トップ", url: "https://www.wc2026report.com" },
-        { name: "試合結果・順位表", url: "https://www.wc2026report.com/results" },
+        { name: t("common.top"), url: "https://www.wc2026report.com" },
+        { name: t("results.pageTitle"), url: "https://www.wc2026report.com/results" },
       ]} />
 
       <div className="max-w-5xl mx-auto px-4 py-8 sm:py-12">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 flex items-center gap-2">
           <Icon name="scoreboard" size={32} className="text-gray-700" />
-          試合結果・順位表
+          {t("results.pageTitle")}
         </h1>
         <p className="text-gray-500 mb-8">
-          グループF（日本所属）の試合結果、順位表、グループ突破条件をリアルタイム更新
+          {t("results.pageDescription")}
         </p>
 
         {/* グループF 順位表 */}
         <section className="mb-10">
           <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
             <Icon name="leaderboard" size={24} className="text-amber-600" />
-            グループF 順位表
+            {t("results.standingsTitle")}
           </h2>
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-gray-50 text-gray-600">
                   <th className="text-left px-4 py-3 font-semibold w-8">#</th>
-                  <th className="text-left px-4 py-3 font-semibold">チーム</th>
-                  <th className="text-center px-2 py-3 font-semibold" title="試合数">試</th>
-                  <th className="text-center px-2 py-3 font-semibold" title="勝利">勝</th>
-                  <th className="text-center px-2 py-3 font-semibold" title="引分">分</th>
-                  <th className="text-center px-2 py-3 font-semibold" title="敗北">敗</th>
-                  <th className="text-center px-2 py-3 font-semibold" title="得点">得</th>
-                  <th className="text-center px-2 py-3 font-semibold" title="失点">失</th>
-                  <th className="text-center px-2 py-3 font-semibold" title="得失点差">差</th>
-                  <th className="text-center px-3 py-3 font-semibold" title="勝ち点">勝点</th>
-                  <th className="text-center px-2 py-3 font-semibold hidden sm:table-cell">直近</th>
+                  <th className="text-left px-4 py-3 font-semibold">{t("results.thTeam")}</th>
+                  <th className="text-center px-2 py-3 font-semibold" title={t("results.titlePlayed")}>{t("results.thPlayed")}</th>
+                  <th className="text-center px-2 py-3 font-semibold" title={t("results.titleWon")}>{t("results.thWon")}</th>
+                  <th className="text-center px-2 py-3 font-semibold" title={t("results.titleDrawn")}>{t("results.thDrawn")}</th>
+                  <th className="text-center px-2 py-3 font-semibold" title={t("results.titleLost")}>{t("results.thLost")}</th>
+                  <th className="text-center px-2 py-3 font-semibold" title={t("results.titleGoalsFor")}>{t("results.thGoalsFor")}</th>
+                  <th className="text-center px-2 py-3 font-semibold" title={t("results.titleGoalsAgainst")}>{t("results.thGoalsAgainst")}</th>
+                  <th className="text-center px-2 py-3 font-semibold" title={t("results.titleGoalDifference")}>{t("results.thGoalDifference")}</th>
+                  <th className="text-center px-3 py-3 font-semibold" title={t("results.titlePoints")}>{t("results.thPoints")}</th>
+                  <th className="text-center px-2 py-3 font-semibold hidden sm:table-cell">{t("results.thForm")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -93,15 +103,15 @@ export default function ResultsPage() {
           <div className="flex items-center gap-4 mt-3 text-xs text-gray-400">
             <span className="flex items-center gap-1">
               <span className="w-3 h-3 rounded-sm bg-green-500 inline-block"></span>
-              上位2チーム: 自動突破
+              {t("results.autoQualify")}
             </span>
             <span className="flex items-center gap-1">
               <span className="w-3 h-3 rounded-sm bg-yellow-500 inline-block"></span>
-              3位: 成績上位8チームが突破
+              {t("results.thirdPlaceQualify")}
             </span>
           </div>
           <p className="text-xs text-gray-400 mt-2">
-            ※ 大会開始前のため、順位表は初期状態です。大会開始後にリアルタイム更新されます。
+            {t("results.preSeasonNote")}
           </p>
         </section>
 
@@ -109,7 +119,7 @@ export default function ResultsPage() {
         <section className="mb-10">
           <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
             <Icon name="sports_soccer" size={24} className="text-gray-600" />
-            グループF 全試合
+            {t("results.allMatchesTitle")}
           </h2>
 
           {[1, 2, 3].map((matchday) => {
@@ -117,7 +127,7 @@ export default function ResultsPage() {
             return (
               <div key={matchday} className="mb-6">
                 <h3 className="text-sm font-bold text-gray-500 mb-3 uppercase tracking-wide">
-                  第{matchday}節 — {formatMatchDate(matches[0].date)}
+                  {t("results.matchday", { matchday: String(matchday), date: formatMatchDate(matches[0].date) })}
                 </h3>
                 <div className="space-y-3">
                   {matches.map((match) => (
@@ -144,12 +154,12 @@ export default function ResultsPage() {
                           ) : match.status === "live" ? (
                             <div className="bg-red-600 text-white px-3 py-1 rounded-lg text-center min-w-[70px] animate-pulse">
                               <span className="text-lg font-bold">{match.homeScore ?? 0} - {match.awayScore ?? 0}</span>
-                              <span className="block text-xs">LIVE</span>
+                              <span className="block text-xs">{t("results.live")}</span>
                             </div>
                           ) : (
                             <div className="bg-gray-100 text-gray-500 px-3 py-1 rounded-lg text-center min-w-[70px]">
-                              <span className="text-sm font-medium">{match.kickoff}</span>
-                              <span className="block text-xs">KO</span>
+                              <span className="text-sm font-medium">{match.kickoff}<span className="text-[10px] text-gray-400 ml-0.5">JST</span></span>
+                              <span className="block text-xs">{t("common.ko")}</span>
                             </div>
                           )}
 
@@ -206,19 +216,18 @@ export default function ResultsPage() {
         <section className="mb-10">
           <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
             <Icon name="warning" size={24} className="text-yellow-500" />
-            累積警告・出場停止情報
+            {t("results.warningsTitle")}
           </h2>
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
             <p className="text-sm text-gray-500 mb-3">
-              W杯グループステージでは、累積イエローカード<strong>2枚</strong>で次の試合が出場停止となります。
-              準々決勝前にリセットされます。
+              {t("results.warningsDescription")}
             </p>
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-sm text-yellow-800">
               <div className="flex items-center gap-2 mb-1">
                 <Icon name="info" size={18} className="text-yellow-600" />
-                <span className="font-medium">大会開始前</span>
+                <span className="font-medium">{t("results.warningsPreSeason")}</span>
               </div>
-              <p>大会期間中、各選手の累積警告と出場停止情報をここでリアルタイム更新します。</p>
+              <p>{t("results.warningsPreSeasonNote")}</p>
             </div>
           </div>
         </section>
@@ -227,10 +236,10 @@ export default function ResultsPage() {
         <section className="mb-10">
           <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
             <Icon name="calculate" size={24} className="text-blue-600" />
-            グループ突破シナリオ
+            {t("results.scenariosTitle")}
           </h2>
           <p className="text-sm text-gray-500 mb-4">
-            日本がグループFを突破するための条件を解説。試合結果に応じて随時更新します。
+            {t("results.scenariosDescription")}
           </p>
           <div className="space-y-3">
             {groupFScenarios.map((scenario, i) => (
@@ -252,7 +261,7 @@ export default function ResultsPage() {
           <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mt-4 text-sm text-blue-800">
             <div className="flex items-start gap-2">
               <Icon name="info" size={18} className="text-blue-500 mt-0.5" />
-              <p>各試合の結果が出るたびに、最新の突破条件・シナリオを更新します。「この試合で何点差以上で勝たなければならない」といった具体的な条件も掲載予定です。</p>
+              <p>{t("results.scenariosUpdateNote")}</p>
             </div>
           </div>
         </section>

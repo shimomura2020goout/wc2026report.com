@@ -17,6 +17,7 @@ import {
   formatMatchDate,
 } from "@/data/matches";
 import { allTeams } from "@/data/teams";
+import { useTranslation } from "@/i18n/client";
 
 // ========================================
 // テキスト内のチーム名をリンク化するユーティリティ
@@ -91,13 +92,6 @@ function formatDateKey(year: number, month: number, day: number): string {
   return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 }
 
-const WEEKDAYS = ["日", "月", "火", "水", "木", "金", "土"];
-
-const MONTH_NAMES = [
-  "", "1月", "2月", "3月", "4月", "5月", "6月",
-  "7月", "8月", "9月", "10月", "11月", "12月",
-];
-
 // ========================================
 // カテゴリフィルターチップ
 // ========================================
@@ -146,6 +140,7 @@ function DayCell({
   isToday,
   isSelected,
   onClick,
+  otherEventsLabel,
 }: {
   year: number;
   month: number;
@@ -154,6 +149,7 @@ function DayCell({
   isToday: boolean;
   isSelected: boolean;
   onClick: () => void;
+  otherEventsLabel: string;
 }) {
   const dayOfWeek = new Date(year, month - 1, day).getDay();
   const isSunday = dayOfWeek === 0;
@@ -213,7 +209,7 @@ function DayCell({
             {events[0].title.replace(/🇯🇵 |⚽ |🏆 /g, "")}
           </p>
           {events.length > 1 && (
-            <p className="text-[10px] text-gray-400">他{events.length - 1}件</p>
+            <p className="text-[10px] text-gray-400">{otherEventsLabel}</p>
           )}
         </div>
       )}
@@ -225,20 +221,32 @@ function DayCell({
 // 選択日のイベント詳細
 // ========================================
 
-function EventDetail({ events, dateStr }: { events: CalendarEvent[]; dateStr: string }) {
+function EventDetail({
+  events,
+  dateStr,
+  t,
+  weekdays,
+  seeMoreLabel,
+}: {
+  events: CalendarEvent[];
+  dateStr: string;
+  t: (key: string, replacements?: Record<string, string | number>) => string;
+  weekdays: string[];
+  seeMoreLabel: string;
+}) {
   if (events.length === 0) {
     return (
       <div className="text-center py-8 text-gray-400">
         <Icon name="event_busy" size={32} className="mx-auto mb-2 opacity-50" />
-        <p className="text-sm">この日のイベントはありません</p>
+        <p className="text-sm">{t("calendar.noEventsDay")}</p>
       </div>
     );
   }
 
   // 日付表示
   const [y, m, d] = dateStr.split("-").map(Number);
-  const dayName = WEEKDAYS[new Date(y, m - 1, d).getDay()];
-  const dateLabel = `${y}年${m}月${d}日（${dayName}）`;
+  const dayName = weekdays[new Date(y, m - 1, d).getDay()];
+  const dateLabel = t("calendar.dateFormat", { year: y, month: m, day: d, dayName });
 
   return (
     <div>
@@ -286,7 +294,7 @@ function EventDetail({ events, dateStr }: { events: CalendarEvent[]; dateStr: st
                       href={evt.link}
                       className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 mt-2 font-medium"
                     >
-                      詳しく見る
+                      {seeMoreLabel}
                       <Icon name="arrow_forward" size={12} />
                     </Link>
                   )}
@@ -298,7 +306,7 @@ function EventDetail({ events, dateStr }: { events: CalendarEvent[]; dateStr: st
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 text-[11px] text-green-700 hover:text-green-900 bg-green-50 hover:bg-green-100 px-2 py-1 rounded transition-colors"
-                      title="Googleカレンダーに追加"
+                      title={t("calendar.addToGoogleCalendar")}
                     >
                       <Icon name="event" size={12} />
                       Google
@@ -306,7 +314,7 @@ function EventDetail({ events, dateStr }: { events: CalendarEvent[]; dateStr: st
                     <button
                       onClick={() => downloadSingleIcs(evt)}
                       className="inline-flex items-center gap-1 text-[11px] text-indigo-700 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 px-2 py-1 rounded transition-colors"
-                      title=".icsファイルをダウンロード（Apple/Outlook対応）"
+                      title={t("calendar.downloadIcs")}
                     >
                       <Icon name="download" size={12} />
                       .ics
@@ -330,10 +338,14 @@ function MonthListView({
   year,
   month,
   filteredEvents,
+  t,
+  weekdays,
 }: {
   year: number;
   month: number;
   filteredEvents: CalendarEvent[];
+  t: (key: string, replacements?: Record<string, string | number>) => string;
+  weekdays: string[];
 }) {
   const prefix = `${year}-${String(month).padStart(2, "0")}`;
 
@@ -353,7 +365,7 @@ function MonthListView({
   if (monthEvents.length === 0) {
     return (
       <div className="text-center py-8 text-gray-400">
-        <p className="text-sm">この月のイベントはありません</p>
+        <p className="text-sm">{t("calendar.noEventsMonth")}</p>
       </div>
     );
   }
@@ -363,7 +375,7 @@ function MonthListView({
       {monthEvents.map((evt) => {
         const config = categoryConfig[evt.category];
         const [, , d] = evt.startDate.split("-").map(Number);
-        const dayName = WEEKDAYS[new Date(year, month - 1, d).getDay()];
+        const dayName = weekdays[new Date(year, month - 1, d).getDay()];
 
         return (
           <div
@@ -401,7 +413,7 @@ function MonthListView({
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-green-500 hover:text-green-700 transition-colors"
-                title="Googleカレンダーに追加"
+                title={t("calendar.addToGoogleCalendar")}
               >
                 <Icon name="event" size={16} />
               </a>
@@ -423,6 +435,11 @@ function MonthListView({
 // ========================================
 
 export default function CalendarView() {
+  const { t, tArray } = useTranslation();
+  const weekdays = tArray("calendar.weekdays");
+  const months = tArray("calendar.months");
+  const seeMoreLabel = t("common.seeMore");
+
   const today = new Date();
   const [currentYear, setCurrentYear] = useState(2026);
   const [currentMonth, setCurrentMonth] = useState(
@@ -499,6 +516,12 @@ export default function CalendarView() {
 
   const todayStr = formatDateKey(today.getFullYear(), today.getMonth() + 1, today.getDate());
 
+  // 年月表示
+  const yearMonthLabel = t("calendar.yearMonth", {
+    year: currentYear,
+    month: months[currentMonth] || String(currentMonth),
+  });
+
   // ── スワイプ対応 ──
   const touchStartX = useRef<number | null>(null);
   const touchStartY = useRef<number | null>(null);
@@ -535,17 +558,17 @@ export default function CalendarView() {
           <button
             onClick={goToPrevMonth}
             className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
-            aria-label="前月"
+            aria-label={t("common.prevMonth")}
           >
             <Icon name="chevron_left" size={20} />
           </button>
           <h2 className="text-lg sm:text-xl font-bold text-gray-900 min-w-[120px] text-center">
-            {currentYear}年 {MONTH_NAMES[currentMonth]}
+            {yearMonthLabel}
           </h2>
           <button
             onClick={goToNextMonth}
             className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
-            aria-label="翌月"
+            aria-label={t("common.nextMonth")}
           >
             <Icon name="chevron_right" size={20} />
           </button>
@@ -553,7 +576,7 @@ export default function CalendarView() {
             onClick={goToToday}
             className="ml-2 text-xs text-blue-600 hover:text-blue-800 font-medium px-2 py-1 rounded bg-blue-50 hover:bg-blue-100 transition-colors"
           >
-            今日
+            {t("common.today")}
           </button>
         </div>
 
@@ -563,7 +586,7 @@ export default function CalendarView() {
             className={`p-1.5 rounded-md transition-colors ${
               viewMode === "calendar" ? "bg-white shadow-sm text-blue-600" : "text-gray-500 hover:text-gray-700"
             }`}
-            aria-label="カレンダー表示"
+            aria-label={t("common.calendarView")}
           >
             <Icon name="calendar_view_month" size={18} />
           </button>
@@ -572,7 +595,7 @@ export default function CalendarView() {
             className={`p-1.5 rounded-md transition-colors ${
               viewMode === "list" ? "bg-white shadow-sm text-blue-600" : "text-gray-500 hover:text-gray-700"
             }`}
-            aria-label="リスト表示"
+            aria-label={t("common.listView")}
           >
             <Icon name="view_list" size={18} />
           </button>
@@ -586,10 +609,10 @@ export default function CalendarView() {
           className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-lg transition-colors"
         >
           <Icon name="download" size={16} />
-          全イベントを .ics でダウンロード
+          {t("calendar.downloadAllIcs")}
         </button>
         <span className="text-[11px] text-gray-400">
-          Google / Apple / Outlook カレンダーに一括取り込み可能
+          {t("calendar.icsNote")}
         </span>
       </div>
 
@@ -601,7 +624,7 @@ export default function CalendarView() {
         <div className="mb-4 p-3 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl">
           <p className="text-xs font-bold text-amber-800 mb-2 flex items-center gap-1">
             <Icon name="star" size={14} />
-            今月の注目イベント
+            {t("calendar.highlightTitle")}
           </p>
           <div className="flex flex-wrap gap-2">
             {highlightEvents.map((evt) => {
@@ -611,7 +634,7 @@ export default function CalendarView() {
                   key={evt.id}
                   className="text-xs bg-white/80 text-amber-900 px-2 py-1 rounded-md border border-amber-200"
                 >
-                  <span className="font-semibold">{d}日</span>{" "}
+                  <span className="font-semibold">{t("calendar.highlightDay", { day: d })}</span>{" "}
                   {evt.title.replace(/🇯🇵 |⚽ |🏆 /g, "")}
                 </span>
               );
@@ -627,7 +650,7 @@ export default function CalendarView() {
           <div>
             {/* 曜日ヘッダー */}
             <div className="grid grid-cols-7 gap-1 mb-1">
-              {WEEKDAYS.map((day, i) => (
+              {weekdays.map((day, i) => (
                 <div
                   key={day}
                   className={`text-center text-xs font-medium py-1.5 ${
@@ -664,6 +687,7 @@ export default function CalendarView() {
                     isToday={dateKey === todayStr}
                     isSelected={dateKey === selectedDate}
                     onClick={() => setSelectedDate(dateKey === selectedDate ? null : dateKey)}
+                    otherEventsLabel={t("calendar.otherEvents", { count: dayEvents.length - 1 })}
                   />
                 );
               })}
@@ -673,12 +697,18 @@ export default function CalendarView() {
           {/* サイドバー: 選択日のイベント詳細 */}
           <div className="bg-gray-50 rounded-xl p-4 lg:sticky lg:top-24 lg:self-start">
             {selectedDate ? (
-              <EventDetail events={selectedEvents} dateStr={selectedDate} />
+              <EventDetail
+                events={selectedEvents}
+                dateStr={selectedDate}
+                t={t}
+                weekdays={weekdays}
+                seeMoreLabel={seeMoreLabel}
+              />
             ) : (
               <div className="text-center py-8 text-gray-400">
                 <Icon name="touch_app" size={32} className="mx-auto mb-2 opacity-50" />
-                <p className="text-sm">日付をクリックして</p>
-                <p className="text-sm">イベント詳細を表示</p>
+                <p className="text-sm">{t("calendar.clickToView")}</p>
+                <p className="text-sm">{t("calendar.showEventDetail")}</p>
               </div>
             )}
           </div>
@@ -689,6 +719,8 @@ export default function CalendarView() {
           year={currentYear}
           month={currentMonth}
           filteredEvents={filteredEvents}
+          t={t}
+          weekdays={weekdays}
         />
       )}
     </div>
