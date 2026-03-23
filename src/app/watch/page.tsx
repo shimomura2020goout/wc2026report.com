@@ -1,139 +1,113 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import Icon from "@/components/Icon";
 import SourceAttribution from "@/components/SourceAttribution";
 import { FAQJsonLd, BreadcrumbJsonLd } from "@/components/JsonLd";
 import { broadcastInfo } from "@/data/matches";
+import { getLocaleFromCookies, getDictionary, createTranslator } from "@/i18n/index";
 
-const faqData = [
-  {
-    question: "W杯を全試合見るにはどうすればいい？",
-    answer: "DAZNに加入すれば全104試合をライブ配信で視聴できます。NHK BSプレミアム4Kでも全試合を放送しますが、4K対応BS環境が必要です。",
-  },
-  {
-    question: "無料で見れる試合はある？",
-    answer: "日本代表のグループリーグ3試合はDAZNで無料配信されます。また、NHK総合で33試合、日本テレビで15試合、フジテレビで10試合が地上波で無料放送されます。",
-  },
-  {
-    question: "DAZNの日本代表戦無料配信の見方は？",
-    answer: "DAZNの無料アカウントを作成するだけでOK。有料プランに加入しなくても、日本代表戦は視聴できます。",
-  },
-  {
-    question: "海外から視聴できる？",
-    answer: "DAZNは契約地域のみでの視聴となります。海外在住の方は現地のDAZNまたは放映局をご確認ください。",
-  },
-];
+export async function generateMetadata() {
+  const locale = await getLocaleFromCookies();
+  const dict = await getDictionary(locale);
+  const t = createTranslator(dict);
+  return {
+    title: t("watch.metaTitle"),
+    description: t("watch.metaDescription"),
+    alternates: { canonical: "https://www.wc2026report.com/watch" },
+  };
+}
 
-export const metadata: Metadata = {
-  title: "W杯 2026 視聴ガイド｜DAZN・地上波の放送予定",
-  description: "FIFA ワールドカップ 2026 をどこで見る？DAZN全104試合配信、NHK33試合・日テレ15試合・フジ10試合の地上波放送予定、日本代表戦の無料視聴方法を徹底解説。",
-  alternates: { canonical: "https://www.wc2026report.com/watch" },
-};
+export default async function WatchPage() {
+  const locale = await getLocaleFromCookies();
+  const dict = await getDictionary(locale);
+  const t = createTranslator(dict);
 
-export default function WatchPage() {
+  const faqData = [
+    { question: t("watch.faq1Question"), answer: t("watch.faq1Answer") },
+    { question: t("watch.faq2Question"), answer: t("watch.faq2Answer") },
+    { question: t("watch.faq3Question"), answer: t("watch.faq3Answer") },
+    { question: t("watch.faq4Question"), answer: t("watch.faq4Answer") },
+  ];
+
   return (
     <>
     <BreadcrumbJsonLd items={[
-      { name: "トップ", url: "https://www.wc2026report.com" },
-      { name: "視聴ガイド", url: "https://www.wc2026report.com/watch" },
+      { name: t("nav.home"), url: "https://www.wc2026report.com" },
+      { name: t("nav.watch"), url: "https://www.wc2026report.com/watch" },
     ]} />
     <FAQJsonLd questions={faqData} />
     <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
       <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 flex items-center gap-2">
         <Icon name="live_tv" size={32} className="text-gray-700" />
-        W杯 2026 視聴ガイド
+        {t("watch.pageTitle")}
       </h1>
       <p className="text-gray-500 mb-8">
-        「この試合はどこで見れる？」を解決。DAZN・地上波・BSの放送予定を完全網羅。
+        {t("watch.pageDescription")}
       </p>
 
-      {/* DAZN Section - Main CTA */}
+      {/* DAZN Section */}
       <section className="bg-gradient-to-br from-[#0f0f0f] to-[#1a1a1a] text-white rounded-2xl p-6 sm:p-8 mb-8">
         <div className="flex items-start gap-4 mb-6">
           <div className="bg-white text-black font-bold text-xl px-3 py-1 rounded-lg">DAZN</div>
           <div>
-            <h2 className="text-xl sm:text-2xl font-bold">全104試合を独占ライブ配信</h2>
-            <p className="text-gray-400 mt-1">W杯を完全に楽しむならDAZN一択</p>
+            <h2 className="text-xl sm:text-2xl font-bold">{t("watch.daznTitle")}</h2>
+            <p className="text-gray-400 mt-1">{t("watch.daznSubtitle")}</p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
           <div className="bg-white/10 rounded-xl p-4">
-            <h3 className="font-bold text-lg mb-2">DAZN Standard</h3>
-            <p className="text-2xl font-bold text-white mb-1">月額 4,200円<span className="text-sm font-normal text-gray-400">（税込）</span></p>
-            <p className="text-sm text-gray-400">年間プランなら月額2,917円相当</p>
+            <h3 className="font-bold text-lg mb-2">{t("watch.daznStandard")}</h3>
+            <p className="text-2xl font-bold text-white mb-1">{t("watch.daznStandardPrice")}<span className="text-sm font-normal text-gray-400">（{t("watch.taxIncluded")}）</span></p>
+            <p className="text-sm text-gray-400">{t("watch.daznStandardNote")}</p>
           </div>
           <div className="bg-white/10 rounded-xl p-4 border border-green-500/30">
             <h3 className="font-bold text-lg mb-2 flex items-center gap-2">
-              DMM×DAZNホーダイ
-              <span className="text-xs bg-green-500 text-white px-2 py-0.5 rounded-full">おすすめ</span>
+              {t("watch.daznDmmTitle")}
+              <span className="text-xs bg-green-500 text-white px-2 py-0.5 rounded-full">{t("watch.daznDmmRecommended")}</span>
             </h3>
-            <p className="text-2xl font-bold text-white mb-1">月額 3,480円<span className="text-sm font-normal text-gray-400">（税込）</span></p>
-            <p className="text-sm text-gray-400">DMMプレミアム付きでお得</p>
+            <p className="text-2xl font-bold text-white mb-1">{t("watch.daznDmmPrice")}<span className="text-sm font-normal text-gray-400">（{t("watch.taxIncluded")}）</span></p>
+            <p className="text-sm text-gray-400">{t("watch.daznDmmNote")}</p>
           </div>
         </div>
 
         <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4 mb-6">
           <p className="text-green-400 font-bold text-sm mb-1 flex items-center gap-1">
             <Icon name="celebration" size={18} />
-            日本代表戦は無料！
+            {t("watch.japanFree")}
           </p>
-          <p className="text-sm text-gray-300">
-            日本代表のW杯グループリーグ3試合はDAZNで無料配信。アカウント登録（無料）のみでOK。
-          </p>
+          <p className="text-sm text-gray-300">{t("watch.japanFreeNote")}</p>
         </div>
 
-        <h3 className="font-bold mb-3">DAZNのポイント</h3>
+        <h3 className="font-bold mb-3">{t("watch.daznPointsTitle")}</h3>
         <ul className="space-y-2 text-sm text-gray-300 mb-6">
-          <li className="flex items-start gap-2">
-            <Icon name="check_circle" size={18} className="text-green-400 mt-0.5" />
-            <span>全104試合をライブ配信 — 他のサービスでは見られない試合も全てカバー</span>
-          </li>
-          <li className="flex items-start gap-2">
-            <Icon name="check_circle" size={18} className="text-green-400 mt-0.5" />
-            <span>見逃し配信・ハイライト対応 — 深夜の試合も後からチェック可能</span>
-          </li>
-          <li className="flex items-start gap-2">
-            <Icon name="check_circle" size={18} className="text-green-400 mt-0.5" />
-            <span>マルチデバイス対応 — スマホ・タブレット・PC・TV（Fire TV Stick等）で視聴</span>
-          </li>
-          <li className="flex items-start gap-2">
-            <Icon name="check_circle" size={18} className="text-green-400 mt-0.5" />
-            <span>W杯以外にもJリーグ、プレミアリーグ、ラ・リーガなど見放題</span>
-          </li>
+          {[t("watch.daznPoint1"), t("watch.daznPoint2"), t("watch.daznPoint3"), t("watch.daznPoint4")].map((point, i) => (
+            <li key={i} className="flex items-start gap-2">
+              <Icon name="check_circle" size={18} className="text-green-400 mt-0.5" />
+              <span>{point}</span>
+            </li>
+          ))}
         </ul>
 
-        {/* アフィリエイトリンクのプレースホルダー */}
         <div className="flex flex-col sm:flex-row gap-3">
-          <a
-            href="#"
-            className="inline-flex items-center justify-center gap-2 bg-white text-black font-bold px-8 py-3 rounded-full hover:bg-gray-200 transition-colors text-center"
-            rel="nofollow noopener"
-          >
+          <a href="#" className="inline-flex items-center justify-center gap-2 bg-white text-black font-bold px-8 py-3 rounded-full hover:bg-gray-200 transition-colors text-center" rel="nofollow noopener">
             <Icon name="open_in_new" size={18} />
-            DAZNに登録する（公式サイト）
+            {t("watch.daznRegister")}
           </a>
-          <a
-            href="#"
-            className="inline-flex items-center justify-center gap-2 bg-green-600 text-white font-bold px-8 py-3 rounded-full hover:bg-green-700 transition-colors text-center"
-            rel="nofollow noopener"
-          >
+          <a href="#" className="inline-flex items-center justify-center gap-2 bg-green-600 text-white font-bold px-8 py-3 rounded-full hover:bg-green-700 transition-colors text-center" rel="nofollow noopener">
             <Icon name="open_in_new" size={18} />
-            DMM×DAZNホーダイに登録
+            {t("watch.daznDmmRegister")}
           </a>
         </div>
-        <p className="text-xs text-gray-600 mt-3">※ 上記リンクはアフィリエイトリンクです（ASP準備中）</p>
+        <p className="text-xs text-gray-600 mt-3">※ {t("watch.affiliateNote")}</p>
       </section>
 
       {/* 地上波・BS */}
       <section className="mb-8">
         <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
           <Icon name="tv" size={24} className="text-gray-600" />
-          地上波・BS放送予定
+          {t("watch.tvTitle")}
         </h2>
-        <p className="text-sm text-gray-500 mb-4">
-          W杯は地上波でも一部試合を無料で視聴可能。ただし全試合を見るにはDAZN（またはNHK BS 4K）が必要です。
-        </p>
+        <p className="text-sm text-gray-500 mb-4">{t("watch.tvDescription")}</p>
 
         <div className="space-y-4">
           {[
@@ -149,7 +123,7 @@ export default function WatchPage() {
                   {info.name}
                 </h3>
                 <span className="text-sm bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-medium">
-                  {info.matches}試合
+                  {t("common.matchCount", { count: info.matches })}
                 </span>
               </div>
               <p className="text-sm text-gray-600">{info.description}</p>
@@ -158,77 +132,71 @@ export default function WatchPage() {
         </div>
       </section>
 
-      {/* W杯前 親善試合の放映 */}
+      {/* W杯前 親善試合 */}
       <section className="bg-blue-50 border border-blue-200 rounded-2xl p-6 sm:p-8 mb-8">
         <h2 className="text-xl font-bold text-blue-900 mb-4 flex items-center gap-2">
           <Icon name="sports_soccer" size={24} className="text-blue-700" />
-          W杯直前 欧州遠征の視聴方法
+          {t("watch.preMatchTitle")}
         </h2>
-        <p className="text-sm text-blue-700 mb-4">
-          W杯本大会まで100日を切り、森保ジャパンがスコットランド・イングランドと対戦。いずれもW杯出場国との真剣勝負です。
-        </p>
+        <p className="text-sm text-blue-700 mb-4">{t("watch.preMatchDescription")}</p>
         <div className="space-y-3 text-sm">
           <div className="bg-white rounded-lg p-4 border border-blue-100">
-            <p className="font-bold text-gray-900 mb-1">vs スコットランド（3/29 02:00 KO）</p>
-            <p className="text-gray-500 text-xs mb-1">ハムデン・パーク（グラスゴー）</p>
+            <p className="font-bold text-gray-900 mb-1">{t("watch.vsScotland")} <span className="text-[10px] text-gray-400 ml-0.5">JST</span></p>
+            <p className="text-gray-500 text-xs mb-1">{t("watch.scotlandVenue")}</p>
             <p className="text-gray-600 flex items-center gap-1">
               <Icon name="live_tv" size={16} className="text-gray-400" />
-              NHK総合（生中継）、NHK ONE・U-NEXT（配信）
+              {t("watch.scotlandBroadcast")}
             </p>
           </div>
           <div className="bg-white rounded-lg p-4 border border-blue-100">
-            <p className="font-bold text-gray-900 mb-1">vs イングランド（4/1 03:45 KO）</p>
-            <p className="text-gray-500 text-xs mb-1">ウェンブリー・スタジアム（ロンドン）</p>
+            <p className="font-bold text-gray-900 mb-1">{t("watch.vsEngland")} <span className="text-[10px] text-gray-400 ml-0.5">JST</span></p>
+            <p className="text-gray-500 text-xs mb-1">{t("watch.englandVenue")}</p>
             <p className="text-gray-600 flex items-center gap-1">
               <Icon name="live_tv" size={16} className="text-gray-400" />
-              NHK Eテレ（生中継）、NHK ONE・U-NEXT（配信）
+              {t("watch.englandBroadcast")}
             </p>
           </div>
         </div>
-        <p className="text-xs text-blue-600 mt-3">
-          出典: JFA公式発表（2026年3月12日）
-        </p>
+        <p className="text-xs text-blue-600 mt-3">{t("watch.preMatchSource")}</p>
       </section>
 
-      {/* 日本代表戦の放映 */}
+      {/* 日本代表W杯の視聴方法 */}
       <section className="bg-red-50 border border-red-200 rounded-2xl p-6 sm:p-8 mb-8">
         <h2 className="text-xl font-bold text-red-900 mb-4 flex items-center gap-2">
           <Icon name="flag" size={24} className="text-red-700" />
-          日本代表W杯の視聴方法
+          {t("watch.japanWcTitle")}
         </h2>
         <div className="space-y-3 text-sm">
           <div className="bg-white rounded-lg p-4 border border-red-100">
-            <p className="font-bold text-gray-900 mb-1">第1節 vs オランダ（6/14 05:00 KO）</p>
+            <p className="font-bold text-gray-900 mb-1">{t("watch.japanMatch1")} <span className="text-[10px] text-gray-400 ml-0.5">JST</span></p>
             <p className="text-gray-600 flex items-center gap-1">
               <Icon name="live_tv" size={16} className="text-gray-400" />
-              DAZN（無料配信）、NHK総合（地上波）
+              {t("watch.japanMatch1Broadcast")}
             </p>
           </div>
           <div className="bg-white rounded-lg p-4 border border-red-100">
-            <p className="font-bold text-gray-900 mb-1">第2節 vs チュニジア（6/21 13:00 KO）</p>
+            <p className="font-bold text-gray-900 mb-1">{t("watch.japanMatch2")} <span className="text-[10px] text-gray-400 ml-0.5">JST</span></p>
             <p className="text-gray-600 flex items-center gap-1">
               <Icon name="live_tv" size={16} className="text-gray-400" />
-              DAZN（無料配信）、日本テレビ / NHK BS
+              {t("watch.japanMatch2Broadcast")}
             </p>
           </div>
           <div className="bg-white rounded-lg p-4 border border-red-100">
-            <p className="font-bold text-gray-900 mb-1">第3節 vs UEFA PO B勝者（6/26 08:00 KO）</p>
+            <p className="font-bold text-gray-900 mb-1">{t("watch.japanMatch3")} <span className="text-[10px] text-gray-400 ml-0.5">JST</span></p>
             <p className="text-gray-600 flex items-center gap-1">
               <Icon name="live_tv" size={16} className="text-gray-400" />
-              DAZN（無料配信）、NHK総合（地上波）
+              {t("watch.japanMatch3Broadcast")}
             </p>
           </div>
         </div>
-        <p className="text-sm text-red-700 mt-4 font-medium">
-          日本代表のW杯3試合は全て無料で視聴できます（DAZN無料配信 or 地上波）
-        </p>
+        <p className="text-sm text-red-700 mt-4 font-medium">{t("watch.japanWcNote")}</p>
       </section>
 
       {/* FAQ */}
       <section>
         <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
           <Icon name="help" size={24} className="text-gray-600" />
-          よくある質問
+          {t("watch.faqTitle")}
         </h2>
         <div className="space-y-4">
           {faqData.map(({ question, answer }) => (
@@ -245,9 +213,9 @@ export default function WatchPage() {
 
       <SourceAttribution
         sources={[
-          { label: "DAZN公式 — 料金プラン", url: "https://www.dazn.com/ja-JP" },
-          { label: "NHK — FIFA ワールドカップ 放送予定", url: "https://www.nhk.or.jp/" },
-          { label: "日本テレビ — W杯放送予定", url: "https://www.ntv.co.jp/" },
+          { label: "DAZN — Plans", url: "https://www.dazn.com/ja-JP" },
+          { label: "NHK — FIFA World Cup", url: "https://www.nhk.or.jp/" },
+          { label: "NTV — World Cup", url: "https://www.ntv.co.jp/" },
         ]}
         updatedAt="2026年3月16日"
       />

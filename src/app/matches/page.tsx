@@ -6,6 +6,7 @@ import SourceAttribution from "@/components/SourceAttribution";
 import Icon from "@/components/Icon";
 import { BreadcrumbJsonLd } from "@/components/JsonLd";
 import { japanMatches, allGroupStageMatches, allKnockoutMatches } from "@/data/matches";
+import { getLocaleFromCookies, getDictionary, createTranslator } from "@/i18n/index";
 
 export const metadata: Metadata = {
   title: "全104試合 試合日程｜W杯2026 グループステージ・ノックアウトステージ",
@@ -13,20 +14,24 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://www.wc2026report.com/matches" },
 };
 
-export default function MatchesPage() {
+export default async function MatchesPage() {
+  const locale = await getLocaleFromCookies();
+  const dict = await getDictionary(locale);
+  const t = createTranslator(dict);
+
   return (
     <>
       <BreadcrumbJsonLd items={[
-        { name: "トップ", url: "https://www.wc2026report.com" },
-        { name: "試合日程", url: "https://www.wc2026report.com/matches" },
+        { name: t("nav.home"), url: "https://www.wc2026report.com" },
+        { name: t("nav.matches"), url: "https://www.wc2026report.com/matches" },
       ]} />
 
       <div className="max-w-6xl mx-auto px-4 py-8 sm:py-12">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-          W杯 2026 全104試合 試合日程
+          {t("matches.pageTitle")}
         </h1>
         <p className="text-gray-500 mb-8">
-          グループステージ72試合＋ノックアウトステージ32試合。キックオフ時間はすべて日本時間（JST）。
+          {t("matches.pageDescription")}
         </p>
 
         {/* メインスケジュールビュー */}
@@ -46,11 +51,11 @@ export default function MatchesPage() {
           <div className="flex items-start gap-2">
             <Icon name="info" size={18} className="text-blue-500 mt-0.5" />
             <div>
-              <p className="font-medium mb-1">ご注意</p>
+              <p className="font-medium mb-1">{t("matches.noticeTitle")}</p>
               <ul className="list-disc list-inside space-y-1 text-blue-700">
-                <li>キックオフ時間はすべて日本時間（JST）表記です</li>
-                <li>プレーオフ未決定のチームはプレースホルダー表示です</li>
-                <li>放映情報は変更される場合があります</li>
+                <li>{t("matches.noticeJST")}</li>
+                <li>{t("matches.noticePlaceholder")}</li>
+                <li>{t("matches.noticeBroadcast")}</li>
               </ul>
             </div>
           </div>
@@ -63,21 +68,21 @@ export default function MatchesPage() {
             className="inline-flex items-center gap-1 text-sm text-blue-600 font-medium hover:text-blue-800 bg-blue-50 px-3 py-2 rounded-lg"
           >
             <Icon name="shield" size={16} />
-            グループ一覧を見る →
+            {t("matches.linkGroups")}
           </Link>
           <Link
             href="/results"
             className="inline-flex items-center gap-1 text-sm text-blue-600 font-medium hover:text-blue-800 bg-blue-50 px-3 py-2 rounded-lg"
           >
             <Icon name="scoreboard" size={16} />
-            試合結果・順位表 →
+            {t("matches.linkResults")}
           </Link>
           <Link
             href="/toto"
             className="inline-flex items-center gap-1 text-sm text-purple-600 font-medium hover:text-purple-800 bg-purple-50 px-3 py-2 rounded-lg"
           >
             <Icon name="confirmation_number" size={16} />
-            toto対象試合 →
+            {t("matches.linkToto")}
           </Link>
         </div>
 

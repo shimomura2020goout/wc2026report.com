@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import { Match, formatMatchDate, getMatchTypeColor } from "@/data/matches";
 import { getTeamByName } from "@/data/teams";
+import { useTranslation } from "@/i18n/client";
 import Icon from "./Icon";
 
 interface MatchListItemProps {
@@ -32,6 +35,7 @@ function TeamName({ name, isJapan, isPlaceholderTeam }: { name: string; isJapan:
 }
 
 export default function MatchListItem({ match, showGroup = true }: MatchListItemProps) {
+  const { t } = useTranslation();
   const isPlaceholder = match.isPlaceholder;
 
   return (
@@ -42,7 +46,12 @@ export default function MatchListItem({ match, showGroup = true }: MatchListItem
       <div className="flex-shrink-0 text-center w-20 sm:w-24">
         <div className="text-xs text-gray-500">{formatMatchDate(match.date).slice(5)}</div>
         <div className={`text-sm font-bold ${match.kickoff === "未定" ? "text-gray-400" : "text-gray-900"}`}>
-          {match.kickoff === "未定" ? "TBD" : match.kickoff}
+          {match.kickoff === "未定" ? t("common.tbd") : (
+            <>
+              {match.kickoff}
+              <span className="text-[10px] text-gray-400 ml-0.5">JST</span>
+            </>
+          )}
         </div>
       </div>
 
@@ -54,7 +63,7 @@ export default function MatchListItem({ match, showGroup = true }: MatchListItem
             isJapan={match.homeTeam === "日本"}
             isPlaceholderTeam={!!isPlaceholder && /PO|勝者|通過|敗者/.test(match.homeTeam)}
           />
-          <span className="text-gray-400 text-xs flex-shrink-0">vs</span>
+          <span className="text-gray-400 text-xs flex-shrink-0">{t("common.vsLower")}</span>
           <TeamName
             name={match.awayTeam}
             isJapan={match.awayTeam === "日本"}
@@ -79,7 +88,7 @@ export default function MatchListItem({ match, showGroup = true }: MatchListItem
           </span>
         )}
         {match.isTotoTarget && (
-          <span title="toto対象"><Icon name="confirmation_number" size={14} className="text-purple-400" /></span>
+          <span title={t("common.totoTarget")}><Icon name="confirmation_number" size={14} className="text-purple-400" /></span>
         )}
       </div>
     </div>

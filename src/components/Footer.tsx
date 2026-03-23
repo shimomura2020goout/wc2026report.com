@@ -17,7 +17,7 @@ export default function Footer() {
               {t("header.siteName")}
             </h3>
             <p className="text-sm leading-relaxed">
-              {t("footer.description")}
+              {t("footer.siteDescription")}
             </p>
           </div>
           <div>
@@ -35,7 +35,7 @@ export default function Footer() {
             </ul>
           </div>
           <div>
-            <h4 className="text-white font-semibold mb-4">{t("footer.others")}</h4>
+            <h4 className="text-white font-semibold mb-4">{t("footer.other")}</h4>
             <ul className="space-y-2 text-sm">
               <li><Link href="/about" className="hover:text-white transition-colors">{t("footer.aboutSite")}</Link></li>
               <li><Link href="/about" className="hover:text-white transition-colors">{t("footer.privacyPolicy")}</Link></li>
@@ -46,7 +46,7 @@ export default function Footer() {
           <p className="text-center">&copy; 2026 {t("header.siteName")}. All rights reserved.</p>
           <p className="text-center mt-1">{t("footer.disclaimer")}</p>
           <div className="mt-3 text-center text-xs text-gray-600">
-            <p>{t("footer.sources")}:
+            <p>{t("footer.sourceLabel")}
               <a href="https://www.fifa.com/fifaplus/en/tournaments/mens/worldcup/canadamexicousa2026" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-400 ml-1">FIFA.com</a> /
               <a href="https://www.jfa.jp/" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-400 ml-1">JFA</a> /
               <a href="https://www.toto-dream.com/" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-400 ml-1">toto</a>

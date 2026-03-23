@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import { Match, formatMatchDate, getMatchTypeColor } from "@/data/matches";
 import { getTeamByName } from "@/data/teams";
+import { useTranslation } from "@/i18n/client";
 import Icon from "./Icon";
 
 interface MatchCardProps {
@@ -28,6 +31,8 @@ function CardTeamName({ name, align }: { name: string; align: "left" | "right" }
 }
 
 export default function MatchCard({ match, showType = true }: MatchCardProps) {
+  const { t } = useTranslation();
+
   return (
     <div className={`match-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden ${match.isJapan ? "japan-accent" : ""}`}>
       <div className="p-4 sm:p-5">
@@ -36,7 +41,10 @@ export default function MatchCard({ match, showType = true }: MatchCardProps) {
           <span className="text-sm font-medium text-gray-600">
             {formatMatchDate(match.date)}
             {match.kickoff !== "未定" && (
-              <span className="ml-2 text-gray-900 font-bold">{match.kickoff} KO</span>
+              <span className="ml-2 text-gray-900 font-bold">
+                {match.kickoff} {t("common.ko")}
+                <span className="text-[10px] text-gray-400 ml-0.5">JST</span>
+              </span>
             )}
           </span>
           {showType && (
@@ -51,7 +59,7 @@ export default function MatchCard({ match, showType = true }: MatchCardProps) {
           <div className="flex-1 text-right">
             <CardTeamName name={match.homeTeam} align="right" />
           </div>
-          <div className="text-gray-400 font-bold text-lg">VS</div>
+          <div className="text-gray-400 font-bold text-lg">{t("common.vs")}</div>
           <div className="flex-1 text-left">
             <CardTeamName name={match.awayTeam} align="left" />
           </div>
@@ -68,13 +76,13 @@ export default function MatchCard({ match, showType = true }: MatchCardProps) {
           {match.isTotoTarget && (
             <span className="inline-flex items-center gap-1 text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full font-medium">
               <Icon name="confirmation_number" size={14} />
-              toto対象
+              {t("common.totoTarget")}
             </span>
           )}
           {match.group && (
             <span className="inline-flex items-center gap-1 text-xs bg-amber-100 text-amber-700 px-2 py-1 rounded-full font-medium">
               <Icon name="shield" size={14} />
-              グループ{match.group}
+              {t("common.groupName", { name: match.group })}
             </span>
           )}
         </div>

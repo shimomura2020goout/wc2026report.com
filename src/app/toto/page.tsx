@@ -1,33 +1,59 @@
-import type { Metadata } from "next";
 import MatchCard from "@/components/MatchCard";
 import Icon from "@/components/Icon";
 import SourceAttribution from "@/components/SourceAttribution";
 import { japanMatches, allWorldCupMatches } from "@/data/matches";
+import { getLocaleFromCookies, getDictionary, createTranslator } from "@/i18n/index";
 
-export const metadata: Metadata = {
-  title: "totoゾーン｜W杯2026 toto対象試合・購入ガイド・予想のコツ",
-  description: "FIFA ワールドカップ 2026 のtoto対象試合一覧と購入方法を完全ガイド。toto・mini toto・toto GOAL3・WINNERの違い、ネット購入方法、W杯toto予想のコツを解説。",
-  alternates: { canonical: "https://www.wc2026report.com/toto" },
-};
+export async function generateMetadata() {
+  const locale = await getLocaleFromCookies();
+  const dict = await getDictionary(locale);
+  const t = createTranslator(dict);
+  return {
+    title: t("toto.metaTitle"),
+    description: t("toto.metaDescription"),
+    alternates: { canonical: "https://www.wc2026report.com/toto" },
+  };
+}
 
-export default function TotoPage() {
+export default async function TotoPage() {
+  const locale = await getLocaleFromCookies();
+  const dict = await getDictionary(locale);
+  const t = createTranslator(dict);
   const totoMatches = japanMatches.filter((m) => m.isTotoTarget);
+
+  const totoTypes = [
+    { name: t("toto.totoName"), price: t("toto.totoPrice"), desc: t("toto.totoDesc"), maxPrize: t("toto.totoMaxPrize"), difficulty: t("toto.totoDifficulty"), icon: "trophy" },
+    { name: t("toto.miniTotoName"), price: t("toto.miniTotoPrice"), desc: t("toto.miniTotoDesc"), maxPrize: t("toto.miniTotoMaxPrize"), difficulty: t("toto.miniTotoDifficulty"), icon: "star" },
+    { name: t("toto.goal3Name"), price: t("toto.goal3Price"), desc: t("toto.goal3Desc"), maxPrize: t("toto.goal3MaxPrize"), difficulty: t("toto.goal3Difficulty"), icon: "sports_score" },
+    { name: t("toto.winnerName"), price: t("toto.winnerPrice"), desc: t("toto.winnerDesc"), maxPrize: t("toto.winnerMaxPrize"), difficulty: t("toto.winnerDifficulty"), icon: "bolt" },
+  ];
+
+  const buyMethods = [
+    { step: "1", title: t("toto.buyOnlineTitle"), desc: t("toto.buyOnlineDesc"), icon: "smartphone", highlight: true },
+    { step: "2", title: t("toto.buyConvenienceTitle"), desc: t("toto.buyConvenienceDesc"), icon: "store", highlight: false },
+    { step: "3", title: t("toto.buyBankTitle"), desc: t("toto.buyBankDesc"), icon: "account_balance", highlight: false },
+  ];
+
+  const tips = [
+    { bold: t("toto.tip1Bold"), text: t("toto.tip1") },
+    { bold: t("toto.tip2Bold"), text: t("toto.tip2") },
+    { bold: t("toto.tip3Bold"), text: t("toto.tip3") },
+    { bold: t("toto.tip4Bold"), text: t("toto.tip4") },
+  ];
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
       <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 flex items-center gap-2">
         <Icon name="confirmation_number" size={32} className="text-purple-700" />
-        totoゾーン
+        {t("toto.pageTitle")}
       </h1>
-      <p className="text-gray-500 mb-8">
-        W杯の試合でtotoを楽しもう！対象試合の確認から購入方法まで。
-      </p>
+      <p className="text-gray-500 mb-8">{t("toto.pageDescription")}</p>
 
       {/* toto対象試合 */}
       <section className="mb-12">
         <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-          <span className="bg-purple-600 text-white text-xs px-3 py-1 rounded-full">toto対象</span>
-          W杯 toto対象試合（日本戦）
+          <span className="bg-purple-600 text-white text-xs px-3 py-1 rounded-full">{t("common.totoTarget")}</span>
+          {t("toto.targetMatchesTitle")}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           {totoMatches.map((match) => (
@@ -38,58 +64,24 @@ export default function TotoPage() {
           <div className="flex items-start gap-2">
             <Icon name="info" size={18} className="text-purple-500 mt-0.5" />
             <div>
-              <p className="font-medium">W杯の全{allWorldCupMatches.length}試合がtoto対象となる可能性があります</p>
-              <p className="text-purple-600 mt-1">toto公式サイトの発表後に、対象試合を随時更新します。全試合の日程は<a href="/matches" className="underline font-medium">試合日程ページ</a>でご確認いただけます。</p>
+              <p className="font-medium">{t("toto.targetMatchesNote", { count: allWorldCupMatches.length })}</p>
+              <p className="text-purple-600 mt-1">{t("toto.targetMatchesUpdateNote")}</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* toto購入ガイド */}
+      {/* 購入ガイド */}
       <section className="mb-12">
         <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
           <Icon name="menu_book" size={24} className="text-gray-600" />
-          totoの買い方ガイド
+          {t("toto.buyGuideTitle")}
         </h2>
 
-        {/* totoの種類 */}
         <div className="space-y-4 mb-8">
-          <h3 className="font-bold text-gray-800">totoの種類</h3>
+          <h3 className="font-bold text-gray-800">{t("toto.typesTitle")}</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {[
-              {
-                name: "toto",
-                price: "1口 100円",
-                desc: "指定された13試合の結果（勝ち・負け・引き分け）を予想",
-                maxPrize: "最高5億円（キャリーオーバー時）",
-                difficulty: "上級",
-                icon: "trophy",
-              },
-              {
-                name: "mini toto",
-                price: "1口 100円",
-                desc: "指定された5試合の結果を予想",
-                maxPrize: "約1万円〜数十万円",
-                difficulty: "初級",
-                icon: "star",
-              },
-              {
-                name: "toto GOAL3",
-                price: "1口 100円",
-                desc: "3試合の各チームの得点数（0/1/2/3以上）を予想",
-                maxPrize: "約10万円〜100万円",
-                difficulty: "中級",
-                icon: "sports_score",
-              },
-              {
-                name: "WINNER",
-                price: "1口 100円〜",
-                desc: "1試合の結果を予想するシンプルなくじ",
-                maxPrize: "試合により異なる",
-                difficulty: "初級",
-                icon: "bolt",
-              },
-            ].map((type) => (
+            {totoTypes.map((type) => (
               <div key={type.name} className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-bold text-gray-900 flex items-center gap-2">
@@ -109,37 +101,11 @@ export default function TotoPage() {
           </div>
         </div>
 
-        {/* 購入方法 */}
         <div className="mb-8">
-          <h3 className="font-bold text-gray-800 mb-4">購入方法</h3>
+          <h3 className="font-bold text-gray-800 mb-4">{t("toto.howToBuyTitle")}</h3>
           <div className="space-y-3">
-            {[
-              {
-                step: "1",
-                title: "ネットで購入（おすすめ）",
-                desc: "楽天toto、ドコモスポーツくじなどのサイトから、スマホやPCで簡単に購入できます。24時間いつでも購入可能。",
-                icon: "smartphone",
-                highlight: true,
-              },
-              {
-                step: "2",
-                title: "コンビニで購入",
-                desc: "ローソン・ミニストップのLoppi端末から購入可能。",
-                icon: "store",
-                highlight: false,
-              },
-              {
-                step: "3",
-                title: "toto取扱銀行で購入",
-                desc: "一部の銀行ATMやインターネットバンキングから購入できます。",
-                icon: "account_balance",
-                highlight: false,
-              },
-            ].map(({ step, title, desc, icon, highlight }) => (
-              <div
-                key={step}
-                className={`rounded-xl p-5 ${highlight ? "bg-purple-50 border-2 border-purple-200" : "bg-white border border-gray-100 shadow-sm"}`}
-              >
+            {buyMethods.map(({ step, title, desc, icon, highlight }) => (
+              <div key={step} className={`rounded-xl p-5 ${highlight ? "bg-purple-50 border-2 border-purple-200" : "bg-white border border-gray-100 shadow-sm"}`}>
                 <div className="flex items-start gap-3">
                   <span className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${highlight ? "bg-purple-600 text-white" : "bg-gray-200 text-gray-600"}`}>
                     <Icon name={icon} size={20} />
@@ -154,41 +120,32 @@ export default function TotoPage() {
           </div>
         </div>
 
-        {/* 購入リンク */}
         <div className="bg-gradient-to-br from-purple-700 to-purple-900 text-white rounded-2xl p-6 sm:p-8">
           <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
             <Icon name="shopping_cart" size={24} />
-            ネットでtotoを購入する
+            {t("toto.buyOnlineCta")}
           </h3>
           <div className="space-y-3">
-            <a
-              href="#"
-              className="block bg-white/10 hover:bg-white/20 rounded-xl p-4 transition-colors"
-              rel="nofollow noopener"
-            >
+            <a href="#" className="block bg-white/10 hover:bg-white/20 rounded-xl p-4 transition-colors" rel="nofollow noopener">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-bold">楽天toto</p>
-                  <p className="text-sm text-purple-200">楽天ポイントが貯まる・使える</p>
+                  <p className="font-bold">{t("toto.rakutenToto")}</p>
+                  <p className="text-sm text-purple-200">{t("toto.rakutenTotoNote")}</p>
                 </div>
                 <Icon name="arrow_forward" size={24} />
               </div>
             </a>
-            <a
-              href="#"
-              className="block bg-white/10 hover:bg-white/20 rounded-xl p-4 transition-colors"
-              rel="nofollow noopener"
-            >
+            <a href="#" className="block bg-white/10 hover:bg-white/20 rounded-xl p-4 transition-colors" rel="nofollow noopener">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-bold">ドコモスポーツくじ</p>
-                  <p className="text-sm text-purple-200">dポイントが貯まる・使える</p>
+                  <p className="font-bold">{t("toto.docomoToto")}</p>
+                  <p className="text-sm text-purple-200">{t("toto.docomoTotoNote")}</p>
                 </div>
                 <Icon name="arrow_forward" size={24} />
               </div>
             </a>
           </div>
-          <p className="text-xs text-purple-300 mt-4">※ 上記リンクはアフィリエイトリンクです（ASP準備中）</p>
+          <p className="text-xs text-purple-300 mt-4">※ {t("watch.affiliateNote")}</p>
         </div>
       </section>
 
@@ -196,34 +153,24 @@ export default function TotoPage() {
       <section>
         <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
           <Icon name="lightbulb" size={24} className="text-amber-500" />
-          W杯totoのポイント
+          {t("toto.tipsTitle")}
         </h2>
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
           <ul className="space-y-3 text-sm text-amber-900">
-            <li className="flex items-start gap-2">
-              <Icon name="tips_and_updates" size={18} className="text-amber-600 mt-0.5" />
-              <span><strong>W杯はジャイアントキリングが多い</strong> — グループリーグでは番狂わせが頻発。「引き分け」も積極的に検討しましょう。</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <Icon name="tips_and_updates" size={18} className="text-amber-600 mt-0.5" />
-              <span><strong>初心者はmini totoやWINNERから</strong> — 5試合や1試合の予想から始めるのがおすすめ。</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <Icon name="tips_and_updates" size={18} className="text-amber-600 mt-0.5" />
-              <span><strong>締切時間に注意</strong> — totoは試合開始前に締め切られます。早めの購入を。</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <Icon name="tips_and_updates" size={18} className="text-amber-600 mt-0.5" />
-              <span><strong>当サイトで対象試合を確認</strong> — toto対象試合は発表され次第、本ページで随時更新します。</span>
-            </li>
+            {tips.map((tip, i) => (
+              <li key={i} className="flex items-start gap-2">
+                <Icon name="tips_and_updates" size={18} className="text-amber-600 mt-0.5" />
+                <span><strong>{tip.bold}</strong> — {tip.text}</span>
+              </li>
+            ))}
           </ul>
         </div>
       </section>
 
       <SourceAttribution
         sources={[
-          { label: "toto公式サイト — スポーツ振興くじ", url: "https://www.toto-dream.com/" },
-          { label: "楽天toto", url: "https://toto.rakuten.co.jp/" },
+          { label: "toto — Sports Promotion Lottery", url: "https://www.toto-dream.com/" },
+          { label: "Rakuten toto", url: "https://toto.rakuten.co.jp/" },
         ]}
         updatedAt="2026年3月9日"
       />
