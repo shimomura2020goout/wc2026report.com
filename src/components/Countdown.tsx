@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslation } from "@/i18n/client";
 
 const WORLD_CUP_START = new Date("2026-06-11T00:00:00-05:00"); // 開幕戦（北米東部時間）
 
 export default function Countdown() {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const { t } = useTranslation();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -32,10 +34,10 @@ export default function Countdown() {
   return (
     <div className="flex items-center justify-center gap-3 sm:gap-6">
       {[
-        { value: timeLeft.days, label: "日" },
-        { value: timeLeft.hours, label: "時間" },
-        { value: timeLeft.minutes, label: "分" },
-        { value: timeLeft.seconds, label: "秒" },
+        { value: timeLeft.days, label: t("countdown.days") },
+        { value: timeLeft.hours, label: t("countdown.hours") },
+        { value: timeLeft.minutes, label: t("countdown.minutes") },
+        { value: timeLeft.seconds, label: t("countdown.seconds") },
       ].map((item) => (
         <div key={item.label} className="text-center">
           <div className="bg-white/10 backdrop-blur-sm rounded-xl px-3 py-2 sm:px-5 sm:py-3 min-w-[60px] sm:min-w-[80px]">

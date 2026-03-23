@@ -1,7 +1,12 @@
+"use client";
+
 import Link from "next/link";
 import Icon from "./Icon";
+import { useTranslation } from "@/i18n/client";
 
 export default function Footer() {
+  const { t } = useTranslation();
+
   return (
     <footer className="bg-[#1a1a2e] text-gray-300 mt-auto">
       <div className="max-w-7xl mx-auto px-4 py-12">
@@ -9,42 +14,42 @@ export default function Footer() {
           <div>
             <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
               <Icon name="sports_soccer" size={20} />
-              W杯2026 × toto
+              {t("header.siteName")}
             </h3>
             <p className="text-sm leading-relaxed">
-              FIFA ワールドカップ 2026 の試合情報とtoto予想を提供する総合情報サイトです。
+              {t("footer.description")}
             </p>
           </div>
           <div>
-            <h4 className="text-white font-semibold mb-4">試合情報</h4>
+            <h4 className="text-white font-semibold mb-4">{t("footer.matchInfo")}</h4>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/matches" className="hover:text-white transition-colors">試合日程</Link></li>
-              <li><Link href="/groups" className="hover:text-white transition-colors">グループステージ</Link></li>
+              <li><Link href="/matches" className="hover:text-white transition-colors">{t("footer.matchSchedule")}</Link></li>
+              <li><Link href="/groups" className="hover:text-white transition-colors">{t("footer.groupStage")}</Link></li>
             </ul>
           </div>
           <div>
-            <h4 className="text-white font-semibold mb-4">toto・視聴</h4>
+            <h4 className="text-white font-semibold mb-4">{t("footer.totoWatch")}</h4>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/toto" className="hover:text-white transition-colors">totoゾーン</Link></li>
-              <li><Link href="/watch" className="hover:text-white transition-colors">視聴ガイド</Link></li>
+              <li><Link href="/toto" className="hover:text-white transition-colors">{t("footer.totoZone")}</Link></li>
+              <li><Link href="/watch" className="hover:text-white transition-colors">{t("footer.watchGuide")}</Link></li>
             </ul>
           </div>
           <div>
-            <h4 className="text-white font-semibold mb-4">その他</h4>
+            <h4 className="text-white font-semibold mb-4">{t("footer.others")}</h4>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/about" className="hover:text-white transition-colors">サイトについて</Link></li>
-              <li><Link href="/about" className="hover:text-white transition-colors">プライバシーポリシー</Link></li>
+              <li><Link href="/about" className="hover:text-white transition-colors">{t("footer.aboutSite")}</Link></li>
+              <li><Link href="/about" className="hover:text-white transition-colors">{t("footer.privacyPolicy")}</Link></li>
             </ul>
           </div>
         </div>
         <div className="border-t border-white/10 mt-8 pt-8 text-sm text-gray-500">
-          <p className="text-center">&copy; 2026 W杯2026 × toto. All rights reserved.</p>
-          <p className="text-center mt-1">当サイトはFIFA、JFA、toto公式サイトとは関係のない非公式情報サイトです。</p>
+          <p className="text-center">&copy; 2026 {t("header.siteName")}. All rights reserved.</p>
+          <p className="text-center mt-1">{t("footer.disclaimer")}</p>
           <div className="mt-3 text-center text-xs text-gray-600">
-            <p>試合情報出典:
+            <p>{t("footer.sources")}:
               <a href="https://www.fifa.com/fifaplus/en/tournaments/mens/worldcup/canadamexicousa2026" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-400 ml-1">FIFA.com</a> /
-              <a href="https://www.jfa.jp/" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-400 ml-1">JFA公式</a> /
-              <a href="https://www.toto-dream.com/" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-400 ml-1">toto公式</a>
+              <a href="https://www.jfa.jp/" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-400 ml-1">JFA</a> /
+              <a href="https://www.toto-dream.com/" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-400 ml-1">toto</a>
             </p>
           </div>
         </div>

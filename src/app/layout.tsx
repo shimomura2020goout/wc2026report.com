@@ -3,7 +3,9 @@ import { Geist } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import LocaleProvider from "@/components/LocaleProvider";
 import { WebsiteJsonLd } from "@/components/JsonLd";
+import { getLocaleFromCookies, getDictionary } from "@/i18n/index";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -58,13 +60,16 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocaleFromCookies();
+  const dictionary = await getDictionary(locale);
+
   return (
-    <html lang="ja">
+    <html lang={locale}>
       <head>
         {/* Google Tag Manager */}
         <script
@@ -88,9 +93,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           />
         </noscript>
         <WebsiteJsonLd />
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <LocaleProvider locale={locale} dictionary={dictionary}>
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </LocaleProvider>
       </body>
     </html>
   );
