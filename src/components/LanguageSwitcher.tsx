@@ -6,7 +6,7 @@ import type { Locale } from "@/i18n/index";
 const languages: { code: Locale; label: string; flag: string }[] = [
   { code: "ja", label: "日本語", flag: "🇯🇵" },
   { code: "ko", label: "한국어", flag: "🇰🇷" },
-  { code: "en", label: "EN", flag: "🇬🇧" },
+  { code: "en", label: "EN", flag: "🇺🇸" },
 ];
 
 export default function LanguageSwitcher() {

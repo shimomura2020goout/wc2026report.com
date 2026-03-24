@@ -204,6 +204,11 @@ function markdownToHtml(markdown: string): string {
   // 水平線
   html = html.replace(/^---$/gm, "<hr />");
 
+  // 画像（リンクより先に処理）
+  html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g,
+    '<figure class="my-4"><img src="$2" alt="$1" class="w-full rounded-lg shadow-md" loading="lazy" /><figcaption class="text-xs text-gray-400 text-center mt-1">$1</figcaption></figure>'
+  );
+
   // リンク
   html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
 
