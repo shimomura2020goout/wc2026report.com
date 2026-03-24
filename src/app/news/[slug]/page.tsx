@@ -130,10 +130,7 @@ export default async function NewsArticlePage({
           prose-li:text-gray-700
           prose-strong:text-gray-900
           prose-blockquote:border-l-4 prose-blockquote:border-purple-300 prose-blockquote:bg-purple-50 prose-blockquote:py-2 prose-blockquote:px-4 prose-blockquote:rounded-r-lg prose-blockquote:not-italic
-          prose-table:text-sm prose-table:w-full prose-table:border-collapse prose-table:border prose-table:border-gray-300
-          prose-thead:bg-gray-100
-          prose-th:border prose-th:border-gray-300 prose-th:px-3 prose-th:py-2 prose-th:text-left prose-th:font-semibold prose-th:text-gray-800 prose-th:text-xs
-          prose-td:border prose-td:border-gray-200 prose-td:px-3 prose-td:py-2 prose-td:text-xs prose-td:align-top
+          prose-table:text-sm
           prose-a:text-blue-600 prose-a:underline
           prose-hr:my-8
         "

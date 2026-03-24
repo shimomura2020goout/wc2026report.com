@@ -78,3 +78,32 @@ html {
 .animate-slide-up {
   animation: slide-up 0.25s ease-out;
 }
+
+/* ── ニュース記事内のテーブルスタイル ── */
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+.prose thead {
+  background-color: #f3f4f6;
+}
+.prose th {
+  border: 1px solid #d1d5db;
+  padding: 0.5rem 0.625rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: #1f2937;
+  white-space: nowrap;
+}
+.prose td {
+  border: 1px solid #e5e7eb;
+  padding: 0.5rem 0.625rem;
+  vertical-align: top;
+  font-size: 0.75rem;
+}
+.prose tbody tr:hover {
+  background-color: #f9fafb;
+}

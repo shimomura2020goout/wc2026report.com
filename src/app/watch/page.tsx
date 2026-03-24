@@ -132,6 +132,50 @@ export default async function WatchPage() {
         </div>
       </section>
 
+      {/* WOWOW - クラブサッカー */}
+      <section className="bg-gradient-to-br from-[#0b1e3d] to-[#162d56] text-white rounded-2xl p-6 sm:p-8 mb-8">
+        <div className="flex items-start gap-4 mb-4">
+          <div className="bg-white text-[#0b1e3d] font-bold text-lg px-3 py-1 rounded-lg">WOWOW</div>
+          <div>
+            <h2 className="text-lg sm:text-xl font-bold">W杯出場選手のクラブでの活躍も</h2>
+            <p className="text-gray-400 mt-1 text-sm">CL・ラ・リーガなど欧州サッカーを楽しむなら</p>
+          </div>
+        </div>
+
+        <div className="bg-white/10 rounded-xl p-4 mb-4">
+          <p className="text-sm text-gray-200 mb-3">
+            W杯で活躍するスター選手たちの普段のプレーもチェック！
+            WOWOWでは<strong>UEFAチャンピオンズリーグ</strong>、<strong>ラ・リーガ</strong>など世界最高峰のクラブサッカーをライブ配信しています。
+          </p>
+          <ul className="space-y-1.5 text-sm text-gray-300">
+            <li className="flex items-start gap-2">
+              <Icon name="check_circle" size={16} className="text-blue-400 mt-0.5" />
+              <span>UEFAチャンピオンズリーグ 全試合</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <Icon name="check_circle" size={16} className="text-blue-400 mt-0.5" />
+              <span>ラ・リーガ（スペインリーグ）</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <Icon name="check_circle" size={16} className="text-blue-400 mt-0.5" />
+              <span>月額2,530円（税込）で映画・ドラマも見放題</span>
+            </li>
+          </ul>
+        </div>
+
+        <a
+          href="https://h.accesstrade.net/sp/cc?rk=0100pjmj00opav"
+          target="_blank"
+          rel="nofollow noopener noreferrer"
+          className="inline-flex items-center justify-center gap-2 bg-white text-[#0b1e3d] font-bold px-8 py-3 rounded-full hover:bg-gray-200 transition-colors text-center"
+        >
+          <Icon name="open_in_new" size={18} />
+          WOWOWを見てみる
+        </a>
+        <img src="https://h.accesstrade.net/sp/rr?rk=0100pjmj00opav" width="1" height="1" alt="" className="hidden" />
+        <p className="text-xs text-gray-500 mt-3">※ 本リンクはアフィリエイト広告を含みます</p>
+      </section>
+
       {/* W杯前 親善試合 */}
       <section className="bg-blue-50 border border-blue-200 rounded-2xl p-6 sm:p-8 mb-8">
         <h2 className="text-xl font-bold text-blue-900 mb-4 flex items-center gap-2">
@@ -217,7 +261,7 @@ export default async function WatchPage() {
           { label: "NHK — FIFA World Cup", url: "https://www.nhk.or.jp/" },
           { label: "NTV — World Cup", url: "https://www.ntv.co.jp/" },
         ]}
-        updatedAt="2026年3月16日"
+        updatedAt="2026年3月25日"
       />
     </div>
     </>

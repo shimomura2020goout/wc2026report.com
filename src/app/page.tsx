@@ -239,6 +239,27 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      {/* WOWOW CTA */}
+      <section className="max-w-4xl mx-auto px-4 mb-12">
+        <a
+          href="https://h.accesstrade.net/sp/cc?rk=0100pjmj00opav"
+          target="_blank"
+          rel="nofollow noopener noreferrer"
+          className="block bg-gradient-to-r from-[#0b1e3d] to-[#1a3a5c] rounded-2xl p-5 sm:p-6 hover:shadow-lg transition-shadow"
+        >
+          <div className="flex items-center gap-4">
+            <div className="bg-white text-[#0b1e3d] font-bold text-sm px-2.5 py-1 rounded-lg shrink-0">WOWOW</div>
+            <div className="flex-1 min-w-0">
+              <p className="text-white font-bold text-sm sm:text-base">W杯出場選手のクラブでの活躍もチェック</p>
+              <p className="text-gray-400 text-xs mt-0.5">CL・ラ・リーガなど欧州サッカーをライブ配信</p>
+            </div>
+            <Icon name="arrow_forward" size={20} className="text-white/60 shrink-0" />
+          </div>
+        </a>
+        <img src="https://h.accesstrade.net/sp/rr?rk=0100pjmj00opav" width="1" height="1" alt="" className="hidden" />
+        <p className="text-[10px] text-gray-400 mt-1 text-right">※ アフィリエイト広告を含みます</p>
+      </section>
     </>
   );
 }
