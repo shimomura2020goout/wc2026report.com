@@ -92,7 +92,7 @@ export default async function MatchesPage() {
             { label: "JFA公式 — SAMURAI BLUE", url: "https://www.jfa.jp/samuraiblue/" },
             { label: "DAZN — 放映スケジュール", url: "https://www.dazn.com/ja-JP" },
           ]}
-          updatedAt="2026年3月19日"
+          updatedAt="2026年3月25日"
         />
       </div>
     </>

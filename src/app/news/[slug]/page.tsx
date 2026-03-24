@@ -160,61 +160,104 @@ export default async function NewsArticlePage({
   );
 }
 
-// シンプルなMarkdown→HTML変換
-function markdownToHtml(markdown: string): string {
-  let html = markdown;
-
-  // 表のパース
-  html = html.replace(/^\|(.+)\|$/gm, (match) => {
-    const cells = match.split("|").filter(Boolean).map((c) => c.trim());
-    return `<tr>${cells.map((c) => `<td>${c}</td>`).join("")}</tr>`;
-  });
-  html = html.replace(/(<tr>.*<\/tr>\n?)+/g, (match) => {
-    const rows = match.trim().split("\n");
-    if (rows.length >= 2) {
-      // 2行目がセパレータ(---)かチェック
-      const secondRow = rows[1];
-      if (secondRow && /^<tr>(<td>-+<\/td>)+<\/tr>$/.test(secondRow)) {
-        const header = rows[0].replace(/<td>/g, "<th>").replace(/<\/td>/g, "</th>");
-        const body = rows.slice(2).join("\n");
-        return `<div class="overflow-x-auto -mx-2 px-2"><table><thead>${header}</thead><tbody>${body}</tbody></table></div>`;
-      }
-    }
-    return `<div class="overflow-x-auto -mx-2 px-2"><table><tbody>${match}</tbody></table></div>`;
-  });
-
-  // 見出し
-  html = html.replace(/^### (.+)$/gm, "<h3>$1</h3>");
-  html = html.replace(/^## (.+)$/gm, "<h2>$1</h2>");
-  html = html.replace(/^# (.+)$/gm, "<h1>$1</h1>");
-
-  // 太字・イタリック
-  html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
-  html = html.replace(/\*(.+?)\*/g, "<em>$1</em>");
-
-  // リスト
-  html = html.replace(/^- (.+)$/gm, "<li>$1</li>");
-  html = html.replace(/(<li>.*<\/li>\n?)+/g, (match) => `<ul>${match}</ul>`);
-
-  // 引用
-  html = html.replace(/^> (.+)$/gm, "<blockquote><p>$1</p></blockquote>");
-
-  // 水平線
-  html = html.replace(/^---$/gm, "<hr />");
-
+// インラインMarkdown（太字・リンク・画像等）を変換
+function inlineMarkdown(text: string): string {
+  let s = text;
   // 画像（リンクより先に処理）
-  html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g,
+  s = s.replace(/!\[([^\]]*)\]\(([^)]+)\)/g,
     '<figure class="my-4"><img src="$2" alt="$1" class="w-full rounded-lg shadow-md" loading="lazy" /><figcaption class="text-xs text-gray-400 text-center mt-1">$1</figcaption></figure>'
   );
-
   // リンク
-  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+  s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+  // 太字 → イタリック
+  s = s.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+  s = s.replace(/\*(.+?)\*/g, "<em>$1</em>");
+  return s;
+}
 
-  // 段落
-  html = html.replace(/^(?!<[a-z])((?!^\s*$).+)$/gm, "<p>$1</p>");
+// ブロック単位でMarkdown→HTML変換
+function markdownToHtml(markdown: string): string {
+  const lines = markdown.split("\n");
+  const output: string[] = [];
+  let i = 0;
 
-  // 空行の除去
-  html = html.replace(/<p><\/p>/g, "");
+  while (i < lines.length) {
+    const line = lines[i];
 
-  return html;
+    // 空行 → スキップ
+    if (line.trim() === "") { i++; continue; }
+
+    // 水平線
+    if (/^---+$/.test(line.trim())) {
+      output.push("<hr />");
+      i++; continue;
+    }
+
+    // 見出し
+    const headingMatch = line.match(/^(#{1,3}) (.+)$/);
+    if (headingMatch) {
+      const level = headingMatch[1].length;
+      output.push(`<h${level}>${inlineMarkdown(headingMatch[2])}</h${level}>`);
+      i++; continue;
+    }
+
+    // テーブル（|で始まる行をまとめて処理）
+    if (line.trim().startsWith("|")) {
+      const tableLines: string[] = [];
+      while (i < lines.length && lines[i].trim().startsWith("|")) {
+        tableLines.push(lines[i].trim());
+        i++;
+      }
+      // パース
+      const rows = tableLines.map((tl) => {
+        const cells = tl.split("|").filter(Boolean).map((c) => c.trim());
+        return cells;
+      });
+      if (rows.length >= 2) {
+        // 2行目がセパレータかチェック
+        const isSep = rows[1].every((c) => /^-+$/.test(c));
+        if (isSep) {
+          const headerHtml = `<tr>${rows[0].map((c) => `<th>${inlineMarkdown(c)}</th>`).join("")}</tr>`;
+          const bodyHtml = rows.slice(2).map((r) =>
+            `<tr>${r.map((c) => `<td>${inlineMarkdown(c)}</td>`).join("")}</tr>`
+          ).join("\n");
+          output.push(`<div class="overflow-x-auto -mx-2 px-2 my-4"><table><thead>${headerHtml}</thead><tbody>${bodyHtml}</tbody></table></div>`);
+        } else {
+          const bodyHtml = rows.map((r) =>
+            `<tr>${r.map((c) => `<td>${inlineMarkdown(c)}</td>`).join("")}</tr>`
+          ).join("\n");
+          output.push(`<div class="overflow-x-auto -mx-2 px-2 my-4"><table><tbody>${bodyHtml}</tbody></table></div>`);
+        }
+      }
+      continue;
+    }
+
+    // リスト（-で始まる行をまとめて処理）
+    if (line.match(/^- /)) {
+      const items: string[] = [];
+      while (i < lines.length && lines[i].match(/^- /)) {
+        items.push(lines[i].replace(/^- /, ""));
+        i++;
+      }
+      output.push(`<ul>${items.map((item) => `<li>${inlineMarkdown(item)}</li>`).join("\n")}</ul>`);
+      continue;
+    }
+
+    // 引用（>で始まる行をまとめて処理）
+    if (line.startsWith("> ")) {
+      const quoteLines: string[] = [];
+      while (i < lines.length && lines[i].startsWith("> ")) {
+        quoteLines.push(lines[i].replace(/^> /, ""));
+        i++;
+      }
+      output.push(`<blockquote>${quoteLines.map((q) => `<p>${inlineMarkdown(q)}</p>`).join("\n")}</blockquote>`);
+      continue;
+    }
+
+    // 通常テキスト → 段落
+    output.push(`<p>${inlineMarkdown(line)}</p>`);
+    i++;
+  }
+
+  return output.join("\n");
 }

@@ -79,12 +79,55 @@ html {
   animation: slide-up 0.25s ease-out;
 }
 
-/* ── ニュース記事内のテーブルスタイル ── */
+/* ── ニュース記事内のスタイル ── */
+
+/* 段落の余白 */
+.prose p {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+/* 見出し前後の余白 */
+.prose h2 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+.prose h3 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+/* リストの余白 */
+.prose ul {
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  padding-left: 1.25rem;
+}
+.prose li {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+/* 引用の余白 */
+.prose blockquote {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* 水平線 */
+.prose hr {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* テーブル */
 .prose table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.8rem;
   line-height: 1.4;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
 }
 .prose thead {
   background-color: #f3f4f6;

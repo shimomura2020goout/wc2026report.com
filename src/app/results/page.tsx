@@ -271,7 +271,7 @@ export default async function ResultsPage() {
             { label: "FIFA公式 — FIFA World Cup 26", url: "https://www.fifa.com/fifaplus/en/tournaments/mens/worldcup/canadamexicousa2026" },
             { label: "FIFA公式 — 大会レギュレーション", url: "https://www.fifa.com/fifaplus/en/tournaments/mens/worldcup/canadamexicousa2026/articles/fifa-world-cup-26-all-you-need-to-know" },
           ]}
-          updatedAt="2026年3月10日"
+          updatedAt="2026年3月25日"
         />
       </div>
     </>
