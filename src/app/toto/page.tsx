@@ -144,9 +144,9 @@ export default async function TotoPage() {
               </div>
             </a>
             <a
-              href="https://toto.rakuten.co.jp/"
+              href="https://hb.afl.rakuten.co.jp/hsc/27bd08bb.b74c49ca.27b9c67d.af1b1692/?link_type=text&ut=eyJwYWdlIjoic2hvcCIsInR5cGUiOiJ0ZXh0IiwiY29sIjoxLCJjYXQiOjEsImJhbiI6Im5hbWUiLCJhbXAiOmZhbHNlfQ%3D%3D"
               target="_blank"
-              rel="nofollow noopener noreferrer"
+              rel="nofollow sponsored noopener noreferrer"
               className="block bg-white/10 hover:bg-white/20 rounded-xl p-4 transition-colors"
             >
               <div className="flex items-center justify-between">
