@@ -229,13 +229,25 @@ export default async function Home() {
               <li className="flex items-center gap-2"><Icon name="check_circle" size={18} className="text-green-300" /> {t("home.totoFeature3")}</li>
               <li className="flex items-center gap-2"><Icon name="check_circle" size={18} className="text-green-300" /> {t("home.totoFeature4")}</li>
             </ul>
-            <Link
-              href="/toto"
-              className="inline-flex items-center gap-2 bg-white text-purple-800 font-bold px-6 py-3 rounded-full hover:bg-gray-200 transition-colors"
-            >
-              {t("home.totoCta")}
-              <Icon name="arrow_forward" size={18} />
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Link
+                href="/toto"
+                className="inline-flex items-center gap-2 bg-white text-purple-800 font-bold px-6 py-3 rounded-full hover:bg-gray-200 transition-colors"
+              >
+                {t("home.totoCta")}
+                <Icon name="arrow_forward" size={18} />
+              </Link>
+              <a
+                href="https://tr.affiliate-sp.docomo.ne.jp/cl/d0000000359/4739/3"
+                target="_blank"
+                rel="nofollow noopener noreferrer"
+                className="inline-flex items-center gap-2 border-2 border-white text-white font-bold px-6 py-3 rounded-full hover:bg-white/10 transition-colors text-sm"
+              >
+                ドコモスポーツくじで購入
+                <Icon name="open_in_new" size={16} />
+              </a>
+            </div>
+            <p className="text-[10px] text-purple-400 mt-3">※ アフィリエイト広告を含みます</p>
           </div>
         </div>
       </section>

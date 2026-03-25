@@ -126,20 +126,33 @@ export default async function TotoPage() {
             {t("toto.buyOnlineCta")}
           </h3>
           <div className="space-y-3">
-            <a href="#" className="block bg-white/10 hover:bg-white/20 rounded-xl p-4 transition-colors" rel="nofollow noopener">
+            <a
+              href="https://tr.affiliate-sp.docomo.ne.jp/cl/d0000000359/4739/3"
+              target="_blank"
+              rel="nofollow noopener noreferrer"
+              className="block bg-white/20 hover:bg-white/30 rounded-xl p-4 transition-colors ring-2 ring-white/30"
+            >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-bold">{t("toto.rakutenToto")}</p>
-                  <p className="text-sm text-purple-200">{t("toto.rakutenTotoNote")}</p>
+                  <p className="font-bold flex items-center gap-2">
+                    <span className="bg-white text-purple-800 text-xs px-2 py-0.5 rounded font-bold">おすすめ</span>
+                    {t("toto.docomoToto")}
+                  </p>
+                  <p className="text-sm text-purple-200">{t("toto.docomoTotoNote")}</p>
                 </div>
                 <Icon name="arrow_forward" size={24} />
               </div>
             </a>
-            <a href="#" className="block bg-white/10 hover:bg-white/20 rounded-xl p-4 transition-colors" rel="nofollow noopener">
+            <a
+              href="https://toto.rakuten.co.jp/"
+              target="_blank"
+              rel="nofollow noopener noreferrer"
+              className="block bg-white/10 hover:bg-white/20 rounded-xl p-4 transition-colors"
+            >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-bold">{t("toto.docomoToto")}</p>
-                  <p className="text-sm text-purple-200">{t("toto.docomoTotoNote")}</p>
+                  <p className="font-bold">{t("toto.rakutenToto")}</p>
+                  <p className="text-sm text-purple-200">{t("toto.rakutenTotoNote")}</p>
                 </div>
                 <Icon name="arrow_forward" size={24} />
               </div>
@@ -172,7 +185,7 @@ export default async function TotoPage() {
           { label: "toto — Sports Promotion Lottery", url: "https://www.toto-dream.com/" },
           { label: "Rakuten toto", url: "https://toto.rakuten.co.jp/" },
         ]}
-        updatedAt="2026年3月25日"
+        updatedAt="2026年3月26日"
       />
     </div>
   );
