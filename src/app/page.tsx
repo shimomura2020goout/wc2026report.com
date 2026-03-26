@@ -3,6 +3,7 @@ import Countdown from "@/components/Countdown";
 import MatchCard from "@/components/MatchCard";
 import SourceAttribution from "@/components/SourceAttribution";
 import Icon from "@/components/Icon";
+import StickyPromoBanner from "@/components/StickyPromoBanner";
 import { japanMatches, worldCupGroups } from "@/data/matches";
 import { getTeamByName } from "@/data/teams";
 import { getLocaleFromCookies, getDictionary, createTranslator } from "@/i18n/index";
@@ -286,6 +287,9 @@ export default async function Home() {
         <img src="https://h.accesstrade.net/sp/rr?rk=0100pjmj00opav" width="1" height="1" alt="" className="hidden" />
         <p className="text-[10px] text-gray-400 mt-1 text-right">※ アフィリエイト広告を含みます</p>
       </section>
+
+      {/* 追従プロモバナー */}
+      <StickyPromoBanner />
     </>
   );
 }
