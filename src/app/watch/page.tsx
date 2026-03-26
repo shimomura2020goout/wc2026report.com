@@ -89,15 +89,57 @@ export default async function WatchPage() {
         </ul>
 
         <div className="flex flex-col sm:flex-row gap-3">
-          <a href="#" className="inline-flex items-center justify-center gap-2 bg-white text-black font-bold px-8 py-3 rounded-full hover:bg-gray-200 transition-colors text-center" rel="nofollow noopener">
+          <a
+            href="https://h.accesstrade.net/sp/cc?rk=0100ph9q00opav"
+            target="_blank"
+            rel="nofollow sponsored noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 bg-white text-black font-bold px-8 py-3 rounded-full hover:bg-gray-200 transition-colors text-center"
+          >
             <Icon name="open_in_new" size={18} />
-            {t("watch.daznRegister")}
+            DAZN for BUSINESS 詳細を見る
           </a>
-          <a href="#" className="inline-flex items-center justify-center gap-2 bg-green-600 text-white font-bold px-8 py-3 rounded-full hover:bg-green-700 transition-colors text-center" rel="nofollow noopener">
-            <Icon name="open_in_new" size={18} />
-            {t("watch.daznDmmRegister")}
-          </a>
+          <img src="https://h.accesstrade.net/sp/rr?rk=0100ph9q00opav" width="1" height="1" alt="" className="hidden" />
         </div>
+
+        {/* DAZN for BUSINESS 説明 */}
+        <div className="bg-white/5 border border-white/10 rounded-xl p-4 mt-4">
+          <p className="text-xs text-gray-400 mb-2 font-bold flex items-center gap-1">
+            <Icon name="business" size={14} />
+            DAZN for BUSINESS とは？
+          </p>
+          <p className="text-xs text-gray-400 leading-relaxed">
+            飲食店・スポーツバー・ジム・待合室などの商業施設でDAZNのスポーツコンテンツを放映できる法人向けプランです。
+            W杯の全試合をお店で上映して盛り上がりたいオーナー様におすすめです。
+          </p>
+        </div>
+
+        {/* 個人向けDAZN（DMM × DAZNホーダイ） */}
+        <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4 mt-4">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-xs bg-green-500 text-white px-2 py-0.5 rounded-full font-bold">個人おすすめ</span>
+            <p className="font-bold text-sm">DMM × DAZNホーダイ</p>
+          </div>
+          <p className="text-sm text-gray-300 mb-2">
+            月額 <strong className="text-white text-lg">3,480円</strong><span className="text-xs text-gray-400">（税込）</span>
+            でDAZNスタンダード（通常4,200円）＋DMMプレミアム（通常550円）が両方使える超お得プラン！
+          </p>
+          <ul className="text-xs text-gray-400 space-y-1 mb-3">
+            <li className="flex items-start gap-1.5">
+              <Icon name="check_circle" size={14} className="text-green-400 mt-0.5" />
+              W杯全試合＋Jリーグ・プレミア・ラ・リーガなどスポーツ見放題
+            </li>
+            <li className="flex items-start gap-1.5">
+              <Icon name="check_circle" size={14} className="text-green-400 mt-0.5" />
+              DMM TVでアニメ・バラエティ・映画も見放題
+            </li>
+            <li className="flex items-start gap-1.5">
+              <Icon name="check_circle" size={14} className="text-green-400 mt-0.5" />
+              通常合計4,750円 → 1,270円もお得
+            </li>
+          </ul>
+          <p className="text-[10px] text-gray-500">※ 個人向けDAZNのアフィリエイトリンクは準備中です。リンクが確定次第、更新いたします。</p>
+        </div>
+
         <p className="text-xs text-gray-600 mt-3">※ {t("watch.affiliateNote")}</p>
       </section>
 

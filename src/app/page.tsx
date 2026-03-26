@@ -205,13 +205,27 @@ export default async function Home() {
               <li className="flex items-center gap-2"><Icon name="check_circle" size={18} className="text-green-400" /> {t("home.daznFeature3")}</li>
               <li className="flex items-center gap-2"><Icon name="check_circle" size={18} className="text-green-400" /> {t("home.daznFeature4")}</li>
             </ul>
-            <Link
-              href="/watch"
-              className="inline-flex items-center gap-2 bg-white text-black font-bold px-6 py-3 rounded-full hover:bg-gray-200 transition-colors"
-            >
-              {t("home.daznCta")}
-              <Icon name="arrow_forward" size={18} />
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Link
+                href="/watch"
+                className="inline-flex items-center gap-2 bg-white text-black font-bold px-6 py-3 rounded-full hover:bg-gray-200 transition-colors"
+              >
+                {t("home.daznCta")}
+                <Icon name="arrow_forward" size={18} />
+              </Link>
+              <a
+                href="https://h.accesstrade.net/sp/cc?rk=0100ph9q00opav"
+                target="_blank"
+                rel="nofollow sponsored noopener noreferrer"
+                className="inline-flex items-center gap-2 border border-white/30 text-white font-medium px-5 py-2.5 rounded-full hover:bg-white/10 transition-colors text-sm"
+              >
+                <Icon name="business" size={16} />
+                法人向け DAZN for BUSINESS
+                <Icon name="open_in_new" size={14} />
+              </a>
+              <img src="https://h.accesstrade.net/sp/rr?rk=0100ph9q00opav" width="1" height="1" alt="" className="hidden" />
+            </div>
+            <p className="text-[10px] text-gray-500 mt-3">※ アフィリエイト広告を含みます</p>
           </div>
 
           {/* toto CTA */}
