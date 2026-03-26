@@ -103,14 +103,42 @@ export default async function WatchPage() {
 
         {/* DAZN for BUSINESS 説明 */}
         <div className="bg-white/5 border border-white/10 rounded-xl p-4 mt-4">
-          <p className="text-xs text-gray-400 mb-2 font-bold flex items-center gap-1">
-            <Icon name="business" size={14} />
-            DAZN for BUSINESS とは？
+          <div className="flex items-center gap-2 mb-3">
+            <Icon name="business" size={16} className="text-yellow-400" />
+            <p className="text-sm text-white font-bold">DAZN for BUSINESS とは？</p>
+          </div>
+          <p className="text-xs text-gray-300 leading-relaxed mb-3">
+            飲食店・スポーツバー・ジム・ホテル・待合室などの<strong className="text-white">商業施設</strong>でDAZNのスポーツコンテンツを放映できる法人向けプランです。
+            W杯2026の全試合をお店で上映して盛り上がりたいオーナー様におすすめです。
           </p>
-          <p className="text-xs text-gray-400 leading-relaxed">
-            飲食店・スポーツバー・ジム・待合室などの商業施設でDAZNのスポーツコンテンツを放映できる法人向けプランです。
-            W杯の全試合をお店で上映して盛り上がりたいオーナー様におすすめです。
-          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
+            <div className="bg-white/5 rounded-lg p-3">
+              <p className="text-[11px] text-gray-400 mb-1">小〜中規模店舗（20名以下）</p>
+              <p className="text-sm font-bold text-white">年額 172,500円〜<span className="text-[10px] font-normal text-gray-400">（税込）</span></p>
+              <p className="text-[10px] text-gray-500">月あたり約14,375円</p>
+            </div>
+            <div className="bg-white/5 rounded-lg p-3">
+              <p className="text-[11px] text-gray-400 mb-1">中〜大規模店舗（21名以上）</p>
+              <p className="text-sm font-bold text-white">年額 345,000円〜<span className="text-[10px] font-normal text-gray-400">（税込）</span></p>
+              <p className="text-[10px] text-gray-500">月あたり約28,750円</p>
+            </div>
+          </div>
+
+          <ul className="text-[11px] text-gray-400 space-y-1">
+            <li className="flex items-start gap-1.5">
+              <Icon name="check_circle" size={13} className="text-yellow-400 mt-0.5" />
+              <span>初期費用・工事費ゼロ、最短即日導入</span>
+            </li>
+            <li className="flex items-start gap-1.5">
+              <Icon name="check_circle" size={13} className="text-yellow-400 mt-0.5" />
+              <span>Jリーグ・W杯・NFL・F1など年間10,000試合以上</span>
+            </li>
+            <li className="flex items-start gap-1.5">
+              <Icon name="check_circle" size={13} className="text-yellow-400 mt-0.5" />
+              <span>個人契約での店舗放映は規約違反です。法人利用にはfor BUSINESSが必要です</span>
+            </li>
+          </ul>
         </div>
 
         {/* 個人向けDAZN（DMM × DAZNホーダイ） */}
