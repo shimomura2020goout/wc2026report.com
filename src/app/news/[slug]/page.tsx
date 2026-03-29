@@ -77,12 +77,12 @@ export default async function NewsArticlePage({
     ]} />
     <article className="max-w-3xl mx-auto px-4 py-8 sm:py-12">
       {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-sm text-gray-400 mb-6">
-        <Link href="/" className="hover:text-gray-600">{t("news.breadcrumbTop")}</Link>
-        <Icon name="chevron_right" size={16} />
-        <Link href="/news" className="hover:text-gray-600">{t("news.breadcrumbNews")}</Link>
-        <Icon name="chevron_right" size={16} />
-        <span className="text-gray-600 truncate">{post.title}</span>
+      <nav className="flex items-center gap-1.5 text-sm text-gray-400 mb-6 flex-nowrap overflow-hidden">
+        <Link href="/" className="hover:text-gray-600 shrink-0 whitespace-nowrap">{t("news.breadcrumbTop")}</Link>
+        <Icon name="chevron_right" size={14} className="shrink-0" />
+        <Link href="/news" className="hover:text-gray-600 shrink-0 whitespace-nowrap">{t("news.breadcrumbNews")}</Link>
+        <Icon name="chevron_right" size={14} className="shrink-0" />
+        <span className="text-gray-600 truncate min-w-0">{post.title}</span>
       </nav>
 
       {/* Header */}
