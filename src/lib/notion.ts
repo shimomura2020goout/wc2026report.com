@@ -9,6 +9,50 @@ const notionClient = new Client({ auth: NOTION_API_KEY });
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const n2m = new NotionToMarkdown({ notionClient: notionClient as any });
 
+// テーブルブロックのカスタムトランスフォーマー
+// notion-to-md はテーブルを正しく変換しないことがあるため、手動で処理
+n2m.setCustomTransformer("table", async (block) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const tableBlock = block as any;
+  const hasColumnHeader = tableBlock?.table?.has_column_header ?? false;
+
+  try {
+    // テーブルの子ブロック（行）を取得
+    const res = await notionClient.blocks.children.list({ block_id: block.id });
+    const rows = res.results;
+
+    if (rows.length === 0) return "";
+
+    const mdRows: string[] = [];
+
+    for (let ri = 0; ri < rows.length; ri++) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const row = rows[ri] as any;
+      const cells = row?.table_row?.cells ?? [];
+      const cellTexts = cells.map((cell: { plain_text: string }[]) =>
+        cell.map((t) => t.plain_text).join("")
+      );
+      mdRows.push(`| ${cellTexts.join(" | ")} |`);
+
+      // ヘッダー行の後にセパレーターを追加
+      if (ri === 0 && hasColumnHeader) {
+        mdRows.push(`| ${cellTexts.map(() => "---").join(" | ")} |`);
+      }
+    }
+
+    // ヘッダーなしテーブルの場合も最初の行をヘッダーとして扱う
+    if (!hasColumnHeader && rows.length > 1) {
+      // セパレーターを1行目の後に挿入
+      const firstRowCells = mdRows[0].split("|").filter(Boolean);
+      mdRows.splice(1, 0, `| ${firstRowCells.map(() => "---").join(" | ")} |`);
+    }
+
+    return mdRows.join("\n");
+  } catch {
+    return "";
+  }
+});
+
 export interface BlogPost {
   id: string;
   title: string;

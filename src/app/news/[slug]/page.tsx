@@ -208,14 +208,15 @@ function markdownToHtml(markdown: string): string {
         tableLines.push(lines[i].trim());
         i++;
       }
-      // パース
+      // パース — 先頭・末尾の空セルを除去
       const rows = tableLines.map((tl) => {
-        const cells = tl.split("|").filter(Boolean).map((c) => c.trim());
-        return cells;
+        // "|col1|col2|" → ["col1","col2"]
+        const raw = tl.replace(/^\|/, "").replace(/\|$/, "");
+        return raw.split("|").map((c) => c.trim());
       });
       if (rows.length >= 2) {
-        // 2行目がセパレータかチェック
-        const isSep = rows[1].every((c) => /^-+$/.test(c));
+        // 2行目がセパレータかチェック（:---:, ---, :--- 等も許可）
+        const isSep = rows[1].every((c) => /^:?-+:?$/.test(c));
         if (isSep) {
           const headerHtml = `<tr>${rows[0].map((c) => `<th>${inlineMarkdown(c)}</th>`).join("")}</tr>`;
           const bodyHtml = rows.slice(2).map((r) =>
@@ -223,11 +224,17 @@ function markdownToHtml(markdown: string): string {
           ).join("\n");
           output.push(`<div class="overflow-x-auto -mx-2 px-2 my-4"><table><thead>${headerHtml}</thead><tbody>${bodyHtml}</tbody></table></div>`);
         } else {
-          const bodyHtml = rows.map((r) =>
+          // セパレータなし → 1行目をヘッダーとして扱う
+          const headerHtml = `<tr>${rows[0].map((c) => `<th>${inlineMarkdown(c)}</th>`).join("")}</tr>`;
+          const bodyHtml = rows.slice(1).map((r) =>
             `<tr>${r.map((c) => `<td>${inlineMarkdown(c)}</td>`).join("")}</tr>`
           ).join("\n");
-          output.push(`<div class="overflow-x-auto -mx-2 px-2 my-4"><table><tbody>${bodyHtml}</tbody></table></div>`);
+          output.push(`<div class="overflow-x-auto -mx-2 px-2 my-4"><table><thead>${headerHtml}</thead><tbody>${bodyHtml}</tbody></table></div>`);
         }
+      } else if (rows.length === 1) {
+        // 1行だけのテーブル
+        const bodyHtml = `<tr>${rows[0].map((c) => `<td>${inlineMarkdown(c)}</td>`).join("")}</tr>`;
+        output.push(`<div class="overflow-x-auto -mx-2 px-2 my-4"><table><tbody>${bodyHtml}</tbody></table></div>`);
       }
       continue;
     }
