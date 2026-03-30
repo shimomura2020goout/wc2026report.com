@@ -3,6 +3,8 @@ import { Geist } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import LatestNewsBanner from "@/components/LatestNewsBanner";
+import LatestNewsBannerWrapper from "@/components/LatestNewsBannerWrapper";
 import LocaleProvider from "@/components/LocaleProvider";
 import { WebsiteJsonLd } from "@/components/JsonLd";
 import { getLocaleFromCookies, getDictionary } from "@/i18n/index";
@@ -95,6 +97,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <WebsiteJsonLd />
         <LocaleProvider locale={locale} dictionary={dictionary}>
           <Header />
+          <LatestNewsBannerWrapper>
+            <LatestNewsBanner />
+          </LatestNewsBannerWrapper>
           <main className="flex-1">{children}</main>
           <Footer />
         </LocaleProvider>
