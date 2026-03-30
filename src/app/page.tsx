@@ -333,7 +333,7 @@ export default async function Home() {
               <p className="text-green-100 text-xs mt-0.5">試合速報・toto予想・代表ニュースをお届け</p>
             </div>
             <a
-              href="https://lin.ee/517lriub"
+              href="https://line.me/R/ti/p/@517lriub"
               target="_blank"
               rel="noopener noreferrer"
               className="bg-white text-[#06C755] font-bold text-sm px-5 py-2.5 rounded-full hover:bg-green-50 transition-colors shrink-0 flex items-center gap-1.5"

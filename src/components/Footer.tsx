@@ -42,7 +42,7 @@ export default function Footer() {
             </ul>
             <div className="mt-4">
               <a
-                href="https://lin.ee/517lriub"
+                href="https://line.me/R/ti/p/@517lriub"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 bg-[#06C755] hover:bg-[#05b34d] text-white text-sm font-bold px-4 py-2.5 rounded-lg transition-colors"
