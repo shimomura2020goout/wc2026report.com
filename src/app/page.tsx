@@ -78,18 +78,35 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* Finished matches — 試合結果 */}
+        {/* Finished matches — 2026年 日本代表 試合結果 */}
         {finishedMatches.length > 0 && (
           <div className="mb-8">
-            <h3 className="text-lg font-bold text-gray-700 mb-4 flex items-center gap-2">
-              <Icon name="check_circle" size={20} className="text-green-600" />
-              試合結果
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {finishedMatches.map((match) => (
-                <MatchCard key={match.id} match={match} />
-              ))}
+            {/* PC: 常に表示 */}
+            <div className="hidden sm:block">
+              <h3 className="text-lg font-bold text-gray-700 mb-4 flex items-center gap-2">
+                <Icon name="check_circle" size={20} className="text-green-600" />
+                2026年 日本代表 試合結果
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {finishedMatches.map((match) => (
+                  <MatchCard key={match.id} match={match} />
+                ))}
+              </div>
             </div>
+            {/* SP: アコーディオン */}
+            <details className="sm:hidden group">
+              <summary className="text-lg font-bold text-gray-700 mb-4 flex items-center gap-2 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <Icon name="check_circle" size={20} className="text-green-600" />
+                2026年 日本代表 試合結果
+                <span className="text-xs text-gray-400 ml-auto">({finishedMatches.length}試合)</span>
+                <Icon name="expand_more" size={20} className="text-gray-400 group-open:rotate-180 transition-transform" />
+              </summary>
+              <div className="grid grid-cols-1 gap-4">
+                {finishedMatches.map((match) => (
+                  <MatchCard key={match.id} match={match} />
+                ))}
+              </div>
+            </details>
           </div>
         )}
 

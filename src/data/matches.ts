@@ -22,6 +22,8 @@ export interface Match {
   status: MatchStatus;
   homeScore?: number | null;
   awayScore?: number | null;
+  resultNote?: string;       // 試合結果の一言コメント
+  resultLink?: string;       // 結果詳細のニュース記事リンク
   isPlaceholder?: boolean;
 }
 
@@ -317,6 +319,8 @@ export const japanNonWcMatches: Match[] = [
     status: "finished",
     homeScore: 0,
     awayScore: 1,
+    resultNote: "伊東純也が84分に決勝ゴール。W杯前の欧州遠征を白星でスタート",
+    resultLink: "/news/international-match-results-march-26-27-2026",
   },
   {
     id: "jp-1",
