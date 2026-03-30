@@ -54,12 +54,20 @@ export default function MatchCard({ match, showType = true }: MatchCardProps) {
           )}
         </div>
 
-        {/* Teams */}
+        {/* Teams & Score */}
         <div className="flex items-center justify-center gap-4 my-4">
           <div className="flex-1 text-right">
             <CardTeamName name={match.homeTeam} align="right" />
           </div>
-          <div className="text-gray-400 font-bold text-lg">{t("common.vs")}</div>
+          {match.status === "finished" && match.homeScore != null && match.awayScore != null ? (
+            <div className="flex items-center gap-1">
+              <span className="text-2xl font-black text-gray-900">{match.homeScore}</span>
+              <span className="text-gray-400 font-bold text-sm">-</span>
+              <span className="text-2xl font-black text-gray-900">{match.awayScore}</span>
+            </div>
+          ) : (
+            <div className="text-gray-400 font-bold text-lg">{t("common.vs")}</div>
+          )}
           <div className="flex-1 text-left">
             <CardTeamName name={match.awayTeam} align="left" />
           </div>

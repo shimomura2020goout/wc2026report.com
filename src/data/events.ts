@@ -42,18 +42,18 @@ export const calendarEvents: CalendarEvent[] = [
   // ── 3月：UEFAプレーオフ & 日本代表親善試合 ──
   {
     id: "evt-po-semi",
-    title: "UEFA プレーオフ 準決勝",
+    title: "UEFA プレーオフ 準決勝【終了】",
     startDate: "2026-03-26",
     category: "playoff",
-    description: "W杯出場をかけたUEFAプレーオフ準決勝（パスA～D）",
+    description: "イタリア2-0北アイルランド、スウェーデン3-1ウクライナ（ギュレシュ3得点）、トルコ1-0ルーマニア、デンマーク4-0北マケドニア、ボスニアPK勝ち、コソボ4-3スロバキア、チェコPK勝ち、ポーランド2-1アルバニア",
     isHighlight: true,
   },
   {
     id: "evt-jp-sco",
-    title: "🇯🇵 スコットランド vs 日本（親善）",
+    title: "🇯🇵 スコットランド 0-1 日本【勝利】",
     startDate: "2026-03-29",
     category: "japan",
-    description: "W杯前の欧州遠征第1戦。ハムデン・パーク（グラスゴー）",
+    description: "伊東純也が84分に決勝ゴール！ハムデン・パーク（グラスゴー）でW杯前に白星",
     isHighlight: true,
     link: "/matches",
   },
@@ -62,7 +62,7 @@ export const calendarEvents: CalendarEvent[] = [
     title: "UEFA プレーオフ 決勝",
     startDate: "2026-03-31",
     category: "playoff",
-    description: "W杯出場をかけたUEFAプレーオフ決勝（パスA～D）",
+    description: "イタリアvsボスニア、スウェーデンvsポーランド、トルコvsコソボ、デンマークvsチェコ",
     isHighlight: true,
   },
 

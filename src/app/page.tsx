@@ -14,6 +14,8 @@ export default async function Home() {
   const t = createTranslator(dict);
 
   const worldCupMatches = japanMatches.filter((m) => m.type === "worldcup_gl");
+  const finishedMatches = japanMatches.filter((m) => m.status === "finished");
+  const upcomingMatches = japanMatches.filter((m) => m.status !== "finished");
 
   return (
     <>
@@ -76,11 +78,29 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* All Japan matches */}
+        {/* Finished matches — 試合結果 */}
+        {finishedMatches.length > 0 && (
+          <div className="mb-8">
+            <h3 className="text-lg font-bold text-gray-700 mb-4 flex items-center gap-2">
+              <Icon name="check_circle" size={20} className="text-green-600" />
+              試合結果
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {finishedMatches.map((match) => (
+                <MatchCard key={match.id} match={match} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Upcoming matches — 今後の試合 */}
         <div>
-          <h3 className="text-lg font-bold text-gray-700 mb-4">{t("home.allSchedule")}</h3>
+          <h3 className="text-lg font-bold text-gray-700 mb-4 flex items-center gap-2">
+            <Icon name="schedule" size={20} className="text-blue-600" />
+            {t("home.allSchedule")}
+          </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {japanMatches.map((match) => (
+            {upcomingMatches.map((match) => (
               <MatchCard key={match.id} match={match} />
             ))}
           </div>
@@ -91,7 +111,7 @@ export default async function Home() {
             { label: "FIFA公式 — FIFA World Cup 26", url: "https://www.fifa.com/fifaplus/en/tournaments/mens/worldcup/canadamexicousa2026" },
             { label: "JFA公式 — 日本サッカー協会", url: "https://www.jfa.jp/samuraiblue/" },
           ]}
-          updatedAt="2026年3月25日"
+          updatedAt="2026年3月30日"
         />
 
         <div className="text-center mt-8">
@@ -173,7 +193,7 @@ export default async function Home() {
             sources={[
               { label: "FIFA公式 — 組み合わせ抽選結果", url: "https://www.fifa.com/fifaplus/en/tournaments/mens/worldcup/canadamexicousa2026" },
             ]}
-            updatedAt="2026年3月25日"
+            updatedAt="2026年3月30日"
           />
 
           <div className="text-center mt-8">

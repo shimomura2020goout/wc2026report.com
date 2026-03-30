@@ -314,7 +314,9 @@ export const japanNonWcMatches: Match[] = [
     broadcast: "NHK総合（生中継）、NHK ONE・U-NEXT（配信）",
     isTotoTarget: false,
     isJapan: true,
-    status: "scheduled",
+    status: "finished",
+    homeScore: 0,
+    awayScore: 1,
   },
   {
     id: "jp-1",
