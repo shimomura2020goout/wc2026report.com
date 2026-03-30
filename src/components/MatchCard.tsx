@@ -95,30 +95,30 @@ export default function MatchCard({ match, showType = true }: MatchCardProps) {
           )}
         </div>
 
-        {/* Result note */}
-        {match.status === "finished" && match.resultNote && (
+        {/* Result note (finished) or Preview note (scheduled with link) */}
+        {match.resultNote && (
           <div className="mt-3 pt-3 border-t border-gray-100 text-xs text-gray-600 text-center">
             <p>{match.resultNote}</p>
           </div>
         )}
 
-        {/* Broadcast (for upcoming matches only) */}
+        {/* Broadcast (for upcoming matches without resultLink) */}
         {match.status !== "finished" && match.broadcast && (
-          <div className="mt-3 pt-3 border-t border-gray-100 text-xs text-gray-500 text-center flex items-center justify-center gap-1">
+          <div className={`${match.resultNote ? "mt-2" : "mt-3 pt-3 border-t border-gray-100"} text-xs text-gray-500 text-center flex items-center justify-center gap-1`}>
             <Icon name="live_tv" size={14} className="text-gray-400" />
             {match.broadcast}
           </div>
         )}
 
-        {/* Result link */}
-        {match.status === "finished" && match.resultLink && (
+        {/* Article link — finished: 試合レポート / scheduled: プレビュー記事 */}
+        {match.resultLink && (
           <div className="mt-2 text-center">
             <Link
               href={match.resultLink}
               className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 hover:underline font-medium"
             >
               <Icon name="article" size={13} />
-              試合レポートを読む
+              {match.status === "finished" ? "試合レポートを読む" : "プレビュー記事を読む"}
               <Icon name="chevron_right" size={13} />
             </Link>
           </div>

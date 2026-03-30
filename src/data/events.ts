@@ -72,9 +72,9 @@ export const calendarEvents: CalendarEvent[] = [
     title: "🇯🇵 イングランド vs 日本（親善）",
     startDate: "2026-04-01",
     category: "japan",
-    description: "欧州遠征第2戦。ウェンブリー・スタジアム（ロンドン）",
+    description: "欧州遠征第2戦。ウェンブリー・スタジアム（ロンドン）03:45 KO（日本時間）",
     isHighlight: true,
-    link: "/matches",
+    link: "/news/england-vs-japan-preview-march31",
   },
   {
     id: "evt-cl-qf",

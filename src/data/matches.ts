@@ -336,6 +336,8 @@ export const japanNonWcMatches: Match[] = [
     isTotoTarget: false,
     isJapan: true,
     status: "scheduled",
+    resultLink: "/news/england-vs-japan-preview-march31",
+    resultNote: "プレビュー記事を公開中",
   },
   {
     id: "jp-2",
