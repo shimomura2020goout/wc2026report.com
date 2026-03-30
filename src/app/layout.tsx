@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import LatestNewsBanner from "@/components/LatestNewsBanner";
 import LatestNewsBannerWrapper from "@/components/LatestNewsBannerWrapper";
+import InstallPrompt from "@/components/InstallPrompt";
 import LocaleProvider from "@/components/LocaleProvider";
 import { WebsiteJsonLd } from "@/components/JsonLd";
 import { getLocaleFromCookies, getDictionary } from "@/i18n/index";
@@ -73,6 +74,12 @@ export default async function RootLayout({
   return (
     <html lang={locale}>
       <head>
+        {/* PWA */}
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#1a1a2e" />
+        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         {/* Google Tag Manager */}
         <script
           dangerouslySetInnerHTML={{
@@ -102,6 +109,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           </LatestNewsBannerWrapper>
           <main className="flex-1">{children}</main>
           <Footer />
+          <InstallPrompt />
         </LocaleProvider>
       </body>
     </html>
