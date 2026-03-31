@@ -29,6 +29,7 @@ const labelColors: Record<string, string> = {
 // ハードコードされたフォールバック設定
 // Notion APIが未設定の場合に使用
 // ========================================
+// DAZN と WOWOW を交互に表示
 const fallbackPromos: PromoFromNotion[] = [
   {
     id: "dazn-business",
@@ -39,35 +40,22 @@ const fallbackPromos: PromoFromNotion[] = [
     ctaUrl: "https://h.accesstrade.net/sp/cc?rk=0100ph9q00opav",
     trackingPixel: "https://h.accesstrade.net/sp/rr?rk=0100ph9q00opav",
     bgColor: "dark",
-    showProbability: 0.5,
+    showProbability: 1,
     cooldownHours: 48,
     sortOrder: 1,
   },
   {
-    id: "dmm-dazn-hodai",
-    title: "DMM × DAZNホーダイ",
-    label: "個人おすすめ",
-    description: "月額3,480円でW杯全試合＋アニメも見放題",
-    ctaText: "お得に申し込む",
-    ctaUrl: "/watch#dazn-personal",
-    trackingPixel: null,
-    bgColor: "green",
-    showProbability: 0.5,
-    cooldownHours: 48,
-    sortOrder: 2,
-  },
-  {
     id: "wowow",
     title: "WOWOW",
-    label: "映画も",
-    description: "スポーツ・映画・ドラマを高品質で",
+    label: "CL・ラリーガ",
+    description: "W杯出場選手のクラブでの活躍もチェック！月額2,530円",
     ctaText: "詳細を見る",
     ctaUrl: "https://h.accesstrade.net/sp/cc?rk=0100pjmj00opav",
     trackingPixel: "https://h.accesstrade.net/sp/rr?rk=0100pjmj00opav",
     bgColor: "blue",
-    showProbability: 0.3,
+    showProbability: 1,
     cooldownHours: 48,
-    sortOrder: 4,
+    sortOrder: 2,
   },
 ];
 
@@ -128,14 +116,13 @@ export default function StickyPromoBanner() {
       );
       if (candidates.length === 0) return;
 
-      // 確率フィルタ
-      const eligible = candidates.filter(
-        (p) => Math.random() < p.showProbability
-      );
-      if (eligible.length === 0) return;
-
-      // ランダム選択
-      const selected = eligible[Math.floor(Math.random() * eligible.length)];
+      // 交互表示: ページビュー数に基づいて DAZN と WOWOW を切り替え
+      let viewCount = 0;
+      try {
+        viewCount = parseInt(localStorage.getItem("promo_view_count") || "0", 10);
+        localStorage.setItem("promo_view_count", (viewCount + 1).toString());
+      } catch { /* localStorage unavailable */ }
+      const selected = candidates[viewCount % candidates.length];
       setPromo(selected);
 
       // 2秒後にスライドイン
