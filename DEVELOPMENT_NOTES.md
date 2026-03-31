@@ -63,10 +63,31 @@
 
 ---
 
-## デプロイ
+## デプロイ・公開フロー（必読）
 
-- `main` ブランチへのpushでVercelに自動デプロイ
+### サイト公開の流れ
+
+```
+コード変更 → npm run build（ローカル確認） → git add → git commit → git push origin main → Vercel自動デプロイ
+```
+
+**重要**: コード変更後は必ず `git push origin main` まで実行すること。pushしないとVercelにデプロイされず、本番サイトに反映されない。
+
+### 手順詳細
+
+1. **コード変更**: データファイル（teams.ts, matches.ts等）やページを編集
+2. **ビルド確認**: `npm run build` でエラーがないことを確認
+3. **ステージング**: `git add <変更ファイル>` で対象ファイルをステージ
+4. **コミット**: `git commit -m "feat: 変更内容の説明"` でコミット作成
+5. **プッシュ**: `git push origin main` でGitHubにプッシュ → Vercelが自動でCI/CDを実行
+6. **確認**: Vercelダッシュボードまたは https://www.wc2026report.com でデプロイ完了を確認
+
+### 注意事項
+
+- `main` ブランチへのpushでVercelに自動デプロイされる
 - ISRキャッシュは5分（300秒）。Notion記事の更新反映に最大5分かかる
+- Notion記事のみの更新（プロパティやコンテンツの変更）はpush不要。ISRで自動反映される
+- コードの変更（.ts/.tsx/.json等）は必ずpushが必要
 
 ---
 
