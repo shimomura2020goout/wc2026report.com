@@ -4,6 +4,13 @@ import { useState, useEffect } from "react";
 import Icon from "./Icon";
 import type { PromoFromNotion } from "@/app/api/promos/route";
 
+// gtag.js の型定義（GA4用）
+declare global {
+  interface Window {
+    gtag?: (...args: unknown[]) => void;
+  }
+}
+
 // ========================================
 // 背景カラーマッピング
 // ========================================
@@ -26,10 +33,22 @@ const labelColors: Record<string, string> = {
 };
 
 // ========================================
-// ハードコードされたフォールバック設定
-// Notion APIが未設定の場合に使用
+// GA4 イベント送信ヘルパー
+// gtag.js が読み込まれている場合のみ送信
 // ========================================
-// DAZN と WOWOW を交互に表示
+function sendGA4Event(action: string, promoId: string, label: string) {
+  if (typeof window !== "undefined" && typeof window.gtag === "function") {
+    window.gtag("event", action, {
+      event_category: "sticky_promo_banner",
+      event_label: label,
+      promo_id: promoId,
+    });
+  }
+}
+
+// ========================================
+// DAZN・WOWOW・LINE を交互に表示
+// ========================================
 const fallbackPromos: PromoFromNotion[] = [
   {
     id: "dazn-business",
@@ -56,6 +75,19 @@ const fallbackPromos: PromoFromNotion[] = [
     showProbability: 1,
     cooldownHours: 48,
     sortOrder: 2,
+  },
+  {
+    id: "line-friend",
+    title: "LINE で最新情報を受け取る",
+    label: "無料",
+    description: "試合速報・代表ニュースをLINEでお届け",
+    ctaText: "友だち追加",
+    ctaUrl: "https://line.me/R/ti/p/@517lriub",
+    trackingPixel: null,
+    bgColor: "green",
+    showProbability: 1,
+    cooldownHours: 48,
+    sortOrder: 3,
   },
 ];
 
@@ -116,7 +148,7 @@ export default function StickyPromoBanner() {
       );
       if (candidates.length === 0) return;
 
-      // 交互表示: ページビュー数に基づいて DAZN と WOWOW を切り替え
+      // 交互表示: ページビュー数に基づいて DAZN → WOWOW → LINE を切り替え
       let viewCount = 0;
       try {
         viewCount = parseInt(localStorage.getItem("promo_view_count") || "0", 10);
@@ -124,6 +156,9 @@ export default function StickyPromoBanner() {
       } catch { /* localStorage unavailable */ }
       const selected = candidates[viewCount % candidates.length];
       setPromo(selected);
+
+      // GA4: バナー表示イベント
+      sendGA4Event("promo_view", selected.id, selected.title);
 
       // 2秒後にスライドイン
       setTimeout(() => {
@@ -135,8 +170,16 @@ export default function StickyPromoBanner() {
     return () => { cancelled = true; };
   }, []);
 
+  const handleClick = () => {
+    if (!promo) return;
+    // GA4: CTAクリックイベント
+    sendGA4Event("promo_click", promo.id, promo.title);
+  };
+
   const handleClose = () => {
     if (!promo) return;
+    // GA4: 閉じるイベント
+    sendGA4Event("promo_close", promo.id, promo.title);
     setClosing(true);
     setDismissed(promo.id);
     setTimeout(() => {
@@ -150,6 +193,7 @@ export default function StickyPromoBanner() {
   const isExternal = promo.ctaUrl.startsWith("http");
   const gradient = bgGradients[promo.bgColor] || bgGradients.dark;
   const labelColor = labelColors[promo.bgColor] || labelColors.dark;
+  const isLine = promo.id === "line-friend";
 
   return (
     <div
@@ -177,12 +221,15 @@ export default function StickyPromoBanner() {
           {/* CTA ボタン */}
           <a
             href={promo.ctaUrl}
-            target={isExternal ? "_blank" : undefined}
-            rel={isExternal ? "nofollow sponsored noopener noreferrer" : undefined}
+            target="_blank"
+            rel={isLine ? "noopener noreferrer" : "nofollow sponsored noopener noreferrer"}
+            onClick={handleClick}
+            data-promo-id={promo.id}
+            data-promo-name={promo.title}
             className="shrink-0 bg-white text-black text-xs sm:text-sm font-bold px-4 sm:px-5 py-2 rounded-full hover:bg-gray-200 transition-colors flex items-center gap-1.5"
           >
             {promo.ctaText}
-            <Icon name={isExternal ? "open_in_new" : "arrow_forward"} size={14} />
+            <Icon name={isLine ? "arrow_forward" : "open_in_new"} size={14} />
           </a>
 
           {/* トラッキングピクセル */}
@@ -200,10 +247,12 @@ export default function StickyPromoBanner() {
           </button>
         </div>
 
-        {/* PR表記 */}
-        <div className="text-center pb-1">
-          <span className="text-[9px] text-gray-600">広告・PR</span>
-        </div>
+        {/* PR表記（LINE以外） */}
+        {!isLine && (
+          <div className="text-center pb-1">
+            <span className="text-[9px] text-gray-600">広告・PR</span>
+          </div>
+        )}
       </div>
     </div>
   );
