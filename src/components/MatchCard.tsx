@@ -81,12 +81,6 @@ export default function MatchCard({ match, showType = true }: MatchCardProps) {
 
         {/* Badges */}
         <div className="flex items-center justify-center gap-2 flex-wrap">
-          {match.isTotoTarget && (
-            <span className="inline-flex items-center gap-1 text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full font-medium">
-              <Icon name="confirmation_number" size={14} />
-              {t("common.totoTarget")}
-            </span>
-          )}
           {match.group && (
             <span className="inline-flex items-center gap-1 text-xs bg-amber-100 text-amber-700 px-2 py-1 rounded-full font-medium">
               <Icon name="shield" size={14} />

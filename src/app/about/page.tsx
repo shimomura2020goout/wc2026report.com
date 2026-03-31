@@ -34,7 +34,7 @@ export default async function AboutPage() {
           <dl className="mt-4 space-y-2">
             <div className="flex gap-2">
               <dt className="font-semibold text-gray-800 min-w-[100px]">{t("about.siteName")}</dt>
-              <dd>W杯2026 × toto</dd>
+              <dd>W杯2026</dd>
             </div>
             <div className="flex gap-2">
               <dt className="font-semibold text-gray-800 min-w-[100px]">{t("about.siteUrl")}</dt>

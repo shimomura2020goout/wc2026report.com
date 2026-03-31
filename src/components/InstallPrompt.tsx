@@ -95,7 +95,7 @@ export default function InstallPrompt() {
                 <Icon name="sports_soccer" size={24} />
               </div>
               <div>
-                <p className="font-bold text-sm">W杯2026 × toto</p>
+                <p className="font-bold text-sm">W杯2026</p>
                 <p className="text-[11px] text-gray-400">ホーム画面に追加しませんか？</p>
               </div>
             </div>
@@ -110,7 +110,7 @@ export default function InstallPrompt() {
             {deferredPrompt ? (
               <>
                 <p className="text-sm text-gray-600 mb-4">
-                  ワンタップでホーム画面に追加。試合日程・toto予想にすぐアクセスできます。
+                  ワンタップでホーム画面に追加。試合日程・視聴ガイドにすぐアクセスできます。
                 </p>
                 <button
                   onClick={handleInstallPWA}

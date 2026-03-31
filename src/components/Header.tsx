@@ -13,7 +13,6 @@ const navKeys = [
   { href: "/matches", key: "nav.matches", icon: "sports_soccer", also: ["/results"] },
   { href: "/calendar", key: "nav.calendar", icon: "calendar_month", also: [] as string[] },
   { href: "/teams", key: "nav.teams", icon: "flag", also: ["/groups"] },
-  { href: "/toto", key: "nav.toto", icon: "confirmation_number", also: [] as string[] },
   { href: "/watch", key: "nav.watch", icon: "live_tv", also: [] as string[] },
 ];
 

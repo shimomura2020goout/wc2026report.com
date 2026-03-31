@@ -266,41 +266,6 @@ export default async function Home() {
             <p className="text-[10px] text-gray-500 mt-3">※ アフィリエイト広告を含みます</p>
           </div>
 
-          {/* toto CTA */}
-          <div className="bg-gradient-to-br from-purple-700 to-purple-900 text-white rounded-2xl p-6 sm:p-8">
-            <h3 className="text-xl sm:text-2xl font-bold mb-3 flex items-center gap-2">
-              <Icon name="confirmation_number" size={28} />
-              {t("home.totoTitle")}
-            </h3>
-            <p className="text-gray-200 mb-4 text-sm leading-relaxed">
-              {t("home.totoDescription")}
-            </p>
-            <ul className="text-sm text-gray-300 space-y-2 mb-6">
-              <li className="flex items-center gap-2"><Icon name="check_circle" size={18} className="text-green-300" /> {t("home.totoFeature1")}</li>
-              <li className="flex items-center gap-2"><Icon name="check_circle" size={18} className="text-green-300" /> {t("home.totoFeature2")}</li>
-              <li className="flex items-center gap-2"><Icon name="check_circle" size={18} className="text-green-300" /> {t("home.totoFeature3")}</li>
-              <li className="flex items-center gap-2"><Icon name="check_circle" size={18} className="text-green-300" /> {t("home.totoFeature4")}</li>
-            </ul>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Link
-                href="/toto"
-                className="inline-flex items-center gap-2 bg-white text-purple-800 font-bold px-6 py-3 rounded-full hover:bg-gray-200 transition-colors"
-              >
-                {t("home.totoCta")}
-                <Icon name="arrow_forward" size={18} />
-              </Link>
-              <a
-                href="https://tr.affiliate-sp.docomo.ne.jp/cl/d0000000359/4739/3"
-                target="_blank"
-                rel="nofollow noopener noreferrer"
-                className="inline-flex items-center gap-2 border-2 border-white text-white font-bold px-6 py-3 rounded-full hover:bg-white/10 transition-colors text-sm"
-              >
-                ドコモスポーツくじで購入
-                <Icon name="open_in_new" size={16} />
-              </a>
-            </div>
-            <p className="text-[10px] text-purple-400 mt-3">※ アフィリエイト広告を含みます</p>
-          </div>
         </div>
       </section>
 
@@ -330,7 +295,7 @@ export default async function Home() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-white font-bold text-sm sm:text-base">LINE で最新情報を受け取る</p>
-              <p className="text-green-100 text-xs mt-0.5">試合速報・toto予想・代表ニュースをお届け</p>
+              <p className="text-green-100 text-xs mt-0.5">試合速報・代表ニュースをお届け</p>
             </div>
             <a
               href="https://line.me/R/ti/p/@517lriub"

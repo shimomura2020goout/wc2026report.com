@@ -20,7 +20,6 @@ export const revalidate = 300;
 const categoryColors: Record<string, string> = {
   "試合プレビュー": "bg-blue-100 text-blue-700",
   "チーム分析": "bg-purple-100 text-purple-700",
-  "toto攻略": "bg-pink-100 text-pink-700",
   "視聴ガイド": "bg-orange-100 text-orange-700",
   "ニュース": "bg-green-100 text-green-700",
   "コラム": "bg-yellow-100 text-yellow-700",

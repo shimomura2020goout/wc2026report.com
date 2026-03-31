@@ -77,13 +77,6 @@ export default async function MatchesPage() {
             <Icon name="scoreboard" size={16} />
             {t("matches.linkResults")}
           </Link>
-          <Link
-            href="/toto"
-            className="inline-flex items-center gap-1 text-sm text-purple-600 font-medium hover:text-purple-800 bg-purple-50 px-3 py-2 rounded-lg"
-          >
-            <Icon name="confirmation_number" size={16} />
-            {t("matches.linkToto")}
-          </Link>
         </div>
 
         <SourceAttribution

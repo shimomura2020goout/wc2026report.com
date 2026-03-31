@@ -28,10 +28,10 @@ export default function Footer() {
             </ul>
           </div>
           <div>
-            <h4 className="text-white font-semibold mb-4">{t("footer.totoWatch")}</h4>
+            <h4 className="text-white font-semibold mb-4">{t("footer.watchInfo")}</h4>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/toto" className="hover:text-white transition-colors">{t("footer.totoZone")}</Link></li>
               <li><Link href="/watch" className="hover:text-white transition-colors">{t("footer.watchGuide")}</Link></li>
+              <li><Link href="/news" className="hover:text-white transition-colors">{t("nav.news")}</Link></li>
             </ul>
           </div>
           <div>
@@ -59,8 +59,7 @@ export default function Footer() {
           <div className="mt-3 text-center text-xs text-gray-600">
             <p>{t("footer.sourceLabel")}
               <a href="https://www.fifa.com/fifaplus/en/tournaments/mens/worldcup/canadamexicousa2026" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-400 ml-1">FIFA.com</a> /
-              <a href="https://www.jfa.jp/" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-400 ml-1">JFA</a> /
-              <a href="https://www.toto-dream.com/" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-400 ml-1">toto</a>
+              <a href="https://www.jfa.jp/" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-400 ml-1">JFA</a>
             </p>
           </div>
         </div>

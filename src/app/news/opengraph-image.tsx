@@ -1,7 +1,7 @@
 import { generatePageOG, ogSize } from "@/lib/og-image";
 
 export const runtime = "edge";
-export const alt = "ニュース｜W杯2026 × toto";
+export const alt = "ニュース｜W杯2026";
 export const size = ogSize;
 export const contentType = "image/png";
 

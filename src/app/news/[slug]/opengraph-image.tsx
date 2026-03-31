@@ -2,14 +2,13 @@ import { ImageResponse } from "next/og";
 import { getPostBySlug } from "@/lib/notion";
 
 export const runtime = "edge";
-export const alt = "W杯2026 × toto ニュース記事";
+export const alt = "W杯2026 ニュース記事";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 const categoryColors: Record<string, { bg: string; text: string }> = {
   "試合プレビュー": { bg: "#dbeafe", text: "#1d4ed8" },
   "チーム分析": { bg: "#ede9fe", text: "#7c3aed" },
-  "toto攻略": { bg: "#fce7f3", text: "#be185d" },
   "視聴ガイド": { bg: "#ffedd5", text: "#c2410c" },
   "ニュース": { bg: "#dcfce7", text: "#15803d" },
   "コラム": { bg: "#fef9c3", text: "#a16207" },
@@ -80,7 +79,7 @@ export default async function OGImage({
                 color: "#94a3b8",
               }}
             >
-              W杯2026 × toto
+              W杯2026
             </div>
           </div>
 

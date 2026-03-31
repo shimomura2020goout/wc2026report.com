@@ -13,7 +13,6 @@ export interface Match {
   type: MatchType;
   typeLabel: string;
   broadcast: string;
-  isTotoTarget: boolean;
   isJapan: boolean;
   group?: string;
   matchday?: number;
@@ -69,7 +68,7 @@ function gl(
     venue: vd.venue, city: vd.city,
     type: "worldcup_gl", typeLabel: `W杯 GL第${md}節`,
     broadcast: broadcast || "DAZN / NHK BS4K",
-    isTotoTarget: true, isJapan, group, matchday: md,
+    isJapan, group, matchday: md,
     status: "scheduled", isPlaceholder: isPlaceholder || undefined,
   };
 }
@@ -85,7 +84,7 @@ function ko(
     venue: vd.venue, city: vd.city,
     type: "worldcup_ko", typeLabel: label,
     broadcast: broadcast || "DAZN / NHK BS4K",
-    isTotoTarget: true, isJapan: false,
+    isJapan: false,
     status: "scheduled", isPlaceholder: true,
     knockoutRound: round, matchNumber: mn,
   };
@@ -314,7 +313,7 @@ export const japanNonWcMatches: Match[] = [
     type: "friendly",
     typeLabel: "国際親善試合",
     broadcast: "NHK総合（生中継）、NHK ONE・U-NEXT（配信）",
-    isTotoTarget: false,
+
     isJapan: true,
     status: "finished",
     homeScore: 0,
@@ -333,7 +332,7 @@ export const japanNonWcMatches: Match[] = [
     type: "friendly",
     typeLabel: "国際親善試合",
     broadcast: "NHK Eテレ（生中継）、NHK ONE・U-NEXT（配信）",
-    isTotoTarget: false,
+
     isJapan: true,
     status: "finished",
     homeScore: 0,
@@ -352,7 +351,7 @@ export const japanNonWcMatches: Match[] = [
     type: "kirin",
     typeLabel: "キリンチャレンジカップ",
     broadcast: "調整中（地上波・ネット検討中）",
-    isTotoTarget: false,
+
     isJapan: true,
     status: "scheduled",
     resultNote: "W杯壮行試合。開幕約10日前の最終強化マッチ",
@@ -368,7 +367,7 @@ export const japanNonWcMatches: Match[] = [
     type: "kirin",
     typeLabel: "キリンチャレンジカップ",
     broadcast: "調整中",
-    isTotoTarget: false,
+
     isJapan: true,
     status: "scheduled",
   },
@@ -383,7 +382,7 @@ export const japanNonWcMatches: Match[] = [
     type: "kirin",
     typeLabel: "キリンチャレンジカップ",
     broadcast: "調整中",
-    isTotoTarget: false,
+
     isJapan: true,
     status: "scheduled",
   },
@@ -398,7 +397,7 @@ export const japanNonWcMatches: Match[] = [
     type: "kirin_cup",
     typeLabel: "キリンカップ",
     broadcast: "調整中",
-    isTotoTarget: false,
+
     isJapan: true,
     status: "scheduled",
   },
@@ -413,7 +412,7 @@ export const japanNonWcMatches: Match[] = [
     type: "kirin_cup",
     typeLabel: "キリンカップ",
     broadcast: "調整中",
-    isTotoTarget: false,
+
     isJapan: true,
     status: "scheduled",
   },

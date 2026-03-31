@@ -20,28 +20,28 @@ const BASE_URL = "https://www.wc2026report.com";
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "W杯2026 × toto｜FIFA ワールドカップ 2026 試合日程・toto予想・視聴ガイド",
-    template: "%s｜W杯2026 × toto",
+    default: "W杯2026｜FIFA ワールドカップ 2026 試合日程・視聴ガイド",
+    template: "%s｜W杯2026",
   },
   description:
-    "FIFA ワールドカップ 2026（北中米大会）の全104試合の日程・放映情報・toto対象試合・購入ガイドを網羅。DAZNでの視聴方法も詳しく解説。",
+    "FIFA ワールドカップ 2026（北中米大会）の全104試合の日程・放映情報を網羅。DAZNでの視聴方法も詳しく解説。",
   keywords: [
-    "W杯 2026", "ワールドカップ 2026", "FIFA ワールドカップ", "toto", "toto 予想",
+    "W杯 2026", "ワールドカップ 2026", "FIFA ワールドカップ",
     "DAZN", "DAZN W杯", "日本代表", "試合日程", "放映予定", "W杯 どこで見れる",
-    "toto 買い方", "W杯 グループ", "日本 オランダ", "W杯 2026 日程",
+    "W杯 グループ", "日本 オランダ", "W杯 2026 日程",
   ],
   openGraph: {
-    title: "W杯2026 × toto｜試合日程・toto予想・視聴ガイド",
-    description: "FIFA ワールドカップ 2026 の全104試合の日程・toto予想・DAZN視聴ガイドを網羅する総合情報サイト",
+    title: "W杯2026｜試合日程・視聴ガイド",
+    description: "FIFA ワールドカップ 2026 の全104試合の日程・DAZN視聴ガイドを網羅する総合情報サイト",
     locale: "ja_JP",
     type: "website",
-    siteName: "W杯2026 × toto",
+    siteName: "W杯2026",
     url: BASE_URL,
   },
   twitter: {
     card: "summary_large_image",
-    title: "W杯2026 × toto｜試合日程・toto予想・視聴ガイド",
-    description: "FIFA ワールドカップ 2026 の全104試合の日程・toto予想・DAZN視聴ガイドを網羅",
+    title: "W杯2026｜試合日程・視聴ガイド",
+    description: "FIFA ワールドカップ 2026 の全104試合の日程・DAZN視聴ガイドを網羅",
   },
   alternates: {
     canonical: BASE_URL,

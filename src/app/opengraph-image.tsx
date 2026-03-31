@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "W杯2026 × toto｜試合日程・toto予想・視聴ガイド";
+export const alt = "W杯2026｜試合日程・視聴ガイド";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -72,7 +72,7 @@ export default function OGImage() {
                   lineHeight: 1.1,
                 }}
               >
-                W杯2026 × toto
+                W杯2026
               </div>
               <div
                 style={{
@@ -95,7 +95,7 @@ export default function OGImage() {
               marginTop: "16px",
             }}
           >
-            全104試合の日程・放映情報・toto予想・視聴ガイドを網羅
+            全104試合の日程・放映情報・視聴ガイドを網羅
           </div>
 
           {/* タグ */}
@@ -106,7 +106,7 @@ export default function OGImage() {
               marginTop: "12px",
             }}
           >
-            {["試合日程", "toto予想", "DAZN視聴ガイド", "グループ情報"].map(
+            {["試合日程", "DAZN視聴ガイド", "グループ情報", "日本代表"].map(
               (tag) => (
                 <div
                   key={tag}

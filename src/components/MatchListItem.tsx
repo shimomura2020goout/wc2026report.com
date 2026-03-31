@@ -87,9 +87,6 @@ export default function MatchListItem({ match, showGroup = true }: MatchListItem
             {match.typeLabel}
           </span>
         )}
-        {match.isTotoTarget && (
-          <span title={t("common.totoTarget")}><Icon name="confirmation_number" size={14} className="text-purple-400" /></span>
-        )}
       </div>
     </div>
   );
