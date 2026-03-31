@@ -48,7 +48,7 @@ export default function MatchCard({ match, showType = true }: MatchCardProps) {
             )}
           </span>
           {showType && (
-            <span className={`text-xs px-2 py-1 rounded-full font-medium ${getMatchTypeColor(match.type)}`}>
+            <span className={`text-xs px-2 py-1 rounded-full font-medium whitespace-nowrap ${getMatchTypeColor(match.type)}`}>
               {match.typeLabel}
             </span>
           )}

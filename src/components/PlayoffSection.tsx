@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import Icon from "./Icon";
 import { playoffFinalResults, intercontinentalResults } from "@/data/playoff";
 
@@ -34,14 +35,17 @@ export default function PlayoffSection() {
             >
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-bold text-gray-400 uppercase">Path {result.path}</span>
-                <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                  result.group === "F"
-                    ? "bg-red-100 text-red-700"
-                    : "bg-green-100 text-green-700"
-                }`}>
+                <Link
+                  href={`/groups#group-${result.group}`}
+                  className={`text-xs px-2 py-0.5 rounded-full font-medium hover:opacity-80 transition-opacity ${
+                    result.group === "F"
+                      ? "bg-red-100 text-red-700"
+                      : "bg-green-100 text-green-700"
+                  }`}
+                >
                   → グループ{result.group}
                   {result.group === "F" && "（日本と同組）"}
-                </span>
+                </Link>
               </div>
               <div className="flex items-center justify-center gap-3 mb-2">
                 <span className={`font-bold text-sm ${result.winner === result.home ? "text-green-700" : "text-gray-500"}`}>
@@ -76,9 +80,12 @@ export default function PlayoffSection() {
             <div key={result.path} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-bold text-gray-400 uppercase">Path {result.path}</span>
-                <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium">
+                <Link
+                  href={`/groups#group-${result.group}`}
+                  className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium hover:opacity-80 transition-opacity"
+                >
                   → グループ{result.group}
-                </span>
+                </Link>
               </div>
               <div className="flex items-center justify-center gap-3 mb-2">
                 <span className={`font-bold text-sm ${result.winner === result.home ? "text-green-700" : "text-gray-500"}`}>

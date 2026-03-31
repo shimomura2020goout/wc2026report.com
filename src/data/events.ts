@@ -69,12 +69,12 @@ export const calendarEvents: CalendarEvent[] = [
   // ── 4月：日本代表 & クラブ大会 ──
   {
     id: "evt-jp-eng",
-    title: "🇯🇵 イングランド vs 日本（親善）",
+    title: "🇯🇵 イングランド 0-1 日本【勝利】",
     startDate: "2026-04-01",
     category: "japan",
-    description: "欧州遠征第2戦。ウェンブリー・スタジアム（ロンドン）03:45 KO（日本時間）",
+    description: "三笘薫23分決勝弾！アジア勢初のウェンブリー勝利。欧州遠征2連勝でW杯に弾み",
     isHighlight: true,
-    link: "/news/england-vs-japan-preview-march31",
+    link: "/news/england-vs-japan-result-april1",
   },
   {
     id: "evt-cl-qf",
