@@ -120,10 +120,10 @@ export const calendarEvents: CalendarEvent[] = [
   },
   {
     id: "evt-jp-kirin-may",
-    title: "🇯🇵 キリンチャレンジカップ（国立）",
+    title: "🇯🇵 日本 vs アイスランド（W杯壮行試合）",
     startDate: "2026-05-31",
     category: "japan",
-    description: "W杯直前の壮行試合。国立競技場",
+    description: "キリンチャレンジカップ2026。W杯開幕約10日前の最終強化マッチ。19:20 KO 国立競技場",
     isHighlight: true,
     link: "/matches",
   },

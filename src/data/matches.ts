@@ -344,9 +344,9 @@ export const japanNonWcMatches: Match[] = [
   {
     id: "jp-2",
     date: "2026-05-31",
-    kickoff: "未定",
+    kickoff: "19:20",
     homeTeam: "日本",
-    awayTeam: "未定",
+    awayTeam: "アイスランド",
     venue: "国立競技場",
     city: "東京",
     type: "kirin",
@@ -355,6 +355,7 @@ export const japanNonWcMatches: Match[] = [
     isTotoTarget: false,
     isJapan: true,
     status: "scheduled",
+    resultNote: "W杯壮行試合。開幕約10日前の最終強化マッチ",
   },
   {
     id: "jp-6",
