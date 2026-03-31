@@ -185,7 +185,7 @@ export default async function TotoPage() {
           { label: "toto — Sports Promotion Lottery", url: "https://www.toto-dream.com/" },
           { label: "Rakuten toto", url: "https://toto.rakuten.co.jp/" },
         ]}
-        updatedAt="2026年3月26日"
+        updatedAt="2026年4月1日"
       />
     </div>
   );

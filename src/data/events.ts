@@ -59,10 +59,10 @@ export const calendarEvents: CalendarEvent[] = [
   },
   {
     id: "evt-po-final",
-    title: "UEFA プレーオフ 決勝",
+    title: "UEFA プレーオフ 決勝【終了】全4枠確定",
     startDate: "2026-03-31",
     category: "playoff",
-    description: "イタリアvsボスニア、スウェーデンvsポーランド、トルコvsコソボ、デンマークvsチェコ",
+    description: "スウェーデン3-2ポーランド（→日本と同組F）、トルコ1-0コソボ、チェコPK勝ちデンマーク、ボスニアPK勝ちイタリア（イタリア3大会連続不出場）",
     isHighlight: true,
   },
 
@@ -86,11 +86,11 @@ export const calendarEvents: CalendarEvent[] = [
   },
   {
     id: "evt-ipo",
-    title: "FIFA 大陸間プレーオフ",
-    startDate: "2026-04-02",
-    endDate: "2026-04-05",
+    title: "FIFA 大陸間プレーオフ【終了】全48チーム確定",
+    startDate: "2026-03-31",
+    endDate: "2026-04-01",
     category: "playoff",
-    description: "W杯最後の2枠を決める大陸間プレーオフ",
+    description: "ジャマイカがDRコンゴを下しGroup Kへ（28年ぶり出場）、ボリビアがイラクを下しGroup Iへ（32年ぶり出場）。W杯2026全48チームが確定！",
     isHighlight: true,
   },
 
@@ -167,7 +167,7 @@ export const calendarEvents: CalendarEvent[] = [
   },
   {
     id: "evt-jp-pob",
-    title: "🇯🇵 日本 vs PO B勝者（GL第3節）",
+    title: "🇯🇵 日本 vs スウェーデン（GL第3節）",
     startDate: "2026-06-26",
     category: "japan",
     description: "グループF 第3節。AT&Tスタジアム（ダラス）",

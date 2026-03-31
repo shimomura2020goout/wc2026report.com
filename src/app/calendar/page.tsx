@@ -88,7 +88,7 @@ export default async function CalendarPage() {
             { label: "UEFA公式 — Champions League", url: "https://www.uefa.com/uefachampionsleague/" },
             { label: "JFA公式 — SAMURAI BLUE", url: "https://www.jfa.jp/samuraiblue/" },
           ]}
-          updatedAt="2026年3月25日"
+          updatedAt="2026年4月1日"
         />
       </div>
     </>

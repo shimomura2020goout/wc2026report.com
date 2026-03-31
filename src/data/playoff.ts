@@ -82,36 +82,56 @@ export const playoffTeams: Record<string, PlayoffTeam> = {
   },
 };
 
-// プレーオフ日程
+// UEFAプレーオフ日程・結果（パスB）
 export const playoffMatches: PlayoffMatch[] = [
   {
-    id: "po-semi-1",
+    id: "po-b-semi-1",
     round: "semi",
     date: "2026-03-26",
     kickoff: "04:45",
-    homeTeam: "ウクライナ",
-    awayTeam: "スウェーデン",
-    venue: "開催地未定",
-    status: "upcoming",
+    homeTeam: "スウェーデン",
+    awayTeam: "ウクライナ",
+    venue: "フレンズ・アレナ（ストックホルム）",
+    status: "finished",
+    homeScore: 3,
+    awayScore: 1,
   },
   {
-    id: "po-semi-2",
+    id: "po-b-semi-2",
     round: "semi",
     date: "2026-03-26",
     kickoff: "04:45",
     homeTeam: "ポーランド",
     awayTeam: "アルバニア",
-    venue: "開催地未定",
-    status: "upcoming",
+    venue: "PGEナロドヴィ（ワルシャワ）",
+    status: "finished",
+    homeScore: 2,
+    awayScore: 1,
   },
   {
-    id: "po-final",
+    id: "po-b-final",
     round: "final",
     date: "2026-03-31",
     kickoff: "04:45",
-    homeTeam: "準決勝①勝者",
-    awayTeam: "準決勝②勝者",
-    venue: "開催地未定",
-    status: "upcoming",
+    homeTeam: "スウェーデン",
+    awayTeam: "ポーランド",
+    venue: "フレンズ・アレナ（ストックホルム）",
+    status: "finished",
+    homeScore: 3,
+    awayScore: 2,
   },
+];
+
+// 全UEFAプレーオフ決勝結果サマリー
+export const playoffFinalResults = [
+  { path: "A", home: "ボスニア・ヘルツェゴビナ", away: "イタリア", score: "1-1 (AET)", penaltyResult: "ボスニアPK勝ち", winner: "ボスニア・ヘルツェゴビナ", group: "B", note: "Kean(15')で先制もバストーニ退場(42')で10人に。Tabakovic(79')で同点。PK戦でボスニアが歴史的初出場を決め、イタリアは3大会連続不出場" },
+  { path: "B", home: "スウェーデン", away: "ポーランド", score: "3-2", winner: "スウェーデン", group: "F", note: "Elanga(19'), Lagerbielke(44'), Gyökeres(88') / Zalewski(33'), Swiderski(55')。ギョケレシュの88分劇的決勝弾で2018年以来のW杯出場" },
+  { path: "C", home: "トルコ", away: "コソボ", score: "1-0", winner: "トルコ", group: "D", note: "Aktürkoğlu(53')の決勝弾。24年ぶりのW杯出場" },
+  { path: "D", home: "チェコ", away: "デンマーク", score: "2-2 (AET)", penaltyResult: "チェコPK 2-1", winner: "チェコ", group: "A", note: "Šulc(3'), Krejčí(100') / Andersen(72'), Høgh(111')。PK戦でチェコが2006年以来のW杯出場" },
+];
+
+// 大陸間プレーオフ決勝結果サマリー
+export const intercontinentalResults = [
+  { path: "1", home: "DRコンゴ", away: "ジャマイカ", winner: "ジャマイカ", group: "K", note: "ジャマイカが1998年以来28年ぶりのW杯出場を決めた" },
+  { path: "2", home: "イラク", away: "ボリビア", winner: "ボリビア", group: "I", note: "ボリビアが1994年以来32年ぶりのW杯出場を決めた" },
 ];

@@ -86,7 +86,7 @@
   "matches.noMatches": "No matches found",
   "matches.noticeTitle": "Please Note",
   "matches.noticeJST": "All kickoff times are shown in Japan Standard Time (JST)",
-  "matches.noticePlaceholder": "Teams pending playoff results are shown as placeholders",
+  "matches.noticePlaceholder": "Knockout stage matchups will be confirmed as the tournament progresses",
   "matches.noticeBroadcast": "Broadcast information is subject to change",
   "matches.viewGroups": "View Group List",
   "matches.viewResults": "Results & Standings",
@@ -181,7 +181,7 @@
   "watch.japanMatch1Broadcast": "DAZN (free stream), NHK General (terrestrial)",
   "watch.japanMatch2": "MD2 vs Tunisia (6/21 13:00 KO)",
   "watch.japanMatch2Broadcast": "DAZN (free stream), NTV / NHK BS",
-  "watch.japanMatch3": "MD3 vs UEFA PO B Winner (6/26 08:00 KO)",
+  "watch.japanMatch3": "MD3 vs Sweden (6/26 08:00 KO)",
   "watch.japanMatch3Broadcast": "DAZN (free stream), NHK General (terrestrial)",
   "watch.japanMatchFreeNote": "All 3 of Japan's World Cup matches can be watched for free (DAZN free stream or terrestrial TV)",
   "watch.faqTitle": "Frequently Asked Questions",
@@ -299,7 +299,7 @@
   "groups.regulationsKnockout3": "Final on July 19, 2026 (MetLife Stadium)",
 
   "groups.metaTitle": "WC 2026 Group Stage | All 12 Groups & 48 Nations Draw",
-  "groups.metaDescription": "FIFA World Cup 2026 — all 12 groups draw. Japan in Group F (Netherlands, Tunisia, UEFA PO B). 48 nations distribution, match schedules, host cities, and tournament regulations.",
+  "groups.metaDescription": "FIFA World Cup 2026 — all 12 groups draw. Japan in Group F (Netherlands, Tunisia, Sweden). 48 nations distribution, match schedules, host cities, and tournament regulations.",
 
   "teams.pageTitle": "All 48 Participating Teams",
   "teams.pageDescription": "A historic first with 48 nations in FIFA World Cup 2026. Check FIFA rankings, World Cup appearances, and past results.",

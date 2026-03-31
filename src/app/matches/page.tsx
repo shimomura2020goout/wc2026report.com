@@ -41,7 +41,7 @@ export default async function MatchesPage() {
           knockoutMatches={allKnockoutMatches}
         />
 
-        {/* UEFA PO B */}
+        {/* プレーオフ結果 */}
         <div className="mt-10">
           <PlayoffSection />
         </div>
@@ -92,7 +92,7 @@ export default async function MatchesPage() {
             { label: "JFA公式 — SAMURAI BLUE", url: "https://www.jfa.jp/samuraiblue/" },
             { label: "DAZN — 放映スケジュール", url: "https://www.dazn.com/ja-JP" },
           ]}
-          updatedAt="2026年3月25日"
+          updatedAt="2026年4月1日"
         />
       </div>
     </>

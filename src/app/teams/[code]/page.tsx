@@ -287,7 +287,7 @@ export default async function TeamDetailPage({ params }: Props) {
             { label: "FIFA公式 — FIFA World Ranking", url: "https://www.fifa.com/fifa-world-ranking" },
             { label: "FIFA公式 — FIFA World Cup 26", url: "https://www.fifa.com/fifaplus/en/tournaments/mens/worldcup/canadamexicousa2026" },
           ]}
-          updatedAt="2026年3月30日"
+          updatedAt="2026年4月1日"
           dataNote="チームデータ（FIFAランキング・監督・注目選手等）は2026年4月1日付FIFAランキング準拠"
         />
       </div>

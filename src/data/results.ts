@@ -96,7 +96,7 @@ export const groupFScenarios: GroupScenario[] = [
   },
   {
     condition: "日本がオランダに引き分け、チュニジアに勝利した場合",
-    outcome: "勝ち点4。最終節のPOB勝者戦で引き分け以上なら1位通過の可能性も。",
+    outcome: "勝ち点4。最終節のスウェーデン戦で引き分け以上なら1位通過の可能性も。",
     probability: "medium",
   },
   {
