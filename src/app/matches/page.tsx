@@ -4,13 +4,13 @@ import MatchScheduleView from "@/components/MatchScheduleView";
 import PlayoffSection from "@/components/PlayoffSection";
 import SourceAttribution from "@/components/SourceAttribution";
 import Icon from "@/components/Icon";
-import { BreadcrumbJsonLd } from "@/components/JsonLd";
+import { BreadcrumbJsonLd, SportsEventJsonLd } from "@/components/JsonLd";
 import { japanMatches, allGroupStageMatches, allKnockoutMatches } from "@/data/matches";
 import { getLocaleFromCookies, getDictionary, createTranslator } from "@/i18n/index";
 
 export const metadata: Metadata = {
-  title: "全104試合 試合日程｜W杯2026 グループステージ・ノックアウトステージ",
-  description: "FIFA ワールドカップ 2026 全104試合の日程一覧。日本代表戦、グループステージ全72試合、ノックアウトステージ32試合のキックオフ時間（日本時間）・会場・放映情報を網羅。",
+  title: "W杯2026 試合日程・スケジュール一覧｜全104試合 日本時間（JST）対応",
+  description: "W杯2026（FIFAワールドカップ）全104試合の日程・スケジュールを日本時間で一覧表��。日本代表戦のキックオフ時間・会場・テレビ放送予定を網羅。グループステージ72試合＋ノックアウト32試合。",
   alternates: { canonical: "https://www.wc2026report.com/matches" },
 };
 
@@ -26,6 +26,35 @@ export default async function MatchesPage() {
         { name: t("nav.matches"), url: "https://www.wc2026report.com/matches" },
       ]} />
 
+      {/* 日本戦のSportsEvent JSON-LD（リッチリザルト狙い） */}
+      <SportsEventJsonLd
+        name="W杯2026 グループF第1節: オランダ vs 日本"
+        startDate="2026-06-15T05:00:00+09:00"
+        location="AT&T スタジアム（ダラス）"
+        homeTeam="オランダ"
+        awayTeam="日本"
+        description="FIFAワールドカップ2026 グループF第1節。日本代表の初戦。"
+        url="https://www.wc2026report.com/matches"
+      />
+      <SportsEventJsonLd
+        name="W杯2026 グループF第2節: チュニ��ア vs 日本"
+        startDate="2026-06-21T13:00:00+09:00"
+        location="BBVA スタジアム（モンテレイ）"
+        homeTeam="チュニジア"
+        awayTeam="日本"
+        description="FIFAワールドカ���プ2026 グループF第2節。"
+        url="https://www.wc2026report.com/matches"
+      />
+      <SportsEventJsonLd
+        name="W杯2026 グループF第3節: 日本 vs スウェーデン"
+        startDate="2026-06-26T08:00:00+09:00"
+        location="AT&T スタジアム（ダラス）"
+        homeTeam="日本"
+        awayTeam="スウェーデン"
+        description="FIFAワールド���ップ2026 グループF第3節。グループステージ最終戦。"
+        url="https://www.wc2026report.com/matches"
+      />
+
       <div className="max-w-6xl mx-auto px-4 py-8 sm:py-12">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
           {t("matches.pageTitle")}
@@ -33,6 +62,16 @@ export default async function MatchesPage() {
         <p className="text-gray-500 mb-8">
           {t("matches.pageDescription")}
         </p>
+
+        {/* 視聴ガイドへの誘導バナ��� */}
+        <Link
+          href="/watch"
+          className="flex items-center gap-2 bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-xl px-4 py-3 mb-6 hover:from-gray-800 hover:to-gray-700 transition-all"
+        >
+          <Icon name="live_tv" size={20} className="text-green-400" />
+          <span className="text-sm font-medium">W杯の放送・配信情報をチェック</span>
+          <Icon name="arrow_forward" size={16} className="ml-auto text-gray-400" />
+        </Link>
 
         {/* メインスケジュールビュー */}
         <MatchScheduleView
@@ -76,6 +115,13 @@ export default async function MatchesPage() {
           >
             <Icon name="scoreboard" size={16} />
             {t("matches.linkResults")}
+          </Link>
+          <Link
+            href="/watch"
+            className="inline-flex items-center gap-1 text-sm text-green-600 font-medium hover:text-green-800 bg-green-50 px-3 py-2 rounded-lg"
+          >
+            <Icon name="live_tv" size={16} />
+            視聴ガイド
           </Link>
         </div>
 

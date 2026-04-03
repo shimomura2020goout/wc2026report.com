@@ -7,9 +7,9 @@ import { BreadcrumbJsonLd } from "@/components/JsonLd";
 import { getLocaleFromCookies, getDictionary, createTranslator } from "@/i18n/index";
 
 export const metadata: Metadata = {
-  title: "サッカーカレンダー 2026｜W杯・日本代表・CL 主要イベント一覧",
+  title: "W杯2026 日程カレンダー｜日本代表の試合日・キックオフ時間を一目で確認",
   description:
-    "2026年のサッカー主要イベントをカレンダー形式で一覧表示。FIFA ワールドカップ 2026、日本代表戦、UEFAチャンピオンズリーグ、プレーオフ日程をまとめてチェック。",
+    "W杯2026の全試合日程をカレンダー形式で表示。日本代表戦のキックオフ時間（日本時間JST）、会場、放送予定を一目で確認。UEFAチャンピオンズリーグ決勝など主要イベントも網羅。",
   alternates: { canonical: "https://www.wc2026report.com/calendar" },
 };
 

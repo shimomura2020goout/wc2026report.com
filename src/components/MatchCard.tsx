@@ -104,6 +104,21 @@ export default function MatchCard({ match, showType = true }: MatchCardProps) {
           </div>
         )}
 
+        {/* Add to Calendar + Watch link (scheduled matches only) */}
+        {match.status === "scheduled" && match.kickoff !== "未定" && (
+          <div className="mt-2 flex items-center justify-center gap-3 text-xs">
+            <a
+              href={`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`${match.homeTeam} vs ${match.awayTeam}`)}&dates=${match.date.replace(/-/g, "")}T${match.kickoff.replace(":", "")}00/${match.date.replace(/-/g, "")}T${String(Number(match.kickoff.split(":")[0]) + 2).padStart(2, "0")}${match.kickoff.split(":")[1]}00&ctz=Asia/Tokyo&details=${encodeURIComponent(`W杯2026 ${match.typeLabel || ""} | ${match.venue}（${match.city}）`)}&location=${encodeURIComponent(`${match.venue}, ${match.city}`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-blue-500 hover:text-blue-700"
+            >
+              <Icon name="calendar_add_on" size={13} />
+              カレンダーに追加
+            </a>
+          </div>
+        )}
+
         {/* Article link — finished: 試合レポート / scheduled: プレビュー記事 */}
         {match.resultLink && (
           <div className="mt-2 text-center">

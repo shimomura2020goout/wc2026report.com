@@ -40,9 +40,20 @@ export default async function WatchPage() {
         <Icon name="live_tv" size={32} className="text-gray-700" />
         {t("watch.pageTitle")}
       </h1>
-      <p className="text-gray-500 mb-8">
+      <p className="text-gray-500 mb-4">
         {t("watch.pageDescription")}
       </p>
+
+      {/* 見逃し配信の訴求 */}
+      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-8">
+        <div className="flex items-start gap-2">
+          <Icon name="tips_and_updates" size={20} className="text-amber-600 mt-0.5" />
+          <div>
+            <p className="text-sm font-bold text-amber-900">見逃し配信・ハイライトもDAZNで</p>
+            <p className="text-xs text-amber-700 mt-1">リアルタイムで見られなかった試合も、DAZNなら見逃し配信でフルマッチ視聴が可能。日本代表戦のハイライトも配信予定です。</p>
+          </div>
+        </div>
+      </div>
 
       {/* DAZN Section */}
       <section className="bg-gradient-to-br from-[#0f0f0f] to-[#1a1a1a] text-white rounded-2xl p-6 sm:p-8 mb-8">
@@ -165,7 +176,7 @@ export default async function WatchPage() {
               通常合計4,750円 → 1,270円もお得
             </li>
           </ul>
-          <p className="text-[10px] text-gray-500">※ 個人向けDAZNのアフィリエイトリンクは準備中です。リンクが確定次第、更新いたします。</p>
+          <p className="text-[10px] text-gray-500">※ 個人向けDAZNのリンクは準備中です。確定次第更新します。</p>
         </div>
 
         <p className="text-xs text-gray-600 mt-3">※ {t("watch.affiliateNote")}</p>

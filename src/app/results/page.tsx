@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import Icon from "@/components/Icon";
 import SourceAttribution from "@/components/SourceAttribution";
 import { BreadcrumbJsonLd } from "@/components/JsonLd";
@@ -265,6 +266,16 @@ export default async function ResultsPage() {
             </div>
           </div>
         </section>
+
+        {/* 視聴ガイドへの誘導 */}
+        <Link
+          href="/watch"
+          className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 mt-6 hover:bg-gray-100 transition-colors"
+        >
+          <Icon name="live_tv" size={18} className="text-green-600" />
+          <span className="text-sm text-gray-700">見逃した試合もDAZNで視聴可能 →</span>
+          <span className="text-xs text-blue-600 font-medium ml-auto">視聴ガイド</span>
+        </Link>
 
         <SourceAttribution
           sources={[
