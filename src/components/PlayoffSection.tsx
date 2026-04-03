@@ -111,7 +111,7 @@ export default function PlayoffSection() {
         <a href="https://www.uefa.com/european-qualifiers/" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-600">UEFA公式 — 欧州予選</a>
         {" / "}
         <a href="https://www.fifa.com/fifaplus/en/tournaments/mens/worldcup/canadamexicousa2026" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-600">FIFA公式</a>
-        <span className="ml-2">最終更新: 2026年4月1日</span>
+        <span className="ml-2">最終更新: 2026年4月4日</span>
       </div>
     </section>
   );

@@ -331,7 +331,7 @@ export default async function WatchPage() {
           { label: "NHK — FIFA World Cup", url: "https://www.nhk.or.jp/" },
           { label: "NTV — World Cup", url: "https://www.ntv.co.jp/" },
         ]}
-        updatedAt="2026年4月1日"
+        updatedAt="2026年4月4日"
       />
     </div>
     </>
