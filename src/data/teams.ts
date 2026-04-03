@@ -12,7 +12,7 @@ export interface Team {
 }
 
 // ========================================
-// 全48チーム（2026年4月1日 FIFAランキング準拠）
+// 全48チーム（2026年4月4日更新 / FIFAランキング2026年4月1日付準拠）
 // ========================================
 
 export const allTeams: Team[] = [
@@ -29,7 +29,7 @@ export const allTeams: Team[] = [
   { name: "ボスニア・ヘルツェゴビナ", code: "BIH", group: "B", fifaRanking: 57, region: "UEFA", regionLabel: "ヨーロッパ", wcAppearances: 1, bestResult: "初出場", flag: "🇧🇦" },
 
   // --- グループ C ---
-  { name: "ブラジル", code: "BRA", group: "C", fifaRanking: 7, region: "CONMEBOL", regionLabel: "南米", wcAppearances: 23, bestResult: "優勝（1958-2002・5回）", flag: "🇧🇷" },
+  { name: "ブラジル", code: "BRA", group: "C", fifaRanking: 6, region: "CONMEBOL", regionLabel: "南米", wcAppearances: 23, bestResult: "優勝（1958-2002・5回）", flag: "🇧🇷" },
   { name: "ハイチ", code: "HAI", group: "C", fifaRanking: 83, region: "CONCACAF", regionLabel: "北中米カリブ海", wcAppearances: 2, bestResult: "GL敗退（1974）", flag: "🇭🇹" },
   { name: "スコットランド", code: "SCO", group: "C", fifaRanking: 40, region: "UEFA", regionLabel: "ヨーロッパ", wcAppearances: 9, bestResult: "GL敗退（1954-1998）", flag: "🏴󠁧󠁢󠁳󠁣󠁴󠁿" },
   { name: "モロッコ", code: "MAR", group: "C", fifaRanking: 8, region: "CAF", regionLabel: "アフリカ", wcAppearances: 7, bestResult: "4位（2022）", flag: "🇲🇦" },
@@ -47,7 +47,7 @@ export const allTeams: Team[] = [
   { name: "キュラソー", code: "CUW", group: "E", fifaRanking: 81, region: "CONCACAF", regionLabel: "北中米カリブ海", wcAppearances: 1, bestResult: "初出場", flag: "🇨🇼" },
 
   // --- グループ F（日本所属）---
-  { name: "オランダ", code: "NED", group: "F", fifaRanking: 6, region: "UEFA", regionLabel: "ヨーロッパ", wcAppearances: 12, bestResult: "準優勝（1974-2010・3回）", flag: "🇳🇱" },
+  { name: "オランダ", code: "NED", group: "F", fifaRanking: 7, region: "UEFA", regionLabel: "ヨーロッパ", wcAppearances: 12, bestResult: "準優勝（1974-2010・3回）", flag: "🇳🇱" },
   { name: "日本", code: "JPN", group: "F", fifaRanking: 18, region: "AFC", regionLabel: "アジア", wcAppearances: 8, bestResult: "ベスト16（2002-2022）", flag: "🇯🇵" },
   { name: "チュニジア", code: "TUN", group: "F", fifaRanking: 45, region: "CAF", regionLabel: "アフリカ", wcAppearances: 7, bestResult: "GL敗退（1978-2022）", flag: "🇹🇳" },
   { name: "スウェーデン", code: "SWE", group: "F", fifaRanking: 30, region: "UEFA", regionLabel: "ヨーロッパ", wcAppearances: 14, bestResult: "準優勝（1958）", flag: "🇸🇪" },
@@ -59,13 +59,13 @@ export const allTeams: Team[] = [
   { name: "ニュージーランド", code: "NZL", group: "G", fifaRanking: 85, region: "OFC", regionLabel: "オセアニア", wcAppearances: 3, bestResult: "GL敗退（1982-2010）", flag: "🇳🇿" },
 
   // --- グループ H ---
-  { name: "スペイン", code: "ESP", group: "H", fifaRanking: 1, region: "UEFA", regionLabel: "ヨーロッパ", wcAppearances: 17, bestResult: "優勝（2010）", flag: "🇪🇸" },
+  { name: "スペイン", code: "ESP", group: "H", fifaRanking: 2, region: "UEFA", regionLabel: "ヨーロッパ", wcAppearances: 17, bestResult: "優勝（2010）", flag: "🇪🇸" },
   { name: "サウジアラビア", code: "KSA", group: "H", fifaRanking: 60, region: "AFC", regionLabel: "アジア", wcAppearances: 7, bestResult: "ベスト16（1994）", flag: "🇸🇦" },
   { name: "ウルグアイ", code: "URU", group: "H", fifaRanking: 17, region: "CONMEBOL", regionLabel: "南米", wcAppearances: 15, bestResult: "優勝（1930, 1950）", flag: "🇺🇾" },
   { name: "カーボベルデ", code: "CPV", group: "H", fifaRanking: 68, region: "CAF", regionLabel: "アフリカ", wcAppearances: 1, bestResult: "初出場", flag: "🇨🇻" },
 
   // --- グループ I ---
-  { name: "フランス", code: "FRA", group: "I", fifaRanking: 2, region: "UEFA", regionLabel: "ヨーロッパ", wcAppearances: 17, bestResult: "優勝（1998, 2018）", flag: "🇫🇷" },
+  { name: "フランス", code: "FRA", group: "I", fifaRanking: 1, region: "UEFA", regionLabel: "ヨーロッパ", wcAppearances: 17, bestResult: "優勝（1998, 2018）", flag: "🇫🇷" },
   { name: "セネガル", code: "SEN", group: "I", fifaRanking: 14, region: "CAF", regionLabel: "アフリカ", wcAppearances: 4, bestResult: "ベスト8（2002）", flag: "🇸🇳" },
   { name: "ノルウェー", code: "NOR", group: "I", fifaRanking: 31, region: "UEFA", regionLabel: "ヨーロッパ", wcAppearances: 4, bestResult: "ベスト16（1998）", flag: "🇳🇴" },
   { name: "ボリビア", code: "BOL", group: "I", fifaRanking: 83, region: "CONMEBOL", regionLabel: "南米", wcAppearances: 4, bestResult: "GL敗退（1930-1994）", flag: "🇧🇴" },

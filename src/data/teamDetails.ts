@@ -573,8 +573,8 @@ export const teamDetails: Record<string, TeamDetail> = {
   },
   GHA: {
     code: "GHA",
-    coach: "オットー・アド",
-    coachNationality: "ドイツ/ガーナ",
+    coach: "未定（新監督選考中）",
+    coachNationality: "未定",
     nickname: "ブラックスターズ",
     kitColors: "白・黄・赤",
     starPlayers: ["モハメド・クドゥス", "トーマス・パーティ", "イニャキ・ウィリアムズ"],
