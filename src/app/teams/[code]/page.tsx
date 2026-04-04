@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import Icon from "@/components/Icon";
 import MatchCard from "@/components/MatchCard";
 import CoachTooltip from "@/components/CoachTooltip";
+import PlayerTooltip from "@/components/PlayerTooltip";
 import SourceAttribution from "@/components/SourceAttribution";
 import { BreadcrumbJsonLd } from "@/components/JsonLd";
 import { allTeams } from "@/data/teams";
@@ -160,16 +161,12 @@ export default async function TeamDetailPage({ params }: Props) {
             <SectionTitle icon="star" title={t("teamDetail.starPlayers")} />
             <div className="flex flex-wrap gap-3">
               {detail.starPlayers.map((player) => (
-                <a
+                <PlayerTooltip
                   key={player}
-                  href={`https://ja.wikipedia.org/wiki/Special:Search?search=${encodeURIComponent(player + " サッカー")}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-white border border-gray-200 rounded-xl px-4 py-3 shadow-sm hover:border-blue-300 hover:shadow-md transition-all group"
-                >
-                  <span className="text-sm font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">{player}</span>
-                  <span className="text-[10px] text-gray-400 ml-1.5 group-hover:text-blue-400">↗</span>
-                </a>
+                  playerName={player}
+                  teamName={team.name}
+                  teamFlag={team.flag}
+                />
               ))}
             </div>
           </section>
