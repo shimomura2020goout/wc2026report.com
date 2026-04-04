@@ -28,15 +28,15 @@ export default function Header() {
   const pathname = usePathname();
   const { t } = useTranslation();
 
-  // Edge swipe to open menu (left edge → right)
+  // Edge swipe to open menu (right edge → left swipe)
   const edgeTouchStartX = useRef<number | null>(null);
   const edgeTouchStartY = useRef<number | null>(null);
 
   const handleEdgeSwipe = useCallback((e: TouchEvent) => {
     const touch = e.touches[0];
     if (edgeTouchStartX.current === null) {
-      // Only trigger from left edge (within 25px)
-      if (touch.clientX < 25) {
+      // Only trigger from right edge (within 25px of right side)
+      if (touch.clientX > window.innerWidth - 25) {
         edgeTouchStartX.current = touch.clientX;
         edgeTouchStartY.current = touch.clientY;
       }
@@ -47,7 +47,7 @@ export default function Header() {
   const handleEdgeSwipeEnd = useCallback((e: TouchEvent) => {
     if (edgeTouchStartX.current === null || edgeTouchStartY.current === null) return;
     const touch = e.changedTouches[0];
-    const dx = touch.clientX - edgeTouchStartX.current;
+    const dx = edgeTouchStartX.current - touch.clientX; // reversed: right to left
     const dy = Math.abs(touch.clientY - edgeTouchStartY.current);
     if (dx > 60 && dx > dy * 1.5) {
       setIsOpen(true);
@@ -128,10 +128,10 @@ export default function Header() {
               className={`fixed inset-0 bg-black/40 z-40 md:hidden ${isClosing ? "opacity-0" : "opacity-100"} transition-opacity duration-200`}
               onClick={closeMenu}
             />
-            {/* Drawer */}
+            {/* Drawer (right side) */}
             <nav
-              className={`fixed top-0 left-0 bottom-0 w-64 bg-[#1a1a2e] z-50 md:hidden shadow-2xl ${
-                isClosing ? "animate-slide-out-to-left" : "animate-slide-in-left"
+              className={`fixed top-0 right-0 bottom-0 w-64 bg-[#1a1a2e] z-50 md:hidden shadow-2xl ${
+                isClosing ? "animate-slide-out-to-right" : "animate-slide-in-right"
               }`}
             >
               <div className="flex items-center justify-between px-4 h-16 border-b border-white/10">

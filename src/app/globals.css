@@ -167,18 +167,18 @@ html {
   animation: slideOutRight 0.2s ease-out forwards;
 }
 
-/* スマホ エッジスワイプメニュー */
-@keyframes slideInFromLeft {
-  from { transform: translateX(-100%); }
+/* スマホ エッジスワイプメニュー（右側ドロワー） */
+@keyframes slideInFromRight {
+  from { transform: translateX(100%); }
   to { transform: translateX(0); }
 }
-@keyframes slideOutToLeft {
+@keyframes slideOutToRight {
   from { transform: translateX(0); }
-  to { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
 }
-.animate-slide-in-left {
-  animation: slideInFromLeft 0.25s ease-out forwards;
+.animate-slide-in-right {
+  animation: slideInFromRight 0.25s ease-out forwards;
 }
-.animate-slide-out-to-left {
-  animation: slideOutToLeft 0.2s ease-in forwards;
+.animate-slide-out-to-right {
+  animation: slideOutToRight 0.2s ease-in forwards;
 }

@@ -113,15 +113,20 @@ export default function TeamsView({ teams }: TeamsViewProps) {
                 <thead>
                   <tr className="bg-gray-50 text-gray-600">
                     <th className="text-center px-3 py-3 font-semibold w-12">順位</th>
-                    <th className="text-left px-4 py-3 font-semibold">チーム</th>
-                    <th className="text-center px-3 py-3 font-semibold hidden sm:table-cell">グループ</th>
+                    <th className="text-left px-4 py-3 font-semibold">国</th>
+                    <th className="text-right px-3 py-3 font-semibold">スコア</th>
                     <th className="text-center px-3 py-3 font-semibold hidden sm:table-cell">大陸</th>
+                    <th className="text-center px-3 py-3 font-semibold hidden sm:table-cell">W杯グループ</th>
                     <th className="text-left px-3 py-3 font-semibold hidden md:table-cell">W杯最高成績</th>
-                    <th className="text-center px-3 py-3 font-semibold">出場回数</th>
+                    <th className="text-center px-3 py-3 font-semibold hidden md:table-cell">W杯出場回数</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {section.teams.map((team) => (
+                  {section.teams.map((team) => {
+                    const diff = team.fifaPoints - team.fifaPrevPoints;
+                    const diffStr = diff > 0 ? `+${diff.toFixed(1)}` : diff < 0 ? diff.toFixed(1) : "0";
+                    const diffColor = diff > 0 ? "text-green-600" : diff < 0 ? "text-red-500" : "text-gray-400";
+                    return (
                     <tr
                       key={team.code}
                       className={`border-t border-gray-50 hover:bg-gray-50 transition-colors ${team.name === "日本" ? "bg-red-50/50" : ""}`}
@@ -135,16 +140,21 @@ export default function TeamsView({ teams }: TeamsViewProps) {
                           </span>
                         </Link>
                       </td>
+                      <td className="text-right px-3 py-3">
+                        <span className="font-bold text-gray-800">{team.fifaPoints.toFixed(2)}</span>
+                        <span className={`ml-1 text-[10px] ${diffColor}`}>({diffStr})</span>
+                      </td>
+                      <td className="text-center px-3 py-3 text-gray-500 hidden sm:table-cell">{team.regionLabel}</td>
                       <td className="text-center px-3 py-3 hidden sm:table-cell">
                         <Link href={`/groups#group-${team.group}`} className="text-amber-600 font-medium hover:underline">
                           {team.group}
                         </Link>
                       </td>
-                      <td className="text-center px-3 py-3 text-gray-500 hidden sm:table-cell">{team.regionLabel}</td>
                       <td className="px-3 py-3 text-gray-600 text-xs hidden md:table-cell">{team.bestResult}</td>
-                      <td className="text-center px-3 py-3 text-gray-600">{team.wcAppearances}回</td>
+                      <td className="text-center px-3 py-3 text-gray-600 hidden md:table-cell">{team.wcAppearances}回</td>
                     </tr>
-                  ))}
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
