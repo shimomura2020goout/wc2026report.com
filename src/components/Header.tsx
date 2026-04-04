@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useSwipeable } from "react-swipeable";
 import Icon from "./Icon";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useTranslation } from "@/i18n/client";
@@ -28,49 +29,46 @@ export default function Header() {
   const pathname = usePathname();
   const { t } = useTranslation();
 
-  // Edge swipe to open menu (right edge → left swipe)
-  const edgeTouchStartX = useRef<number | null>(null);
-  const edgeTouchStartY = useRef<number | null>(null);
-
-  const handleEdgeSwipe = useCallback((e: TouchEvent) => {
-    const touch = e.touches[0];
-    if (edgeTouchStartX.current === null) {
-      // Only trigger from right edge (within 25px of right side)
-      if (touch.clientX > window.innerWidth - 25) {
-        edgeTouchStartX.current = touch.clientX;
-        edgeTouchStartY.current = touch.clientY;
-      }
-      return;
-    }
-  }, []);
-
-  const handleEdgeSwipeEnd = useCallback((e: TouchEvent) => {
-    if (edgeTouchStartX.current === null || edgeTouchStartY.current === null) return;
-    const touch = e.changedTouches[0];
-    const dx = edgeTouchStartX.current - touch.clientX; // reversed: right to left
-    const dy = Math.abs(touch.clientY - edgeTouchStartY.current);
-    if (dx > 60 && dx > dy * 1.5) {
-      setIsOpen(true);
-    }
-    edgeTouchStartX.current = null;
-    edgeTouchStartY.current = null;
-  }, []);
-
-  useEffect(() => {
-    document.addEventListener("touchstart", handleEdgeSwipe, { passive: true });
-    document.addEventListener("touchmove", handleEdgeSwipe, { passive: true });
-    document.addEventListener("touchend", handleEdgeSwipeEnd, { passive: true });
-    return () => {
-      document.removeEventListener("touchstart", handleEdgeSwipe);
-      document.removeEventListener("touchmove", handleEdgeSwipe);
-      document.removeEventListener("touchend", handleEdgeSwipeEnd);
-    };
-  }, [handleEdgeSwipe, handleEdgeSwipeEnd]);
-
-  const closeMenu = () => {
+  const closeMenu = useCallback(() => {
     setIsClosing(true);
     setTimeout(() => { setIsOpen(false); setIsClosing(false); }, 200);
-  };
+  }, []);
+
+  // ドロワー内: 右スワイプで閉じる
+  const drawerSwipeHandlers = useSwipeable({
+    onSwipedRight: () => closeMenu(),
+    trackMouse: false,
+    delta: 50,
+  });
+
+  // 画面右端からの左スワイプで開く（グローバル）
+  useEffect(() => {
+    let startX: number | null = null;
+    let startY: number | null = null;
+
+    const onStart = (e: TouchEvent) => {
+      const x = e.touches[0].clientX;
+      if (x > window.innerWidth - 30) {
+        startX = x;
+        startY = e.touches[0].clientY;
+      }
+    };
+    const onEnd = (e: TouchEvent) => {
+      if (startX === null || startY === null) return;
+      const dx = startX - e.changedTouches[0].clientX;
+      const dy = Math.abs(e.changedTouches[0].clientY - startY);
+      if (dx > 50 && dx > dy * 1.5) setIsOpen(true);
+      startX = null;
+      startY = null;
+    };
+
+    document.addEventListener("touchstart", onStart, { passive: true });
+    document.addEventListener("touchend", onEnd, { passive: true });
+    return () => {
+      document.removeEventListener("touchstart", onStart);
+      document.removeEventListener("touchend", onEnd);
+    };
+  }, []);
 
   return (
     <header className="bg-[#1a1a2e] text-white sticky top-0 z-50 shadow-lg">
@@ -108,8 +106,6 @@ export default function Header() {
 
           <div className="flex items-center gap-2">
             <LanguageSwitcher />
-
-            {/* Mobile menu button */}
             <button
               className="md:hidden p-2 rounded-lg hover:bg-white/10"
               onClick={() => isOpen ? closeMenu() : setIsOpen(true)}
@@ -120,16 +116,15 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Mobile drawer overlay + menu */}
+        {/* Mobile drawer */}
         {isOpen && (
           <>
-            {/* Backdrop */}
             <div
               className={`fixed inset-0 bg-black/40 z-40 md:hidden ${isClosing ? "opacity-0" : "opacity-100"} transition-opacity duration-200`}
               onClick={closeMenu}
             />
-            {/* Drawer (right side) */}
             <nav
+              {...drawerSwipeHandlers}
               className={`fixed top-0 right-0 bottom-0 w-64 bg-[#1a1a2e] z-50 md:hidden shadow-2xl ${
                 isClosing ? "animate-slide-out-to-right" : "animate-slide-in-right"
               }`}

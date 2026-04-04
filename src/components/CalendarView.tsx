@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo, useRef, useCallback, useEffect } from "react";
+import { useState, useMemo, useRef } from "react";
+import { useSwipeable } from "react-swipeable";
 import Link from "next/link";
 import Icon from "./Icon";
 import {
@@ -522,56 +523,40 @@ export default function CalendarView() {
     month: months[currentMonth] || String(currentMonth),
   });
 
-  // ── スワイプ対応（スライダー風アニメーション） ──
-  const touchStartX = useRef<number | null>(null);
-  const touchStartY = useRef<number | null>(null);
+  // ── スワイプ対応（react-swipeable） ──
   const [swipeOffset, setSwipeOffset] = useState(0);
   const [slideDirection, setSlideDirection] = useState<"left" | "right" | null>(null);
-  const isSwipingRef = useRef(false);
-  const calendarContentRef = useRef<HTMLDivElement>(null);
 
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-    touchStartY.current = e.touches[0].clientY;
-    isSwipingRef.current = false;
-    setSwipeOffset(0);
-  }, []);
+  // useRef で最新の関数を保持（stale closure 回避）
+  const goToPrevRef = useRef(goToPrevMonth);
+  const goToNextRef = useRef(goToNextMonth);
+  goToPrevRef.current = goToPrevMonth;
+  goToNextRef.current = goToNextMonth;
 
-  const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    if (touchStartX.current === null || touchStartY.current === null) return;
-    const deltaX = e.touches[0].clientX - touchStartX.current;
-    const deltaY = e.touches[0].clientY - touchStartY.current;
-    if (!isSwipingRef.current && Math.abs(deltaX) > 10 && Math.abs(deltaX) > Math.abs(deltaY) * 1.2) {
-      isSwipingRef.current = true;
-    }
-    if (isSwipingRef.current) {
-      // 抵抗感を出すために係数0.4
-      setSwipeOffset(deltaX * 0.4);
-    }
-  }, []);
-
-  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
-    if (touchStartX.current === null || touchStartY.current === null) return;
-    const deltaX = e.changedTouches[0].clientX - touchStartX.current;
-    const deltaY = e.changedTouches[0].clientY - touchStartY.current;
-
-    if (Math.abs(deltaX) > 60 && Math.abs(deltaX) > Math.abs(deltaY) * 1.2) {
-      if (deltaX > 0) {
-        setSlideDirection("right");
-        setTimeout(() => { goToPrevMonth(); setSlideDirection(null); }, 200);
-      } else {
-        setSlideDirection("left");
-        setTimeout(() => { goToNextMonth(); setSlideDirection(null); }, 200);
+  const swipeHandlers = useSwipeable({
+    onSwiping: (e) => {
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY) * 1.2) {
+        setSwipeOffset(e.deltaX * 0.4);
       }
-    }
-    setSwipeOffset(0);
-    touchStartX.current = null;
-    touchStartY.current = null;
-    isSwipingRef.current = false;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    },
+    onSwipedLeft: () => {
+      setSwipeOffset(0);
+      setSlideDirection("left");
+      setTimeout(() => { goToNextRef.current(); setSlideDirection(null); }, 200);
+    },
+    onSwipedRight: () => {
+      setSwipeOffset(0);
+      setSlideDirection("right");
+      setTimeout(() => { goToPrevRef.current(); setSlideDirection(null); }, 200);
+    },
+    onTouchEndOrOnMouseUp: () => {
+      setSwipeOffset(0);
+    },
+    trackMouse: false,
+    delta: 50,
+    preventScrollOnSwipe: false,
+  });
 
-  // slideDirection が変わったらアニメーション開始位置をリセット
   const slideClass = slideDirection === "left"
     ? "animate-slide-out-left"
     : slideDirection === "right"
@@ -579,11 +564,7 @@ export default function CalendarView() {
     : "";
 
   return (
-    <div
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-    >
+    <div {...swipeHandlers}>
       {/* ── ヘッダー: 月ナビ & ビュー切り替え ── */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
@@ -680,7 +661,6 @@ export default function CalendarView() {
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6">
           {/* カレンダーグリッド */}
           <div
-            ref={calendarContentRef}
             className={`transition-transform duration-200 ease-out ${slideClass}`}
             style={swipeOffset !== 0 ? { transform: `translateX(${swipeOffset}px)`, opacity: Math.max(0.5, 1 - Math.abs(swipeOffset) / 300) } : undefined}
           >
