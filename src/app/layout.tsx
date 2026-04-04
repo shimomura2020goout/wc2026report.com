@@ -8,6 +8,7 @@ import LatestNewsBannerWrapper from "@/components/LatestNewsBannerWrapper";
 import InstallPrompt from "@/components/InstallPrompt";
 import LocaleProvider from "@/components/LocaleProvider";
 import { WebsiteJsonLd } from "@/components/JsonLd";
+import DonationBanner from "@/components/DonationBanner";
 import { getLocaleFromCookies, getDictionary } from "@/i18n/index";
 
 const geistSans = Geist({
@@ -115,6 +116,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <LatestNewsBanner />
           </LatestNewsBannerWrapper>
           <main className="flex-1">{children}</main>
+          <DonationBanner />
           <Footer />
           <InstallPrompt />
         </LocaleProvider>
