@@ -16,13 +16,27 @@ export default function DonationBanner() {
     setDismissed(false);
   }, []);
 
+  // GA4イベント送信
+  const trackEvent = (action: string) => {
+    if (typeof window !== "undefined" && typeof window.gtag === "function") {
+      window.gtag("event", action, {
+        event_category: "donation_banner",
+        event_label: "ofuse",
+      });
+    }
+  };
+
   const handleDismiss = () => {
+    trackEvent("donation_close");
     setDismissed(true);
-    // 7 days cooldown
     localStorage.setItem(
       "donation_banner_dismissed",
       String(Date.now() + 7 * 24 * 60 * 60 * 1000)
     );
+  };
+
+  const handleClick = () => {
+    trackEvent("donation_click");
   };
 
   if (dismissed) return null;
@@ -55,6 +69,7 @@ export default function DonationBanner() {
                   data-ofuse-color="dark"
                   data-ofuse-text="サイトを支援する（100円から）"
                   data-ofuse-style="rectangle"
+                  onClick={handleClick}
                   className="inline-flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition-colors"
                 >
                   <Icon name="favorite" size={16} />
