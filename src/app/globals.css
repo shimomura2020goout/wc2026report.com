@@ -150,3 +150,35 @@ html {
 .prose tbody tr:hover {
   background-color: #f9fafb;
 }
+
+/* カレンダースワイプアニメーション */
+@keyframes slideOutLeft {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(-80px); opacity: 0.3; }
+}
+@keyframes slideOutRight {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(80px); opacity: 0.3; }
+}
+.animate-slide-out-left {
+  animation: slideOutLeft 0.2s ease-out forwards;
+}
+.animate-slide-out-right {
+  animation: slideOutRight 0.2s ease-out forwards;
+}
+
+/* スマホ エッジスワイプメニュー */
+@keyframes slideInFromLeft {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+@keyframes slideOutToLeft {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
+.animate-slide-in-left {
+  animation: slideInFromLeft 0.25s ease-out forwards;
+}
+.animate-slide-out-to-left {
+  animation: slideOutToLeft 0.2s ease-in forwards;
+}

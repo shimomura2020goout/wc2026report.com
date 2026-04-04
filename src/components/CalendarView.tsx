@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useRef, useCallback } from "react";
+import { useState, useMemo, useRef, useCallback, useEffect } from "react";
 import Link from "next/link";
 import Icon from "./Icon";
 import {
@@ -522,34 +522,66 @@ export default function CalendarView() {
     month: months[currentMonth] || String(currentMonth),
   });
 
-  // ── スワイプ対応 ──
+  // ── スワイプ対応（スライダー風アニメーション） ──
   const touchStartX = useRef<number | null>(null);
   const touchStartY = useRef<number | null>(null);
+  const [swipeOffset, setSwipeOffset] = useState(0);
+  const [slideDirection, setSlideDirection] = useState<"left" | "right" | null>(null);
+  const isSwipingRef = useRef(false);
+  const calendarContentRef = useRef<HTMLDivElement>(null);
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
     touchStartY.current = e.touches[0].clientY;
+    isSwipingRef.current = false;
+    setSwipeOffset(0);
+  }, []);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (touchStartX.current === null || touchStartY.current === null) return;
+    const deltaX = e.touches[0].clientX - touchStartX.current;
+    const deltaY = e.touches[0].clientY - touchStartY.current;
+    if (!isSwipingRef.current && Math.abs(deltaX) > 10 && Math.abs(deltaX) > Math.abs(deltaY) * 1.2) {
+      isSwipingRef.current = true;
+    }
+    if (isSwipingRef.current) {
+      // 抵抗感を出すために係数0.4
+      setSwipeOffset(deltaX * 0.4);
+    }
   }, []);
 
   const handleTouchEnd = useCallback((e: React.TouchEvent) => {
     if (touchStartX.current === null || touchStartY.current === null) return;
     const deltaX = e.changedTouches[0].clientX - touchStartX.current;
     const deltaY = e.changedTouches[0].clientY - touchStartY.current;
-    // 横方向のスワイプが十分で、縦方向のスクロールでない場合のみ
-    if (Math.abs(deltaX) > 50 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
+
+    if (Math.abs(deltaX) > 60 && Math.abs(deltaX) > Math.abs(deltaY) * 1.2) {
       if (deltaX > 0) {
-        goToPrevMonth();
+        setSlideDirection("right");
+        setTimeout(() => { goToPrevMonth(); setSlideDirection(null); }, 200);
       } else {
-        goToNextMonth();
+        setSlideDirection("left");
+        setTimeout(() => { goToNextMonth(); setSlideDirection(null); }, 200);
       }
     }
+    setSwipeOffset(0);
     touchStartX.current = null;
     touchStartY.current = null;
+    isSwipingRef.current = false;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // slideDirection が変わったらアニメーション開始位置をリセット
+  const slideClass = slideDirection === "left"
+    ? "animate-slide-out-left"
+    : slideDirection === "right"
+    ? "animate-slide-out-right"
+    : "";
 
   return (
     <div
       onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
       {/* ── ヘッダー: 月ナビ & ビュー切り替え ── */}
@@ -647,7 +679,11 @@ export default function CalendarView() {
       {viewMode === "calendar" ? (
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6">
           {/* カレンダーグリッド */}
-          <div>
+          <div
+            ref={calendarContentRef}
+            className={`transition-transform duration-200 ease-out ${slideClass}`}
+            style={swipeOffset !== 0 ? { transform: `translateX(${swipeOffset}px)`, opacity: Math.max(0.5, 1 - Math.abs(swipeOffset) / 300) } : undefined}
+          >
             {/* 曜日ヘッダー */}
             <div className="grid grid-cols-7 gap-1 mb-1">
               {weekdays.map((day, i) => (

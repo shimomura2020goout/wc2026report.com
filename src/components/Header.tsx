@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Icon from "./Icon";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useTranslation } from "@/i18n/client";
@@ -24,8 +24,53 @@ function isActive(pathname: string, item: typeof navKeys[number]): boolean {
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
   const pathname = usePathname();
   const { t } = useTranslation();
+
+  // Edge swipe to open menu (left edge → right)
+  const edgeTouchStartX = useRef<number | null>(null);
+  const edgeTouchStartY = useRef<number | null>(null);
+
+  const handleEdgeSwipe = useCallback((e: TouchEvent) => {
+    const touch = e.touches[0];
+    if (edgeTouchStartX.current === null) {
+      // Only trigger from left edge (within 25px)
+      if (touch.clientX < 25) {
+        edgeTouchStartX.current = touch.clientX;
+        edgeTouchStartY.current = touch.clientY;
+      }
+      return;
+    }
+  }, []);
+
+  const handleEdgeSwipeEnd = useCallback((e: TouchEvent) => {
+    if (edgeTouchStartX.current === null || edgeTouchStartY.current === null) return;
+    const touch = e.changedTouches[0];
+    const dx = touch.clientX - edgeTouchStartX.current;
+    const dy = Math.abs(touch.clientY - edgeTouchStartY.current);
+    if (dx > 60 && dx > dy * 1.5) {
+      setIsOpen(true);
+    }
+    edgeTouchStartX.current = null;
+    edgeTouchStartY.current = null;
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener("touchstart", handleEdgeSwipe, { passive: true });
+    document.addEventListener("touchmove", handleEdgeSwipe, { passive: true });
+    document.addEventListener("touchend", handleEdgeSwipeEnd, { passive: true });
+    return () => {
+      document.removeEventListener("touchstart", handleEdgeSwipe);
+      document.removeEventListener("touchmove", handleEdgeSwipe);
+      document.removeEventListener("touchend", handleEdgeSwipeEnd);
+    };
+  }, [handleEdgeSwipe, handleEdgeSwipeEnd]);
+
+  const closeMenu = () => {
+    setIsClosing(true);
+    setTimeout(() => { setIsOpen(false); setIsClosing(false); }, 200);
+  };
 
   return (
     <header className="bg-[#1a1a2e] text-white sticky top-0 z-50 shadow-lg">
@@ -67,7 +112,7 @@ export default function Header() {
             {/* Mobile menu button */}
             <button
               className="md:hidden p-2 rounded-lg hover:bg-white/10"
-              onClick={() => setIsOpen(!isOpen)}
+              onClick={() => isOpen ? closeMenu() : setIsOpen(true)}
               aria-label={t("header.menu")}
             >
               <Icon name={isOpen ? "close" : "menu"} size={24} />
@@ -75,28 +120,51 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Mobile nav */}
+        {/* Mobile drawer overlay + menu */}
         {isOpen && (
-          <nav className="md:hidden pb-4 border-t border-white/10 pt-2">
-            {navKeys.map((item) => {
-              const active = isActive(pathname, item);
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
-                    active
-                      ? "bg-white/15 text-white border-l-3 border-red-400"
-                      : "text-white/70 hover:bg-white/10 hover:text-white"
-                  }`}
-                  onClick={() => setIsOpen(false)}
-                >
-                  <Icon name={item.icon} size={20} />
-                  {t(item.key)}
+          <>
+            {/* Backdrop */}
+            <div
+              className={`fixed inset-0 bg-black/40 z-40 md:hidden ${isClosing ? "opacity-0" : "opacity-100"} transition-opacity duration-200`}
+              onClick={closeMenu}
+            />
+            {/* Drawer */}
+            <nav
+              className={`fixed top-0 left-0 bottom-0 w-64 bg-[#1a1a2e] z-50 md:hidden shadow-2xl ${
+                isClosing ? "animate-slide-out-to-left" : "animate-slide-in-left"
+              }`}
+            >
+              <div className="flex items-center justify-between px-4 h-16 border-b border-white/10">
+                <Link href="/" className="flex items-center gap-2 font-bold text-lg text-white" onClick={closeMenu}>
+                  <Icon name="sports_soccer" size={24} />
+                  {t("header.siteName")}
                 </Link>
-              );
-            })}
-          </nav>
+                <button onClick={closeMenu} className="p-2 text-white/70 hover:text-white">
+                  <Icon name="close" size={22} />
+                </button>
+              </div>
+              <div className="py-2">
+                {navKeys.map((item) => {
+                  const active = isActive(pathname, item);
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={`flex items-center gap-3 px-5 py-3.5 text-sm font-medium transition-colors ${
+                        active
+                          ? "bg-white/15 text-white border-l-3 border-red-400"
+                          : "text-white/70 hover:bg-white/10 hover:text-white"
+                      }`}
+                      onClick={closeMenu}
+                    >
+                      <Icon name={item.icon} size={20} />
+                      {t(item.key)}
+                    </Link>
+                  );
+                })}
+              </div>
+            </nav>
+          </>
         )}
       </div>
     </header>
