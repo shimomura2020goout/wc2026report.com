@@ -159,6 +159,31 @@ export default async function NewsArticlePage({
   );
 }
 
+// 絵文字ショートコード → Material Icons マッピング
+const EMOJI_ICON_MAP: Record<string, string> = {
+  ":soccer:": "sports_soccer",
+  ":arrow_up:": "arrow_upward",
+  ":arrow_right:": "arrow_forward",
+  ":star:": "star",
+  ":info:": "info",
+  ":calendar:": "calendar_month",
+  ":tv:": "live_tv",
+  ":fire:": "local_fire_department",
+  ":heart:": "favorite",
+  ":menu:": "menu_book",
+};
+
+function replaceEmojiShortcodes(text: string): string {
+  let s = text;
+  for (const [code, icon] of Object.entries(EMOJI_ICON_MAP)) {
+    const escaped = code.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    s = s.replace(new RegExp(escaped, "g"),
+      `<span class="material-symbols-outlined" style="vertical-align:middle;font-size:1.1em;line-height:1;">${icon}</span>`
+    );
+  }
+  return s;
+}
+
 // インラインMarkdown（太字・リンク・画像等）を変換
 function inlineMarkdown(text: string): string {
   let s = text;
@@ -168,11 +193,14 @@ function inlineMarkdown(text: string): string {
   );
   // リンク（#で始まる同ページ内アンカーは新規タブで開かない）
   s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_m, label, url) => {
+    const processedLabel = replaceEmojiShortcodes(label);
     if (url.startsWith("#")) {
-      return `<a href="${url}">${label}</a>`;
+      return `<a href="${url}">${processedLabel}</a>`;
     }
-    return `<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+    return `<a href="${url}" target="_blank" rel="noopener noreferrer">${processedLabel}</a>`;
   });
+  // 絵文字ショートコード → Material Icons
+  s = replaceEmojiShortcodes(s);
   // 太字 → イタリック
   s = s.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
   s = s.replace(/\*(.+?)\*/g, "<em>$1</em>");
@@ -256,7 +284,7 @@ function markdownToHtml(markdown: string): string {
       if (allAnchors && items.length >= 2) {
         const cards = items.map((item) => {
           const m = item.trim().match(anchorOnlyRegex)!;
-          const label = m[1];
+          const label = replaceEmojiShortcodes(m[1]);
           const href = `#${m[2]}`;
           return `<a href="${href}" class="not-prose group flex items-center gap-3 bg-white hover:bg-blue-50 border-2 border-gray-200 hover:border-blue-400 rounded-xl px-4 py-3 shadow-sm hover:shadow-md transition-all no-underline">
             <span class="text-sm sm:text-base font-bold text-gray-800 group-hover:text-blue-700 flex-1">${label}</span>
