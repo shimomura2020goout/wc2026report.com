@@ -166,8 +166,13 @@ function inlineMarkdown(text: string): string {
   s = s.replace(/!\[([^\]]*)\]\(([^)]+)\)/g,
     '<figure class="my-4"><img src="$2" alt="$1" class="w-full rounded-lg shadow-md" loading="lazy" /><figcaption class="text-xs text-gray-400 text-center mt-1">$1</figcaption></figure>'
   );
-  // リンク
-  s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+  // リンク（#で始まる同ページ内アンカーは新規タブで開かない）
+  s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_m, label, url) => {
+    if (url.startsWith("#")) {
+      return `<a href="${url}">${label}</a>`;
+    }
+    return `<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+  });
   // 太字 → イタリック
   s = s.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
   s = s.replace(/\*(.+?)\*/g, "<em>$1</em>");
