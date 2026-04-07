@@ -1,5 +1,49 @@
 # W杯2026特設サイト 開発メモ
 
+## 🚨 デザインルール（最重要・常に守る）
+
+### アイコンは Google Material Icons のみ使用
+
+**ルール**: サイト内で表示するアイコンは**例外なくすべて Google Material Symbols Outlined**を使用する。絵文字（🇯🇵 ⚽ 📋 ⏫ ❤️ 🔥 ⭐ 等）は使用禁止。
+
+**理由**:
+- デザインの一貫性
+- 絵文字はOS/ブラウザ/フォント環境で見え方が変わる
+- 過去に何度も「絵文字を Material Icons に変えて」という修正依頼が発生している
+
+**適用範囲**: サイト内のすべてのコード・コンポーネント・データファイル・**Notion 記事の本文**まで含む。
+
+**実装方法**:
+
+1. **React コンポーネント内**: `<Icon name="..." />` コンポーネントを使う
+   ```tsx
+   import Icon from "@/components/Icon";
+   <Icon name="sports_soccer" size={20} />
+   ```
+
+2. **HTML 直接記述（必要な場合）**:
+   ```html
+   <span class="material-symbols-outlined" style="vertical-align:middle;font-size:1.1em;">sports_soccer</span>
+   ```
+
+3. **Notion 記事の本文（マークダウン）**: 絵文字ショートコードを使う。レンダラーが自動で Material Icons に変換する（`src/app/news/[slug]/page.tsx` の `EMOJI_ICON_MAP` 参照）。
+   ```markdown
+   ## :soccer: 田中碧
+   :arrow_up: [トップに戻る](#top)
+   ```
+   - **重要**: Notion はテキストブロック内のHTMLタグ（`<span>` 等）を保存時に剥がしてしまうため、本文に直接 `<span class="material-symbols-outlined">` を書いても保存されない。**必ずショートコードを使う**こと。
+   - サポート済みショートコード: `:soccer:` `:arrow_up:` `:arrow_right:` `:star:` `:info:` `:calendar:` `:tv:` `:fire:` `:heart:` `:menu:`
+   - 新しいアイコンが必要な場合は `src/app/news/[slug]/page.tsx` の `EMOJI_ICON_MAP` に追加する
+
+**やってはいけないこと**:
+- ❌ 絵文字（Unicode emoji）を直接記述する
+- ❌ Notion 記事本文に `<span class="material-symbols-outlined">` を直接書く（剥がされる）
+- ❌ 国旗絵文字（🇯🇵 等）を Material Icons の代わりに使う
+
+**Material Icons 一覧**: https://fonts.google.com/icons
+
+---
+
 ## 既知の問題と対策
 
 ### Notion記事コンテンツの更新方法（重要）
