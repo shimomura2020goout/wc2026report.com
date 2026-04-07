@@ -250,6 +250,27 @@ function markdownToHtml(markdown: string): string {
         items.push(lines[i].replace(/^- /, ""));
         i++;
       }
+      // 全項目が同ページ内アンカーリンクのみ → TOC カードグリッドとして描画
+      const anchorOnlyRegex = /^\[([^\]]+)\]\(#([^)]+)\)$/;
+      const allAnchors = items.every((item) => anchorOnlyRegex.test(item.trim()));
+      if (allAnchors && items.length >= 2) {
+        const cards = items.map((item) => {
+          const m = item.trim().match(anchorOnlyRegex)!;
+          const label = m[1];
+          const href = `#${m[2]}`;
+          return `<a href="${href}" class="not-prose group flex items-center gap-3 bg-white hover:bg-blue-50 border-2 border-gray-200 hover:border-blue-400 rounded-xl px-4 py-3 shadow-sm hover:shadow-md transition-all no-underline">
+            <span class="text-sm sm:text-base font-bold text-gray-800 group-hover:text-blue-700 flex-1">${label}</span>
+            <span class="text-blue-500 group-hover:translate-x-1 transition-transform text-lg">→</span>
+          </a>`;
+        }).join("");
+        output.push(`<nav class="not-prose my-6 p-4 sm:p-5 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-blue-200">
+          <p class="text-xs font-bold text-blue-700 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+            <span>📋</span> 目次（タップで詳細へ）
+          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">${cards}</div>
+        </nav>`);
+        continue;
+      }
       output.push(`<ul>${items.map((item) => `<li>${inlineMarkdown(item)}</li>`).join("\n")}</ul>`);
       continue;
     }
