@@ -42,6 +42,30 @@
 
 **Material Icons 一覧**: https://fonts.google.com/icons
 
+### リンクは必ず視認性の高い書き方にする
+
+**ルール**: 記事・コラム内でリンクを貼る場合、Markdown標準のリンク記法 `[テキスト](URL)` を使う。レンダラーが自動でリンクの種類を判別し、視認性の高いスタイルを適用する。
+
+**自動適用されるスタイル**（`src/app/news/[slug]/page.tsx` + `globals.css`）:
+
+- **外部リンク**（Instagram, 公式サイト等）: 青背景ピル + `open_in_new` アイコンが自動付与
+- **内部リンク**（`/news/...` 等サイト内）: インディゴ背景ピル + `article` アイコンが自動付与
+- **ページ内リンク**（`#section` 等）: 通常のテキストリンクスタイル
+
+**Notion記事でのリンクの書き方**:
+```markdown
+### Instagram（公式）
+[@nakamura.keito](https://www.instagram.com/nakamura.keito/)
+
+### オフィシャルサイト
+[keito-ism.jp](https://www.keito-ism.jp/)
+```
+
+**やってはいけないこと**:
+- ❌ URLをテキストのまま貼る（例: `https://www.instagram.com/...`）
+- ❌ アカウント名だけ書いてリンクを貼らない（例: `@nakamura.keito` のみ）
+- ❌ リンクテキストに「こちら」「ここをクリック」などの曖昧な表現を使う
+
 ---
 
 ## 既知の問題と対策
