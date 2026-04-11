@@ -372,6 +372,7 @@
   "news.pageTitle": "뉴스 · 칼럼",
   "news.pageDescription": "W컵2026 최신 정보, 경기 프리뷰, 팀 분석을 매일 업데이트",
   "news.noArticles": "아직 기사가 없습니다. 공개를 기다려 주세요.",
+  "news.filterAll": "전체",
   "news.readArticle": "기사 읽기",
   "news.backToList": "뉴스 목록으로 돌아가기",
   "news.articleNotFound": "기사를 찾을 수 없습니다",

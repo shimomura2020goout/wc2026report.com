@@ -705,3 +705,14 @@ export function getTeamDetail(code: string): TeamDetail | undefined {
 export function hasTeamDetail(code: string): boolean {
   return code in teamDetails;
 }
+
+// ========================================
+// 選手コラム記��マッピング
+// ========================================
+// 選手名 → コラム記事スラッグ
+// コラム記事が公開されるたびにここに追加する
+// スラッグ形式: player-story-{english-name}
+
+export const playerColumnSlugs: Record<string, string> = {
+  "中村敬斗": "player-story-keito-nakamura",
+};

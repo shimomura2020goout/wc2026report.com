@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Icon from "@/components/Icon";
+import NewsFilteredList from "@/components/NewsFilteredList";
 import { getPublishedPosts } from "@/lib/notion";
 import { getLocaleFromCookies, getDictionary, createTranslator } from "@/i18n/index";
 
@@ -38,65 +38,19 @@ export default async function NewsPage() {
         <Icon name="article" size={32} className="text-gray-700" />
         {t("news.pageTitle")}
       </h1>
-      <p className="text-gray-500 mb-8">
+      <p className="text-gray-500 mb-6">
         {t("news.pageDescription")}
       </p>
 
-      {posts.length === 0 ? (
-        <div className="text-center py-16 text-gray-400">
-          <Icon name="edit_note" size={48} className="mb-4" />
-          <p>{t("news.noArticles")}</p>
-        </div>
-      ) : (
-        <div className="space-y-6">
-          {posts.map((post) => (
-            <Link
-              key={post.id}
-              href={`/news/${post.slug}`}
-              className="block match-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:border-gray-200"
-            >
-              <div className="p-5 sm:p-6">
-                <div className="flex items-center gap-2 mb-3 flex-wrap">
-                  {post.category && (
-                    <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${categoryColors[post.category] || "bg-gray-100 text-gray-600"}`}>
-                      {post.category}
-                    </span>
-                  )}
-                  {post.publishedAt && (
-                    <span className="text-xs text-gray-400 flex items-center gap-1">
-                      <Icon name="schedule" size={14} />
-                      {post.publishedAt}
-                    </span>
-                  )}
-                </div>
-
-                <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 leading-snug">
-                  {post.title}
-                </h2>
-
-                {post.summary && (
-                  <p className="text-sm text-gray-500 leading-relaxed mb-3">
-                    {post.summary}
-                  </p>
-                )}
-
-                <div className="flex items-center gap-2 flex-wrap">
-                  {post.tags.map((tag) => (
-                    <span key={tag} className="text-xs bg-gray-50 text-gray-500 px-2 py-0.5 rounded">
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="mt-3 flex items-center gap-1 text-sm text-blue-600 font-medium">
-                  {t("news.readArticle")}
-                  <Icon name="arrow_forward" size={16} />
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
+      <NewsFilteredList
+        posts={posts}
+        categoryColors={categoryColors}
+        labels={{
+          all: t("news.filterAll") || "すべて",
+          readArticle: t("news.readArticle"),
+          noArticles: t("news.noArticles"),
+        }}
+      />
     </div>
   );
 }

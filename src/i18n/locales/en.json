@@ -366,6 +366,7 @@
   "news.pageTitle": "News & Columns",
   "news.pageDescription": "Daily updates on WC2026 news, match previews, team analysis, and columns",
   "news.noArticles": "No articles yet. Please check back later.",
+  "news.filterAll": "All",
   "news.readArticle": "Read Article",
   "news.backToNews": "Back to News List",
   "news.articleNotFound": "Article Not Found",

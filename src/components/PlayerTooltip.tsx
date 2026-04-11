@@ -7,15 +7,17 @@ interface PlayerTooltipProps {
   playerName: string;
   teamName: string;
   teamFlag: string;
+  columnSlug?: string;
 }
 
 function getWikipediaUrl(name: string): string {
   const isJapanese = /[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF]/.test(name);
-  const lang = isJapanese ? "ja" : "ja";
-  return `https://${lang}.wikipedia.org/wiki/Special:Search?search=${encodeURIComponent(name + " サッカー")}`;
+  const lang = isJapanese ? "ja" : "en";
+  const suffix = isJapanese ? " サッカー" : " footballer";
+  return `https://${lang}.wikipedia.org/wiki/Special:Search?search=${encodeURIComponent(name + suffix)}`;
 }
 
-export default function PlayerTooltip({ playerName, teamName, teamFlag }: PlayerTooltipProps) {
+export default function PlayerTooltip({ playerName, teamName, teamFlag, columnSlug }: PlayerTooltipProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -107,15 +109,26 @@ export default function PlayerTooltip({ playerName, teamName, teamFlag }: Player
               </div>
             </div>
 
-            <a
-              href={wikiUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-3 flex items-center justify-center gap-1.5 w-full py-2 bg-gray-50 hover:bg-gray-100 rounded-lg text-xs font-medium text-gray-700 transition-colors border border-gray-200"
-            >
-              <Icon name="open_in_new" size={14} />
-              Wikipediaで詳しく見る
-            </a>
+            <div className="mt-3 flex flex-col gap-2">
+              {columnSlug && (
+                <a
+                  href={`/news/${columnSlug}`}
+                  className="flex items-center justify-center gap-1.5 w-full py-2 bg-blue-50 hover:bg-blue-100 rounded-lg text-xs font-medium text-blue-700 transition-colors border border-blue-200"
+                >
+                  <Icon name="article" size={14} />
+                  コラム記事を読む
+                </a>
+              )}
+              <a
+                href={wikiUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-1.5 w-full py-2 bg-gray-50 hover:bg-gray-100 rounded-lg text-xs font-medium text-gray-700 transition-colors border border-gray-200"
+              >
+                <Icon name="open_in_new" size={14} />
+                Wikipediaで詳しく見る
+              </a>
+            </div>
 
             {isMobile && (
               <button

@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* スクロールバー非表示ユーティリティ（フィルタバー等で使用） */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
 /* Material Symbols Outlined - ローカルフォント */
 @font-face {
   font-family: "Material Symbols Outlined";

@@ -384,6 +384,7 @@
   "news.pageTitle": "ニュース・コラム",
   "news.pageDescription": "W杯2026の最新情報、試合プレビュー、チーム分析を毎日更新",
   "news.noArticles": "まだ記事がありません。公開をお待ちください。",
+  "news.filterAll": "すべて",
   "news.readArticle": "記事を読む",
   "news.backToNews": "ニュース一覧に戻る",
   "news.notFound": "記事が見つかりません",

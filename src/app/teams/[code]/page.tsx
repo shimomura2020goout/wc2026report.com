@@ -8,7 +8,7 @@ import PlayerTooltip from "@/components/PlayerTooltip";
 import SourceAttribution from "@/components/SourceAttribution";
 import { BreadcrumbJsonLd } from "@/components/JsonLd";
 import { allTeams } from "@/data/teams";
-import { getTeamDetail, hasTeamDetail } from "@/data/teamDetails";
+import { getTeamDetail, hasTeamDetail, playerColumnSlugs } from "@/data/teamDetails";
 import { allWorldCupMatches } from "@/data/matches";
 import { getLocaleFromCookies, getDictionary, createTranslator } from "@/i18n/index";
 
@@ -166,6 +166,7 @@ export default async function TeamDetailPage({ params }: Props) {
                   playerName={player}
                   teamName={team.name}
                   teamFlag={team.flag}
+                  columnSlug={playerColumnSlugs[player]}
                 />
               ))}
             </div>
