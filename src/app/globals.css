@@ -83,6 +83,41 @@ html {
   animation: slide-up 0.25s ease-out;
 }
 
+/* ── 記事内リンクのスタイル ── */
+
+.prose a.article-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 0.375rem;
+  transition: all 0.15s ease;
+}
+
+.prose a.article-link--external {
+  color: #2563eb;
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
+}
+.prose a.article-link--external:hover {
+  background-color: #dbeafe;
+  border-color: #93c5fd;
+  color: #1d4ed8;
+}
+
+.prose a.article-link--internal {
+  color: #4f46e5;
+  background-color: #eef2ff;
+  border: 1px solid #c7d2fe;
+}
+.prose a.article-link--internal:hover {
+  background-color: #e0e7ff;
+  border-color: #a5b4fc;
+  color: #4338ca;
+}
+
 /* ── ニュース記事内のスタイル ── */
 
 /* 段落の余白 */

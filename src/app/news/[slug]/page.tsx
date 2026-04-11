@@ -130,7 +130,7 @@ export default async function NewsArticlePage({
           prose-strong:text-gray-900
           prose-blockquote:border-l-4 prose-blockquote:border-purple-300 prose-blockquote:bg-purple-50 prose-blockquote:py-2 prose-blockquote:px-4 prose-blockquote:rounded-r-lg prose-blockquote:not-italic
           prose-table:text-sm
-          prose-a:text-blue-600 prose-a:underline
+          prose-a:text-blue-600 prose-a:font-medium prose-a:underline prose-a:decoration-blue-300 prose-a:underline-offset-2 hover:prose-a:decoration-blue-600 hover:prose-a:text-blue-800
           prose-hr:my-8
         "
         dangerouslySetInnerHTML={{ __html: markdownToHtml(post.content) }}
@@ -197,7 +197,12 @@ function inlineMarkdown(text: string): string {
     if (url.startsWith("#")) {
       return `<a href="${url}">${processedLabel}</a>`;
     }
-    return `<a href="${url}" target="_blank" rel="noopener noreferrer">${processedLabel}</a>`;
+    // 内部リンク（/で始まる）か外部リンクかで分岐
+    const isInternal = url.startsWith("/");
+    if (isInternal) {
+      return `<a href="${url}" class="article-link article-link--internal"><span class="material-symbols-outlined" style="font-size:0.9em;vertical-align:middle;">article</span> ${processedLabel}</a>`;
+    }
+    return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="article-link article-link--external">${processedLabel} <span class="material-symbols-outlined" style="font-size:0.9em;vertical-align:middle;">open_in_new</span></a>`;
   });
   // 絵文字ショートコード → Material Icons
   s = replaceEmojiShortcodes(s);
