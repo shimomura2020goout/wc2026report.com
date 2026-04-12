@@ -21,29 +21,31 @@ const BASE_URL = "https://www.wc2026report.com";
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "W杯2026｜FIFA ワールドカップ 2026 試合日程・視聴ガイド",
-    template: "%s｜W杯2026",
+    default: "W杯2026 x toto｜FIFA ワールドカップ 2026 試合日程・toto予想・購入ガイド",
+    template: "%s｜W杯2026 x toto",
   },
   description:
-    "FIFA ワールドカップ 2026（北中米大会）の全104試合の日程・放映情報を網羅。DAZNでの視聴方法も詳しく解説。",
+    "toto対象のW杯全104試合を網羅。toto予想・購入ガイド・ドコモスポーツくじ/楽天totoでの買い方、DAZN視聴方法まで。FIFA ワールドカップ 2026（北中米大会）総合情報サイト。",
   keywords: [
+    "toto", "toto 予想", "toto 買い方", "スポーツくじ",
     "W杯 2026", "ワールドカップ 2026", "FIFA ワールドカップ",
     "W杯 2026 日程", "ワールドカップ スケジュール", "W杯 日本時間",
     "DAZN", "DAZN W杯", "日本代表", "試合日程", "放映予定", "W杯 どこで見れる",
     "W杯 グループ", "日本 オランダ", "W杯 日程 カレンダー", "W杯 放送予定",
+    "toto 対象試合", "ドコモスポーツくじ", "楽天toto",
   ],
   openGraph: {
-    title: "W杯2026｜試合日程・視聴ガイド",
-    description: "FIFA ワールドカップ 2026 の全104試合の日程・DAZN視聴ガイドを網羅する総合情報サイト",
+    title: "W杯2026 x toto｜試合日程・toto予想・購入ガイド",
+    description: "FIFA ワールドカップ 2026 の全104試合の日程・toto予想・購入ガイド・DAZN視聴方法を網羅する総合情報サイト",
     locale: "ja_JP",
     type: "website",
-    siteName: "W杯2026",
+    siteName: "W杯2026 x toto",
     url: BASE_URL,
   },
   twitter: {
     card: "summary_large_image",
-    title: "W杯2026｜試合日程・視聴ガイド",
-    description: "FIFA ワールドカップ 2026 の全104試合の日程・DAZN視聴ガイドを網羅",
+    title: "W杯2026 x toto｜試合日程・toto予想・購入ガイド",
+    description: "FIFA ワールドカップ 2026 の全104試合の日程・toto予想・DAZN視聴ガイドを網羅",
   },
   alternates: {
     canonical: BASE_URL,
@@ -82,12 +84,6 @@ export default async function RootLayout({
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        {/* Google AdSense */}
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5181012952627650"
-          crossOrigin="anonymous"
-        />
         {/* Google Tag Manager */}
         <script
           dangerouslySetInnerHTML={{

@@ -95,7 +95,7 @@ export default function InstallPrompt() {
                 <Icon name="sports_soccer" size={24} />
               </div>
               <div>
-                <p className="font-bold text-sm">W杯2026</p>
+                <p className="font-bold text-sm">W杯2026 x toto</p>
                 <p className="text-[11px] text-gray-400">ホーム画面に追加しませんか？</p>
               </div>
             </div>

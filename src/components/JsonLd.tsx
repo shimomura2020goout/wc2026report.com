@@ -19,10 +19,10 @@ export function WebsiteJsonLd() {
       data={{
         "@context": "https://schema.org",
         "@type": "WebSite",
-        name: "W杯2026",
+        name: "W杯2026 x toto",
         url: "https://www.wc2026report.com",
         description:
-          "FIFA ワールドカップ 2026 の試合情報を提供する総合情報サイト",
+          "FIFA ワールドカップ 2026 の試合情報とtoto予想を提供する総合情報サイト",
         inLanguage: "ja",
         potentialAction: {
           "@type": "SearchAction",
@@ -111,7 +111,7 @@ export function ArticleJsonLd({
         url,
         publisher: {
           "@type": "Organization",
-          name: "W杯2026",
+          name: "W杯2026 x toto",
           url: "https://www.wc2026report.com",
         },
         mainEntityOfPage: {

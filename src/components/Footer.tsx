@@ -28,8 +28,9 @@ export default function Footer() {
             </ul>
           </div>
           <div>
-            <h4 className="text-white font-semibold mb-4">{t("footer.watchInfo")}</h4>
+            <h4 className="text-white font-semibold mb-4">{t("footer.totoWatch")}</h4>
             <ul className="space-y-2 text-sm">
+              <li><Link href="/toto" className="hover:text-white transition-colors">{t("footer.totoZone")}</Link></li>
               <li><Link href="/watch" className="hover:text-white transition-colors">{t("footer.watchGuide")}</Link></li>
               <li><Link href="/news" className="hover:text-white transition-colors">{t("nav.news")}</Link></li>
             </ul>

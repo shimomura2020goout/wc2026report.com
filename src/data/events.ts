@@ -362,8 +362,8 @@ export function buildGoogleCalendarUrl(event: CalendarEvent): string {
     text: title,
     dates: `${startDate}/${endDate}`,
     details: event.description
-      ? `${event.description}\n\n📅 W杯2026 カレンダー\nhttps://www.wc2026report.com/calendar`
-      : "📅 W杯2026 カレンダー\nhttps://www.wc2026report.com/calendar",
+      ? `${event.description}\n\n📅 W杯2026 x toto カレンダー\nhttps://www.wc2026report.com/calendar`
+      : "📅 W杯2026 x toto カレンダー\nhttps://www.wc2026report.com/calendar",
   });
 
   return `https://calendar.google.com/calendar/render?${params.toString()}`;
@@ -408,7 +408,7 @@ export function buildICalFile(events: CalendarEvent[]): string {
   const header = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//W杯2026//Soccer Calendar//JA",
+    "PRODID:-//W杯2026 x toto//Soccer Calendar//JA",
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     "X-WR-CALNAME:W杯2026 サッカーカレンダー",

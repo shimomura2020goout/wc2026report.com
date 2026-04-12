@@ -51,7 +51,7 @@ export function generatePageOG({
         >
           <div style={{ fontSize: "32px" }}>⚽</div>
           <div style={{ fontSize: "24px", fontWeight: 700, color: "#94a3b8" }}>
-            W杯2026
+            W杯2026 x toto
           </div>
         </div>
 
