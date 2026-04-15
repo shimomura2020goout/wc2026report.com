@@ -1,25 +1,26 @@
 // ========================================
-// チーム詳細データ — 全48カ国（確定チーム分）
+// チーム詳細データ — Notion から自動生成（2026-04-15）
+// このファイルは scripts/syncTeams.ts で自動生成されます。直接編集しないでください。
+// 監督情報の編集は Notion の Coaches DB、その他は TeamDetails DB で。
+// 生成後に `npm run sync:teams` を実行してください。
 // ========================================
 
 export interface TeamDetail {
-  code: string;           // Team.code と紐づく
-  coach: string;          // 監督名
-  coachNationality: string; // 監督の国籍
-  nickname: string;       // チーム愛称
-  kitColors: string;      // ユニフォームの主な色
-  starPlayers: string[];  // 注目選手（最大3名）
-  description: string;    // チーム紹介文（3〜5行）
-  strengths: string[];    // 強みポイント
-  weaknesses: string[];   // 課題ポイント
-  worldCupHistory: string; // W杯の歴史
-  qualificationPath: string; // 出場権獲得の経緯
+  code: string;
+  coach: string;
+  coachNationality: string;
+  nickname: string;
+  kitColors: string;
+  starPlayers: string[];
+  description: string;
+  strengths: string[];
+  weaknesses: string[];
+  worldCupHistory: string;
+  qualificationPath: string;
 }
 
 export const teamDetails: Record<string, TeamDetail> = {
-  // ========================================
-  // グループ A
-  // ========================================
+  // --- グループ A ---
   MEX: {
     code: "MEX",
     coach: "ハビエル・アギーレ",
@@ -59,10 +60,21 @@ export const teamDetails: Record<string, TeamDetail> = {
     worldCupHistory: "4回出場、すべてGL敗退。2010年は開催国ながらGL敗退（W杯史上初）。",
     qualificationPath: "CAFアフリカ予選を通過。AFCONでの好成績も追い風に。",
   },
+  CZE: {
+    code: "CZE",
+    coach: "ミロスラフ・コウベク",
+    coachNationality: "チェコ",
+    nickname: "ナーロドニー・ティム（Národní tým）",
+    kitColors: "赤・白・青",
+    starPlayers: ["パトリック・シック", "トマーシュ・ソウチェク", "パヴェル・シュルツ"],
+    description: "UEFAプレーオフPath Dでデンマークを延長戦の末PK2-1で下し出場権獲得。シュルツの開始3分弾やクレイチーの延長弾など劇的な試合を制した。チェコスロバキア時代を含めれば豊富なW杯経験を持つ。",
+    strengths: ["セットプレーの強さ", "ソウチェクの空中戦と得点力", "プレーオフでのPK勝負強さ"],
+    weaknesses: ["攻撃の創造性", "個の力で上位国に劣る", "経験の少なさ（チェコとしては2回目）"],
+    worldCupHistory: "チェコとして2回目の出場（2006以来）。チェコスロバキア時代には1934年・1962年に準優勝。",
+    qualificationPath: "UEFAプレーオフPath D: アイルランドをPKで下し、決勝でデンマークを2-2からPK2-1で撃破。",
+  },
 
-  // ========================================
-  // グループ B
-  // ========================================
+  // --- グループ B ---
   CAN: {
     code: "CAN",
     coach: "ジェシー・マーシュ",
@@ -102,10 +114,21 @@ export const teamDetails: Record<string, TeamDetail> = {
     worldCupHistory: "13回出場。最高成績はベスト8（1934, 1938, 1954）。近年はラウンド16の壁。",
     qualificationPath: "UEFA欧州予選をグループ首位で通過。",
   },
+  BIH: {
+    code: "BIH",
+    coach: "セルゲイ・バルバレス",
+    coachNationality: "ボスニア・ヘルツェゴビナ",
+    nickname: "ズマイェヴィ（Zmajevi）/ ドラゴンズ",
+    kitColors: "青・白",
+    starPlayers: ["ハリス・タバコヴィッチ", "エディン・ジェコ", "デニス・フシッチ"],
+    description: "W杯初出場を劇的に勝ち取った。プレーオフ決勝でイタリアと1-1の延長戦を経てPK戦で勝利。10人のイタリアを相手にタバコヴィッチの同点弾で追いつき、国民の悲願を達成。",
+    strengths: ["チームの一体感と闘志", "PK戦での精神力", "タバコヴィッチの得点力"],
+    weaknesses: ["国際大会での経験不足", "選手層の薄さ", "守備の安定性"],
+    worldCupHistory: "初出場。EURO2024にも出場経験なし。W杯予選では常に惜しいところで敗退してきた歴史に終止符。",
+    qualificationPath: "UEFAプレーオフPath A: ウェールズをPKで下し、決勝でイタリアを1-1からPK戦で撃破。イタリアの3大会連続不出場を決めた。",
+  },
 
-  // ========================================
-  // グループ C
-  // ========================================
+  // --- グループ C ---
   BRA: {
     code: "BRA",
     coach: "カルロ・アンチェロッティ",
@@ -159,9 +182,7 @@ export const teamDetails: Record<string, TeamDetail> = {
     qualificationPath: "CAFアフリカ予選を首位通過。盤石の強さを見せた。",
   },
 
-  // ========================================
-  // グループ D
-  // ========================================
+  // --- グループ D ---
   USA: {
     code: "USA",
     coach: "マウリシオ・ポチェッティーノ",
@@ -201,10 +222,21 @@ export const teamDetails: Record<string, TeamDetail> = {
     worldCupHistory: "6回出場。2006年と2022年にベスト16。オセアニアからAFCに移籍後は常連国。",
     qualificationPath: "AFCアジア予選を通過。安定した結果で本大会出場を決めた。",
   },
+  TUR: {
+    code: "TUR",
+    coach: "ヴィンチェンツォ・モンテッラ",
+    coachNationality: "イタリア",
+    nickname: "アイ・ユルドゥズルラル（Ay-Yıldızlılar）/ 月と星",
+    kitColors: "赤・白",
+    starPlayers: ["アルダ・ギュレル", "ケレム・アクテュルコール", "ケナン・ユルドゥズ"],
+    description: "24年ぶりのW杯出場。プレーオフPath Cでコソボを1-0で下した。アクテュルコールの53分決勝弾で勝利。若き才能アルダ・ギュレル、ユルドゥズら次世代が台頭し、2002年3位以来の活躍を目指す。",
+    strengths: ["若手タレントの豊富さ（ギュレル、ユルドゥズ）", "攻撃力", "EURO2024の経験"],
+    weaknesses: ["守備の安定性", "メンタルの波", "W杯経験の乏しさ（24年ぶり）"],
+    worldCupHistory: "3回目の出場。2002年日韓大会で3位の快挙。その後2度予選敗退し、24年ぶりの出場。",
+    qualificationPath: "UEFAプレーオフPath C: ルーマニアを1-0で下し、決勝でコソボを1-0で撃破。アクテュルコールが決勝弾。",
+  },
 
-  // ========================================
-  // グループ E
-  // ========================================
+  // --- グループ E ---
   GER: {
     code: "GER",
     coach: "ユリアン・ナーゲルスマン",
@@ -258,9 +290,7 @@ export const teamDetails: Record<string, TeamDetail> = {
     qualificationPath: "CONCACAF予選を勝ち抜き、歴史的な初出場を決めた。",
   },
 
-  // ========================================
-  // グループ F（日本所属）
-  // ========================================
+  // --- グループ F ---
   NED: {
     code: "NED",
     coach: "ロナルド・クーマン",
@@ -280,7 +310,7 @@ export const teamDetails: Record<string, TeamDetail> = {
     coachNationality: "日本",
     nickname: "サムライブルー / SAMURAI BLUE",
     kitColors: "青・白",
-    starPlayers: ["久保建英", "三笘薫", "中村敬斗", "冨安健洋"],
+    starPlayers: ["久保建英", "三笘薫", "中村敬斗"],
     description: "アジア予選を圧倒的な成績で突破した日本代表。2022年はスペイン・ドイツを撃破してグループ首位通過。今大会の目標は「ベスト8以上」。欧州トップリーグで活躍する選手が過去最多で、史上最強の呼び声も高い。",
     strengths: ["欧州組の質と量がアジア最高", "三笘・久保の個人打開力", "2022年の経験と自信"],
     weaknesses: ["ベスト8の壁", "フィジカル面での対欧州・南米の差", "大会中のコンディション調整"],
@@ -300,10 +330,21 @@ export const teamDetails: Record<string, TeamDetail> = {
     worldCupHistory: "7回出場。最高成績はGL敗退だが、2022年にフランスを破る金星。1978年にはアフリカ・アラブ勢初のW杯勝利を記録。",
     qualificationPath: "CAFアフリカ予選グループH首位通過。10試合9勝1分0敗、無失点の完璧な成績で突破。",
   },
+  SWE: {
+    code: "SWE",
+    coach: "グラハム・ポッター",
+    coachNationality: "イングランド",
+    nickname: "ブローギュルト（Blågult）/ 青と黄",
+    kitColors: "黄・青",
+    starPlayers: ["ヴィクトル・ギョケレシュ", "アンソニー・エランガ", "アレクサンデル・イサク"],
+    description: "プレーオフ決勝でポーランドを3-2の激闘の末に下し、2018年以来のW杯出場を決めた。エランガの先制弾、ラーゲルビエルケの追加点、そしてギョケレシュの88分劇的決勝弾が光った。イサク、ギョケレシュら得点力のあるFW陣が武器。",
+    strengths: ["ギョケレシュ・イサクの2枚看板FW", "セットプレーの強さ", "組織的な守備"],
+    weaknesses: ["中盤の創造性", "経験あるCBの不在", "大会本番でのメンタル"],
+    worldCupHistory: "14回目の出場。最高成績は1958年の自国開催で準優勝。2018年はベスト8進出。2022年は予選敗退。",
+    qualificationPath: "UEFAプレーオフPath B: ウクライナを3-1（ギョケレシュ3得点）で下し、決勝でポーランドを3-2で撃破。ギョケレシュの88分決勝弾。",
+  },
 
-  // ========================================
-  // グループ G
-  // ========================================
+  // --- グループ G ---
   IRN: {
     code: "IRN",
     coach: "アミール・ガレノイ",
@@ -357,9 +398,7 @@ export const teamDetails: Record<string, TeamDetail> = {
     qualificationPath: "OFCオセアニア予選を首位通過。",
   },
 
-  // ========================================
-  // グループ H
-  // ========================================
+  // --- グループ H ---
   ESP: {
     code: "ESP",
     coach: "ルイス・デ・ラ・フエンテ",
@@ -413,9 +452,7 @@ export const teamDetails: Record<string, TeamDetail> = {
     qualificationPath: "CAFアフリカ予選を勝ち抜いて歴史的な初出場を決めた。",
   },
 
-  // ========================================
-  // グループ I
-  // ========================================
+  // --- グループ I ---
   FRA: {
     code: "FRA",
     coach: "ディディエ・デシャン",
@@ -455,10 +492,21 @@ export const teamDetails: Record<string, TeamDetail> = {
     worldCupHistory: "4回出場。最高成績はベスト16（1998）。28年ぶりのW杯出場。",
     qualificationPath: "UEFA欧州予選を2位で通過し、本大会出場を決めた。",
   },
+  BOL: {
+    code: "BOL",
+    coach: "オスカル・ビジェガス",
+    coachNationality: "ボリビア",
+    nickname: "ラ・ベルデ（La Verde）",
+    kitColors: "緑・白・赤",
+    starPlayers: ["ミゲル・テルセロス", "モイセス・パニアグア", "マルセロ・モレノ"],
+    description: "1994年アメリカ大会以来32年ぶりのW杯出場。大陸間プレーオフでイラクを下し、南米の高地の国が再び世界の舞台へ。CONMEBOL予選6位からプレーオフを勝ち上がった。",
+    strengths: ["高地（ラパス）でのホームアドバンテージ経験", "若手の台頭", "粘り強い守備"],
+    weaknesses: ["海外組の少なさ", "攻撃力の不足", "低地での実力低下のリスク"],
+    worldCupHistory: "4回目の出場。1930年、1950年、1994年に出場。1994年はGL3戦全敗。32年ぶりの出場。",
+    qualificationPath: "CONMEBOL予選6位 → 大陸間プレーオフPath 2: スリナムを2-1で下し、決勝でイラクを撃破。",
+  },
 
-  // ========================================
-  // グループ J
-  // ========================================
+  // --- グループ J ---
   ARG: {
     code: "ARG",
     coach: "リオネル・スカローニ",
@@ -512,9 +560,7 @@ export const teamDetails: Record<string, TeamDetail> = {
     qualificationPath: "AFCアジア予選を通過。アジアカップ準優勝の実績を活かした。",
   },
 
-  // ========================================
-  // グループ K
-  // ========================================
+  // --- グループ K ---
   POR: {
     code: "POR",
     coach: "ロベルト・マルティネス",
@@ -554,10 +600,21 @@ export const teamDetails: Record<string, TeamDetail> = {
     worldCupHistory: "7回出場。最高成績はベスト8（2014・ハメスが得点王）。2018年はベスト16。",
     qualificationPath: "CONMEBOL南米予選を通過。",
   },
+  COD: {
+    code: "COD",
+    coach: "セバスティアン・デサブル",
+    coachNationality: "フランス",
+    nickname: "レオパールズ（Les Léopards）",
+    kitColors: "青・黄・赤",
+    starPlayers: ["セドリック・バカンブ", "シャルル・ピクル", "アクセル・トゥアンゼベ"],
+    description: "1974年（ザイール時代）以来52年ぶり2度目のW杯出場。大陸間プレーオフ決勝で延長の末ジャマイカを1-0で下し、トゥアンゼベの決勝弾で悲願の本大会出場を決めた。欧州で活躍する選手を多く抱える。",
+    strengths: ["フィジカルとスピード", "欧州組の国際経験", "プレーオフを勝ち抜いた勢い"],
+    weaknesses: ["W杯本大会での経験不足", "組織戦術の成熟度", "国内情勢の影響"],
+    worldCupHistory: "2回目の出場。初出場は1974年西ドイツ大会（ザイール名義）で、アフリカ勢として黒人国家初の本大会出場を果たした。",
+    qualificationPath: "CAFアフリカ予選Group B 2位からプレーオフに進出。大陸間プレーオフでは準決勝でニューカレドニアを下し、決勝で延長戦の末にジャマイカを1-0で撃破して出場権を獲得。",
+  },
 
-  // ========================================
-  // グループ L
-  // ========================================
+  // --- グループ L ---
   ENG: {
     code: "ENG",
     coach: "トーマス・トゥヘル",
@@ -610,88 +667,6 @@ export const teamDetails: Record<string, TeamDetail> = {
     worldCupHistory: "7回出場。準優勝（2018）、3位（1998,2022）。人口400万人の小国ながら驚異的な成績。",
     qualificationPath: "UEFA欧州予選を通過。安定した実力を見せた。",
   },
-
-  // ========================================
-  // プレーオフ勝者（2026年4月1日確定）
-  // ========================================
-  CZE: {
-    code: "CZE",
-    coach: "ミロスラフ・コウベク",
-    coachNationality: "チェコ",
-    nickname: "ナーロドニー・ティム（Národní tým）",
-    kitColors: "赤・白・青",
-    starPlayers: ["パトリック・シック", "トマーシュ・ソウチェク", "パヴェル・シュルツ"],
-    description: "UEFAプレーオフPath Dでデンマークを延長戦の末PK2-1で下し出場権獲得。シュルツの開始3分弾やクレイチーの延長弾など劇的な試合を制した。チェコスロバキア時代を含めれば豊富なW杯経験を持つ。",
-    strengths: ["セットプレーの強さ", "ソウチェクの空中戦と得点力", "プレーオフでのPK勝負強さ"],
-    weaknesses: ["攻撃の創造性", "個の力で上位国に劣る", "経験の少なさ（チェコとしては2回目）"],
-    worldCupHistory: "チェコとして2回目の出場（2006以来）。チェコスロバキア時代には1934年・1962年に準優勝。",
-    qualificationPath: "UEFAプレーオフPath D: アイルランドをPKで下し、決勝でデンマークを2-2からPK2-1で撃破。",
-  },
-  BIH: {
-    code: "BIH",
-    coach: "セルゲイ・バルバレス",
-    coachNationality: "ボスニア・ヘルツェゴビナ",
-    nickname: "ズマイェヴィ（Zmajevi）/ ドラゴンズ",
-    kitColors: "青・白",
-    starPlayers: ["ハリス・タバコヴィッチ", "エディン・ジェコ", "デニス・フシッチ"],
-    description: "W杯初出場を劇的に勝ち取った。プレーオフ決勝でイタリアと1-1の延長戦を経てPK戦で勝利。10人のイタリアを相手にタバコヴィッチの同点弾で追いつき、国民の悲願を達成。",
-    strengths: ["チームの一体感と闘志", "PK戦での精神力", "タバコヴィッチの得点力"],
-    weaknesses: ["国際大会での経験不足", "選手層の薄さ", "守備の安定性"],
-    worldCupHistory: "初出場。EURO2024にも出場経験なし。W杯予選では常に惜しいところで敗退してきた歴史に終止符。",
-    qualificationPath: "UEFAプレーオフPath A: ウェールズをPKで下し、決勝でイタリアを1-1からPK戦で撃破。イタリアの3大会連続不出場を決めた。",
-  },
-  TUR: {
-    code: "TUR",
-    coach: "ヴィンチェンツォ・モンテッラ",
-    coachNationality: "イタリア",
-    nickname: "アイ・ユルドゥズルラル（Ay-Yıldızlılar）/ 月と星",
-    kitColors: "赤・白",
-    starPlayers: ["アルダ・ギュレル", "ケレム・アクテュルコール", "ケナン・ユルドゥズ"],
-    description: "24年ぶりのW杯出場。プレーオフPath Cでコソボを1-0で下した。アクテュルコールの53分決勝弾で勝利。若き才能アルダ・ギュレル、ユルドゥズら次世代が台頭し、2002年3位以来の活躍を目指す。",
-    strengths: ["若手タレントの豊富さ（ギュレル、ユルドゥズ）", "攻撃力", "EURO2024の経験"],
-    weaknesses: ["守備の安定性", "メンタルの波", "W杯経験の乏しさ（24年ぶり）"],
-    worldCupHistory: "3回目の出場。2002年日韓大会で3位の快挙。その後2度予選敗退し、24年ぶりの出場。",
-    qualificationPath: "UEFAプレーオフPath C: ルーマニアを1-0で下し、決勝でコソボを1-0で撃破。アクテュルコールが決勝弾。",
-  },
-  SWE: {
-    code: "SWE",
-    coach: "グラハム・ポッター",
-    coachNationality: "イングランド",
-    nickname: "ブローギュルト（Blågult）/ 青と黄",
-    kitColors: "黄・青",
-    starPlayers: ["ヴィクトル・ギョケレシュ", "アンソニー・エランガ", "アレクサンデル・イサク"],
-    description: "プレーオフ決勝でポーランドを3-2の激闘の末に下し、2018年以来のW杯出場を決めた。エランガの先制弾、ラーゲルビエルケの追加点、そしてギョケレシュの88分劇的決勝弾が光った。イサク、ギョケレシュら得点力のあるFW陣が武器。",
-    strengths: ["ギョケレシュ・イサクの2枚看板FW", "セットプレーの強さ", "組織的な守備"],
-    weaknesses: ["中盤の創造性", "経験あるCBの不在", "大会本番でのメンタル"],
-    worldCupHistory: "14回目の出場。最高成績は1958年の自国開催で準優勝。2018年はベスト8進出。2022年は予選敗退。",
-    qualificationPath: "UEFAプレーオフPath B: ウクライナを3-1（ギョケレシュ3得点）で下し、決勝でポーランドを3-2で撃破。ギョケレシュの88分決勝弾。",
-  },
-  COD: {
-    code: "COD",
-    coach: "セバスティアン・デサブル",
-    coachNationality: "フランス",
-    nickname: "レオパールズ（Les Léopards）",
-    kitColors: "青・黄・赤",
-    starPlayers: ["セドリック・バカンブ", "シャルル・ピクル", "アクセル・トゥアンゼベ"],
-    description: "1974年（ザイール時代）以来52年ぶり2度目のW杯出場。大陸間プレーオフ決勝で延長の末ジャマイカを1-0で下し、トゥアンゼベの決勝弾で悲願の本大会出場を決めた。欧州で活躍する選手を多く抱える。",
-    strengths: ["フィジカルとスピード", "欧州組の国際経験", "プレーオフを勝ち抜いた勢い"],
-    weaknesses: ["W杯本大会での経験不足", "組織戦術の成熟度", "国内情勢の影響"],
-    worldCupHistory: "2回目の出場。初出場は1974年西ドイツ大会（ザイール名義）で、アフリカ勢として黒人国家初の本大会出場を果たした。",
-    qualificationPath: "CAFアフリカ予選Group B 2位からプレーオフに進出。大陸間プレーオフでは準決勝でニューカレドニアを下し、決勝で延長戦の末にジャマイカを1-0で撃破して出場権を獲得。",
-  },
-  BOL: {
-    code: "BOL",
-    coach: "オスカル・ビジェガス",
-    coachNationality: "ボリビア",
-    nickname: "ラ・ベルデ（La Verde）",
-    kitColors: "緑・白・赤",
-    starPlayers: ["ミゲル・テルセロス", "モイセス・パニアグア", "マルセロ・モレノ"],
-    description: "1994年アメリカ大会以来32年ぶりのW杯出場。大陸間プレーオフでイラクを下し、南米の高地の国が再び世界の舞台へ。CONMEBOL予選6位からプレーオフを勝ち上がった。",
-    strengths: ["高地（ラパス）でのホームアドバンテージ経験", "若手の台頭", "粘り強い守備"],
-    weaknesses: ["海外組の少なさ", "攻撃力の不足", "低地での実力低下のリスク"],
-    worldCupHistory: "4回目の出場。1930年、1950年、1994年に出場。1994年はGL3戦全敗。32年ぶりの出場。",
-    qualificationPath: "CONMEBOL予選6位 → 大陸間プレーオフPath 2: スリナムを2-1で下し、決勝でイラクを撃破。",
-  },
 };
 
 // ========================================
@@ -706,7 +681,6 @@ export function hasTeamDetail(code: string): boolean {
   return code in teamDetails;
 }
 
-// ========================================
 // 選手コラム記��マッピング
 // ========================================
 // 選手名 → コラム記事スラッグ

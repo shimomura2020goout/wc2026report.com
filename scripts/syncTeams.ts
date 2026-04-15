@@ -31,6 +31,7 @@ interface TeamRow {
   bestResult: string;
   flag: string;
   isPlaceholder?: boolean;
+  displayOrder: number; // グループ内表示順
 }
 
 interface DetailRow {
@@ -70,6 +71,7 @@ async function fetchTeams(): Promise<TeamRow[]> {
     bestResult: getProp(page, "最高成績", "rich_text") as string,
     flag: getProp(page, "国旗", "rich_text") as string,
     isPlaceholder: !(getProp(page, "出場確定", "checkbox") as boolean),
+    displayOrder: (getProp(page, "表示順", "number") as number) ?? 999,
   }));
 }
 
@@ -143,8 +145,8 @@ function sortTeams(teams: TeamRow[]): TeamRow[] {
     const ga = GROUP_ORDER.indexOf(a.group);
     const gb = GROUP_ORDER.indexOf(b.group);
     if (ga !== gb) return ga - gb;
-    // グループ内は FIFA ランキング順
-    return a.fifaRanking - b.fifaRanking;
+    // グループ内は Notion 側の「表示順」プロパティを使用
+    return a.displayOrder - b.displayOrder;
   });
 }
 

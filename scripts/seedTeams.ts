@@ -26,8 +26,11 @@ async function main() {
 
   console.log(`\n🌱 Teams (${allTeams.length} チーム) をシード中...\n`);
   const codeToPageId = new Map<string, string>();
+  const groupCounter = new Map<string, number>();
 
   for (const team of allTeams) {
+    const displayOrder = groupCounter.get(team.group) ?? 0;
+    groupCounter.set(team.group, displayOrder + 1);
     try {
       const res = await client.pages.create({
         parent: { database_id: TEAMS_DB },
@@ -35,6 +38,7 @@ async function main() {
           "国名": title(team.name),
           "国コード": richText(team.code),
           "グループ": { select: { name: team.group } },
+          "表示順": { number: displayOrder },
           "FIFAランキング": { number: team.fifaRanking },
           "FIFAポイント": { number: team.fifaPoints },
           "FIFA前回ポイント": { number: team.fifaPrevPoints },
