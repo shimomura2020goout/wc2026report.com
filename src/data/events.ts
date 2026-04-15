@@ -90,7 +90,7 @@ export const calendarEvents: CalendarEvent[] = [
     startDate: "2026-03-31",
     endDate: "2026-04-01",
     category: "playoff",
-    description: "ジャマイカがDRコンゴを下しGroup Kへ（28年ぶり出場）、ボリビアがイラクを下しGroup Iへ（32年ぶり出場）。W杯2026全48チームが確定！",
+    description: "DRコンゴがジャマイカを延長の末1-0で下しGroup Kへ（1974年ザイール時代以来52年ぶり出場・決勝点はトゥアンゼベ）、ボリビアがイラクを下しGroup Iへ（32年ぶり出場）。W杯2026全48チームが確定！",
     isHighlight: true,
   },
 

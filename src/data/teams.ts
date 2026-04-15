@@ -14,7 +14,7 @@ export interface Team {
 }
 
 // ========================================
-// 全48チーム（2026年4月4日更新 / FIFAランキング2026年4月1日付準拠）
+// 全48チーム（2026年4月15日更新 / FIFAランキング2026年4月1日付準拠 / JAM→COD差し替え、監督情報更新）
 // ========================================
 
 export const allTeams: Team[] = [
@@ -82,7 +82,7 @@ export const allTeams: Team[] = [
   { name: "ポルトガル", code: "POR", group: "K", fifaRanking: 5, fifaPoints: 1763.83, fifaPrevPoints: 1760, region: "UEFA", regionLabel: "ヨーロッパ", wcAppearances: 9, bestResult: "3位（1966）", flag: "🇵🇹" },
   { name: "ウズベキスタン", code: "UZB", group: "K", fifaRanking: 50, fifaPoints: 1469.40, fifaPrevPoints: 1462, region: "AFC", regionLabel: "アジア", wcAppearances: 1, bestResult: "初出場", flag: "🇺🇿" },
   { name: "コロンビア", code: "COL", group: "K", fifaRanking: 13, fifaPoints: 1693.09, fifaPrevPoints: 1701, region: "CONMEBOL", regionLabel: "南米", wcAppearances: 7, bestResult: "ベスト8（2014）", flag: "🇨🇴" },
-  { name: "ジャマイカ", code: "JAM", group: "K", fifaRanking: 71, fifaPoints: 1358.03, fifaPrevPoints: 1362, region: "CONCACAF", regionLabel: "北中米カリブ海", wcAppearances: 2, bestResult: "GL敗退（1998）", flag: "🇯🇲" },
+  { name: "コンゴ民主共和国", code: "COD", group: "K", fifaRanking: 46, fifaPoints: 1480.00, fifaPrevPoints: 1475, region: "CAF", regionLabel: "アフリカ", wcAppearances: 2, bestResult: "GL敗退（1974 ※ザイール時代）", flag: "🇨🇩" },
 
   // --- グループ L ---
   { name: "イングランド", code: "ENG", group: "L", fifaRanking: 4, fifaPoints: 1825.97, fifaPrevPoints: 1834, region: "UEFA", regionLabel: "ヨーロッパ", wcAppearances: 17, bestResult: "優勝（1966）", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿" },

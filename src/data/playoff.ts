@@ -132,6 +132,6 @@ export const playoffFinalResults = [
 
 // 大陸間プレーオフ決勝結果サマリー
 export const intercontinentalResults = [
-  { path: "1", home: "DRコンゴ", away: "ジャマイカ", winner: "ジャマイカ", group: "K", note: "ジャマイカが1998年以来28年ぶりのW杯出場を決めた" },
+  { path: "1", home: "DRコンゴ", away: "ジャマイカ", winner: "DRコンゴ", group: "K", note: "トゥアンゼベの延長100分弾でDRコンゴが1974年ザイール時代以来52年ぶりのW杯出場を決めた（1-0 AET）" },
   { path: "2", home: "イラク", away: "ボリビア", winner: "ボリビア", group: "I", note: "ボリビアが1994年以来32年ぶりのW杯出場を決めた" },
 ];
