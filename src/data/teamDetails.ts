@@ -689,4 +689,5 @@ export function hasTeamDetail(code: string): boolean {
 
 export const playerColumnSlugs: Record<string, string> = {
   "中村敬斗": "player-story-keito-nakamura",
+  "ヴィクトル・ギョケレシュ": "player-story-viktor-gyokeres",
 };
