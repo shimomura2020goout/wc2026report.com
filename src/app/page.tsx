@@ -128,7 +128,7 @@ export default async function Home() {
             { label: "FIFA公式 — FIFA World Cup 26", url: "https://www.fifa.com/fifaplus/en/tournaments/mens/worldcup/canadamexicousa2026" },
             { label: "JFA公式 — 日本サッカー協会", url: "https://www.jfa.jp/samuraiblue/" },
           ]}
-          updatedAt="2026年4月4日"
+          updatedAt="2026年4月15日"
         />
 
         <div className="text-center mt-8">
@@ -210,7 +210,7 @@ export default async function Home() {
             sources={[
               { label: "FIFA公式 — 組み合わせ抽選結果", url: "https://www.fifa.com/fifaplus/en/tournaments/mens/worldcup/canadamexicousa2026" },
             ]}
-            updatedAt="2026年4月4日"
+            updatedAt="2026年4月15日"
           />
 
           <div className="text-center mt-8">
