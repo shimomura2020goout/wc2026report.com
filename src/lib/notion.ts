@@ -1,5 +1,6 @@
 import { NotionToMarkdown } from "notion-to-md";
 import { Client } from "@notionhq/client";
+import { unstable_cache } from "next/cache";
 
 const NOTION_API_KEY = process.env.NOTION_API_KEY || "";
 const DATABASE_ID = process.env.NOTION_DATABASE_ID || "";
@@ -142,7 +143,8 @@ function pageToPost(page: any): BlogPost {
   };
 }
 
-export async function getPublishedPosts(): Promise<BlogPost[]> {
+// 公開記事一覧を取得（未キャッシュ）
+async function _getPublishedPosts(): Promise<BlogPost[]> {
   const data = await queryDatabase({
     filter: {
       property: "ステータス",
@@ -161,7 +163,8 @@ export async function getPublishedPosts(): Promise<BlogPost[]> {
   return data.results.map(pageToPost);
 }
 
-export async function getPostBySlug(slug: string): Promise<BlogPostWithContent | null> {
+// 記事詳細（本文含む）を取得（未キャッシュ）
+async function _getPostBySlug(slug: string): Promise<BlogPostWithContent | null> {
   const data = await queryDatabase({
     filter: {
       and: [
@@ -196,7 +199,32 @@ export async function getPostBySlug(slug: string): Promise<BlogPostWithContent |
   };
 }
 
-export async function getAllSlugs(): Promise<string[]> {
-  const posts = await getPublishedPosts();
-  return posts.map((post) => post.slug).filter(Boolean);
+// ---------- キャッシュ層 ----------
+// cookies() によりページが動的レンダリングになっても、データ層をここでキャッシュすることで
+// Notion API への問い合わせは 5 分に 1 回に抑え、クリックから描画までの時間を大幅に短縮する。
+
+const CACHE_TTL_SECONDS = 300;
+
+export const getPublishedPosts = unstable_cache(
+  _getPublishedPosts,
+  ["notion:getPublishedPosts"],
+  { revalidate: CACHE_TTL_SECONDS, tags: ["notion", "notion:list"] }
+);
+
+export async function getPostBySlug(slug: string): Promise<BlogPostWithContent | null> {
+  const cached = unstable_cache(
+    () => _getPostBySlug(slug),
+    ["notion:getPostBySlug", slug],
+    { revalidate: CACHE_TTL_SECONDS, tags: ["notion", `notion:post:${slug}`] }
+  );
+  return cached();
 }
+
+export const getAllSlugs = unstable_cache(
+  async (): Promise<string[]> => {
+    const posts = await _getPublishedPosts();
+    return posts.map((post) => post.slug).filter(Boolean);
+  },
+  ["notion:getAllSlugs"],
+  { revalidate: CACHE_TTL_SECONDS, tags: ["notion", "notion:list"] }
+);
