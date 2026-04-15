@@ -192,8 +192,15 @@ function inlineMarkdown(text: string): string {
     '<figure class="my-4"><img src="$2" alt="$1" class="w-full rounded-lg shadow-md" loading="lazy" /><figcaption class="text-xs text-gray-400 text-center mt-1">$1</figcaption></figure>'
   );
   // リンク（#で始まる同ページ内アンカーは新規タブで開かない）
-  s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_m, label, url) => {
+  s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_m, label, rawUrl) => {
     const processedLabel = replaceEmojiShortcodes(label);
+    // Notion が相対パス `/foo` を `https://www.notion.so/foo` に自動変換してしまう問題への対策。
+    // notion.so ドメイン直下のパスが 32桁hexのUUID（Notion ページID）でなければ、
+    // 本来は自サイト内のパスである可能性が高いので prefix を剥がす。
+    const url = rawUrl.replace(
+      /^https?:\/\/(?:www\.)?notion\.so\/((?![0-9a-f]{8}-?[0-9a-f]{4}|[0-9a-f]{32})[^#?]+)/i,
+      "/$1"
+    );
     if (url.startsWith("#")) {
       return `<a href="${url}">${processedLabel}</a>`;
     }
