@@ -17,6 +17,8 @@ export interface CalendarEvent {
   title: string;
   startDate: string;   // YYYY-MM-DD
   endDate?: string;     // YYYY-MM-DD（期間イベント用）
+  startTime?: string;   // "HH:MM" (JST) — 時刻指定イベント用。未指定なら終日イベント
+  endTime?: string;     // "HH:MM" (JST) — 省略時は startTime + 1時間
   category: EventCategory;
   description?: string;
   isHighlight?: boolean; // カレンダー上で強調表示
@@ -94,7 +96,18 @@ export const calendarEvents: CalendarEvent[] = [
     isHighlight: true,
   },
 
-  // ── 5月：クラブ大会クライマックス ──
+  // ── 5月：日本代表W杯メンバー発表 & クラブ大会クライマックス ──
+  {
+    id: "evt-jp-squad-announcement",
+    title: "🇯🇵 日本代表 W杯2026 メンバー発表",
+    startDate: "2026-05-15",
+    startTime: "14:00",
+    endTime: "15:00",
+    category: "japan",
+    description: "森保一監督がW杯2026に挑むSAMURAI BLUEの最終登録メンバー26名を発表。JFAハウス（東京都文京区）14:00〜 記者会見。",
+    isHighlight: true,
+    link: "/news/japan-squad-announcement-may-15-2026",
+  },
   {
     id: "evt-cl-sf",
     title: "UEFAチャンピオンズリーグ 準決勝",
@@ -349,21 +362,46 @@ function nextDay(dateStr: string): string {
   return d.toISOString().split("T")[0];
 }
 
+/** "HH:MM" → 分加算 */
+function addMinutesToTime(time: string, minutes: number): string {
+  const [h, m] = time.split(":").map(Number);
+  const total = h * 60 + m + minutes;
+  const nh = Math.floor((total % (24 * 60)) / 60);
+  const nm = total % 60;
+  return `${String(nh).padStart(2, "0")}:${String(nm).padStart(2, "0")}`;
+}
+
 /** Googleカレンダー追加URL を生成 */
 export function buildGoogleCalendarUrl(event: CalendarEvent): string {
   const title = event.title.replace(/🇯🇵 |⚽ |🏆 /g, "");
-  const startDate = toICalDate(event.startDate);
-  const endDate = event.endDate
-    ? toICalDate(nextDay(event.endDate))
-    : toICalDate(nextDay(event.startDate));
+
+  let dates: string;
+  const extraParams: Record<string, string> = {};
+
+  if (event.startTime) {
+    // 時刻指定イベント（JST）
+    const endTime = event.endTime ?? addMinutesToTime(event.startTime, 60);
+    const startStr = `${toICalDate(event.startDate)}T${event.startTime.replace(":", "")}00`;
+    const endStr = `${toICalDate(event.endDate ?? event.startDate)}T${endTime.replace(":", "")}00`;
+    dates = `${startStr}/${endStr}`;
+    extraParams.ctz = "Asia/Tokyo";
+  } else {
+    // 終日イベント
+    const startDate = toICalDate(event.startDate);
+    const endDate = event.endDate
+      ? toICalDate(nextDay(event.endDate))
+      : toICalDate(nextDay(event.startDate));
+    dates = `${startDate}/${endDate}`;
+  }
 
   const params = new URLSearchParams({
     action: "TEMPLATE",
     text: title,
-    dates: `${startDate}/${endDate}`,
+    dates,
     details: event.description
       ? `${event.description}\n\n📅 W杯2026 x toto カレンダー\nhttps://www.wc2026report.com/calendar`
       : "📅 W杯2026 x toto カレンダー\nhttps://www.wc2026report.com/calendar",
+    ...extraParams,
   });
 
   return `https://calendar.google.com/calendar/render?${params.toString()}`;
@@ -374,19 +412,34 @@ function buildICalEvent(event: CalendarEvent): string {
   const title = event.title.replace(/🇯🇵 |⚽ |🏆 /g, "");
   const uid = `${event.id}@wc2026report.com`;
   const stamp = new Date().toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
-  const startDate = toICalDate(event.startDate);
-  const endDate = event.endDate
-    ? toICalDate(nextDay(event.endDate))
-    : toICalDate(nextDay(event.startDate));
 
   const lines = [
     "BEGIN:VEVENT",
     `UID:${uid}`,
     `DTSTAMP:${stamp}`,
-    `DTSTART;VALUE=DATE:${startDate}`,
-    `DTEND;VALUE=DATE:${endDate}`,
-    `SUMMARY:${title}`,
   ];
+
+  if (event.startTime) {
+    // 時刻指定イベント（JST）
+    const endTime = event.endTime ?? addMinutesToTime(event.startTime, 60);
+    const startStr = `${toICalDate(event.startDate)}T${event.startTime.replace(":", "")}00`;
+    const endStr = `${toICalDate(event.endDate ?? event.startDate)}T${endTime.replace(":", "")}00`;
+    lines.push(
+      `DTSTART;TZID=Asia/Tokyo:${startStr}`,
+      `DTEND;TZID=Asia/Tokyo:${endStr}`,
+    );
+  } else {
+    const startDate = toICalDate(event.startDate);
+    const endDate = event.endDate
+      ? toICalDate(nextDay(event.endDate))
+      : toICalDate(nextDay(event.startDate));
+    lines.push(
+      `DTSTART;VALUE=DATE:${startDate}`,
+      `DTEND;VALUE=DATE:${endDate}`,
+    );
+  }
+
+  lines.push(`SUMMARY:${title}`);
 
   if (event.description) {
     // iCal spec: fold long lines, escape commas/semicolons/newlines

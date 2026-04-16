@@ -4,7 +4,9 @@ import MatchCard from "@/components/MatchCard";
 import SourceAttribution from "@/components/SourceAttribution";
 import Icon from "@/components/Icon";
 import StickyPromoBanner from "@/components/StickyPromoBanner";
+import SquadAnnouncementBanner from "@/components/SquadAnnouncementBanner";
 import { japanMatches, worldCupGroups } from "@/data/matches";
+import { calendarEvents } from "@/data/events";
 import { getTeamByName } from "@/data/teams";
 import { getLocaleFromCookies, getDictionary, createTranslator } from "@/i18n/index";
 
@@ -16,6 +18,7 @@ export default async function Home() {
   const worldCupMatches = japanMatches.filter((m) => m.type === "worldcup_gl");
   const finishedMatches = japanMatches.filter((m) => m.status === "finished");
   const upcomingMatches = japanMatches.filter((m) => m.status !== "finished");
+  const squadAnnouncementEvent = calendarEvents.find((e) => e.id === "evt-jp-squad-announcement");
 
   return (
     <>
@@ -58,6 +61,10 @@ export default async function Home() {
 
       {/* Japan Schedule Section */}
       <section className="max-w-6xl mx-auto px-4 py-12 sm:py-16">
+        {squadAnnouncementEvent && (
+          <SquadAnnouncementBanner event={squadAnnouncementEvent} />
+        )}
+
         <div className="text-center mb-8">
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
             {t("home.japanScheduleTitle")}

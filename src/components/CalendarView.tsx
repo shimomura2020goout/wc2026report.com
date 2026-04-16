@@ -279,6 +279,14 @@ function EventDetail({
                   <p className="text-sm font-semibold text-gray-900">
                     <TeamLinkedText text={evt.title} />
                   </p>
+                  {evt.startTime && (
+                    <p className="text-[11px] text-blue-700 mt-1 flex items-center gap-1 font-semibold">
+                      <Icon name="schedule" size={12} />
+                      {evt.startTime}
+                      {evt.endTime ? `〜${evt.endTime}` : "〜"}
+                      <span className="text-gray-400 font-normal">（JST）</span>
+                    </p>
+                  )}
                   {evt.description && (
                     <p className="text-xs text-gray-500 mt-1">
                       <TeamLinkedText text={evt.description} />
@@ -400,6 +408,12 @@ function MonthListView({
               <p className="text-sm font-medium text-gray-900 truncate">
                 <TeamLinkedText text={evt.title} />
               </p>
+              {evt.startTime && (
+                <p className="text-[11px] text-blue-700 font-semibold mt-0.5 flex items-center gap-1">
+                  <Icon name="schedule" size={11} />
+                  {evt.startTime}{evt.endTime ? `〜${evt.endTime}` : "〜"}
+                </p>
+              )}
               {evt.description && (
                 <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">
                   <TeamLinkedText text={evt.description} />

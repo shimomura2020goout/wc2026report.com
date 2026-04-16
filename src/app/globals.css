@@ -206,6 +206,56 @@ html {
   animation: slideOutRight 0.2s ease-out forwards;
 }
 
+/* ── SAMURAI BLUE 回転ボーダー（日本代表メンバー発表バナー用） ── */
+@property --samurai-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.samurai-rotating-border {
+  position: relative;
+  background:
+    conic-gradient(
+      from var(--samurai-angle, 0deg),
+      #bc002d 0deg,
+      #002f87 60deg,
+      #3b9bff 140deg,
+      #a6d9ff 180deg,
+      #3b9bff 220deg,
+      #002f87 300deg,
+      #bc002d 360deg
+    );
+  animation: samurai-rotate 4s linear infinite;
+  padding: 3px;
+  border-radius: 1.25rem;
+  box-shadow:
+    0 0 0 1px rgba(0, 47, 135, 0.25),
+    0 12px 32px -8px rgba(0, 47, 135, 0.35),
+    0 4px 12px rgba(188, 0, 45, 0.15);
+}
+
+@keyframes samurai-rotate {
+  to { --samurai-angle: 360deg; }
+}
+
+/* @property 非対応ブラウザ用フォールバック（静的ボーダー） */
+@supports not (background: conic-gradient(from 0deg, red, blue)) {
+  .samurai-rotating-border {
+    background: linear-gradient(135deg, #bc002d 0%, #002f87 50%, #3b9bff 100%);
+    animation: none;
+  }
+}
+
+/* 発表バッジのパルス */
+@keyframes samurai-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.08); opacity: 0.85; }
+}
+.samurai-pulse {
+  animation: samurai-pulse 1.8s ease-in-out infinite;
+}
+
 /* スマホ エッジスワイプメニュー（右側ドロワー） */
 @keyframes slideInFromRight {
   from { transform: translateX(100%); }
