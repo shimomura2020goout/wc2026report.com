@@ -3,6 +3,8 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import Icon from "./Icon";
+import { usePreferences } from "@/context/PreferencesContext";
+import { allTeams } from "@/data/teams";
 
 interface Post {
   id: string;
@@ -10,6 +12,7 @@ interface Post {
   slug: string;
   category: string;
   tags: string[];
+  relatedTeams?: string[];
   publishedAt: string | null;
   summary: string | null;
 }
@@ -24,31 +27,63 @@ interface NewsFilteredListProps {
   };
 }
 
-export default function NewsFilteredList({ posts, categoryColors, labels }: NewsFilteredListProps) {
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+const FAVORITE_TAB_ID = "__favorite__";
 
-  // 投稿から存在するカテゴリ一覧を動的に取得
+export default function NewsFilteredList({ posts, categoryColors, labels }: NewsFilteredListProps) {
+  const { prefs, hydrated } = usePreferences();
+  const [activeTab, setActiveTab] = useState<string | null>(null);
+
+  const favoriteCountries = prefs.favoriteCountries;
+  const hasFavorites = hydrated && favoriteCountries.length > 0;
+
+  const favoriteCountryNames = useMemo(() => {
+    return favoriteCountries
+      .map((code) => allTeams.find((t) => t.code === code)?.name)
+      .filter(Boolean)
+      .join("・");
+  }, [favoriteCountries]);
+
   const categories = useMemo(() => {
     const cats = Array.from(new Set(posts.map((p) => p.category).filter(Boolean)));
-    // categoryColors に定義された順序を維持
     const order = Object.keys(categoryColors);
     return cats.sort((a, b) => order.indexOf(a) - order.indexOf(b));
   }, [posts, categoryColors]);
 
   const filteredPosts = useMemo(() => {
-    if (!activeCategory) return posts;
-    return posts.filter((p) => p.category === activeCategory);
-  }, [posts, activeCategory]);
+    if (activeTab === FAVORITE_TAB_ID) {
+      return posts.filter((p) =>
+        (p.relatedTeams || []).some((code) => favoriteCountries.includes(code))
+      );
+    }
+    if (!activeTab) return posts;
+    return posts.filter((p) => p.category === activeTab);
+  }, [posts, activeTab, favoriteCountries]);
 
   return (
     <>
       {/* ── カテゴリフィルタバー（スティッキー） ── */}
       <div className="sticky top-16 z-30 bg-white/95 backdrop-blur-sm border-b border-gray-100 -mx-4 px-4 py-3">
         <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+          {hasFavorites && (
+            <button
+              onClick={() =>
+                setActiveTab(activeTab === FAVORITE_TAB_ID ? null : FAVORITE_TAB_ID)
+              }
+              className={`shrink-0 flex items-center gap-1 text-xs px-3 py-1.5 rounded-full font-medium transition-all border ${
+                activeTab === FAVORITE_TAB_ID
+                  ? "bg-red-500 text-white border-red-500"
+                  : "bg-red-50 text-red-600 border-red-200 hover:border-red-300"
+              }`}
+              title={`応援国: ${favoriteCountryNames}`}
+            >
+              <Icon name="favorite" size={14} />
+              マイ応援国
+            </button>
+          )}
           <button
-            onClick={() => setActiveCategory(null)}
+            onClick={() => setActiveTab(null)}
             className={`shrink-0 text-xs px-3 py-1.5 rounded-full font-medium transition-all border ${
-              activeCategory === null
+              activeTab === null
                 ? "bg-gray-900 text-white border-gray-900"
                 : "bg-white text-gray-600 border-gray-200 hover:border-gray-300"
             }`}
@@ -56,12 +91,12 @@ export default function NewsFilteredList({ posts, categoryColors, labels }: News
             {labels.all}
           </button>
           {categories.map((cat) => {
-            const isActive = activeCategory === cat;
+            const isActive = activeTab === cat;
             const colorClass = categoryColors[cat] || "bg-gray-100 text-gray-600";
             return (
               <button
                 key={cat}
-                onClick={() => setActiveCategory(isActive ? null : cat)}
+                onClick={() => setActiveTab(isActive ? null : cat)}
                 className={`shrink-0 text-xs px-3 py-1.5 rounded-full font-medium transition-all border ${
                   isActive
                     ? `${colorClass} border-current ring-1 ring-current/20`
@@ -79,7 +114,11 @@ export default function NewsFilteredList({ posts, categoryColors, labels }: News
       {filteredPosts.length === 0 ? (
         <div className="text-center py-16 text-gray-400">
           <Icon name="edit_note" size={48} className="mb-4" />
-          <p>{labels.noArticles}</p>
+          <p>
+            {activeTab === FAVORITE_TAB_ID
+              ? "応援国に関連する記事はまだありません"
+              : labels.noArticles}
+          </p>
         </div>
       ) : (
         <div className="space-y-6 mt-6">

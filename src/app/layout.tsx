@@ -9,6 +9,8 @@ import InstallPrompt from "@/components/InstallPrompt";
 import LocaleProvider from "@/components/LocaleProvider";
 import { WebsiteJsonLd } from "@/components/JsonLd";
 import DonationBanner from "@/components/DonationBanner";
+import OnboardingModal from "@/components/OnboardingModal";
+import { PreferencesProvider } from "@/context/PreferencesContext";
 import { getLocaleFromCookies, getDictionary } from "@/i18n/index";
 
 const geistSans = Geist({
@@ -107,14 +109,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         </noscript>
         <WebsiteJsonLd />
         <LocaleProvider locale={locale} dictionary={dictionary}>
-          <Header />
-          <LatestNewsBannerWrapper>
-            <LatestNewsBanner />
-          </LatestNewsBannerWrapper>
-          <main className="flex-1">{children}</main>
-          <DonationBanner />
-          <Footer />
-          <InstallPrompt />
+          <PreferencesProvider>
+            <Header />
+            <LatestNewsBannerWrapper>
+              <LatestNewsBanner />
+            </LatestNewsBannerWrapper>
+            <main className="flex-1">{children}</main>
+            <DonationBanner />
+            <Footer />
+            <InstallPrompt />
+            <OnboardingModal />
+          </PreferencesProvider>
         </LocaleProvider>
       </body>
     </html>

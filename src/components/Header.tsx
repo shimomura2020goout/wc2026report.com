@@ -7,16 +7,20 @@ import { useSwipeable } from "react-swipeable";
 import Icon from "./Icon";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useTranslation } from "@/i18n/client";
+import { usePreferences } from "@/context/PreferencesContext";
 
 const navKeys = [
   { href: "/", key: "nav.home", icon: "home", also: [] as string[] },
   { href: "/news", key: "nav.news", icon: "article", also: [] as string[] },
   { href: "/matches", key: "nav.matches", icon: "sports_soccer", also: ["/results"] },
+  { href: "/predictions", key: "nav.predictions", icon: "poll", also: [] as string[] },
   { href: "/toto", key: "nav.toto", icon: "confirmation_number", also: [] as string[] },
   { href: "/calendar", key: "nav.calendar", icon: "calendar_month", also: [] as string[] },
   { href: "/teams", key: "nav.teams", icon: "flag", also: ["/groups"] },
   { href: "/watch", key: "nav.watch", icon: "live_tv", also: [] as string[] },
 ];
+
+const MYPAGE_ITEM = { href: "/mypage", key: "nav.mypage", icon: "account_circle", also: [] as string[] };
 
 function isActive(pathname: string, item: typeof navKeys[number]): boolean {
   if (item.href === "/") return pathname === "/";
@@ -30,6 +34,8 @@ export default function Header() {
   const [showHint, setShowHint] = useState(false);
   const pathname = usePathname();
   const { t } = useTranslation();
+  const { prefs, hydrated } = usePreferences();
+  const showMyPage = hydrated && prefs.favoriteCountries.length > 0;
 
   const closeMenu = useCallback(() => {
     setIsClosing(true);
@@ -103,7 +109,7 @@ export default function Header() {
 
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-1">
-            {navKeys.map((item) => {
+            {[...navKeys, ...(showMyPage ? [MYPAGE_ITEM] : [])].map((item) => {
               const active = isActive(pathname, item);
               return (
                 <Link
@@ -172,7 +178,7 @@ export default function Header() {
                 </button>
               </div>
               <div className="py-2">
-                {navKeys.map((item) => {
+                {[...navKeys, ...(showMyPage ? [MYPAGE_ITEM] : [])].map((item) => {
                   const active = isActive(pathname, item);
                   return (
                     <Link

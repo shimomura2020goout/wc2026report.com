@@ -31,6 +31,16 @@ export default async function NewsPage() {
   const t = createTranslator(dict);
 
   const posts = await getPublishedPosts();
+  const listPosts = posts.map((p) => ({
+    id: p.id,
+    title: p.title,
+    slug: p.slug,
+    category: p.category,
+    tags: p.tags,
+    relatedTeams: p.relatedTeams,
+    publishedAt: p.publishedAt,
+    summary: p.summary,
+  }));
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
@@ -43,7 +53,7 @@ export default async function NewsPage() {
       </p>
 
       <NewsFilteredList
-        posts={posts}
+        posts={listPosts}
         categoryColors={categoryColors}
         labels={{
           all: t("news.filterAll") || "すべて",

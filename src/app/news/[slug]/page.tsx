@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import Icon from "@/components/Icon";
 import SourceAttribution from "@/components/SourceAttribution";
 import { ArticleJsonLd, BreadcrumbJsonLd } from "@/components/JsonLd";
-import { getPostBySlug, getAllSlugs } from "@/lib/notion";
+import { getPostBySlug, getAllSlugs, getPublishedPosts } from "@/lib/notion";
 import { getLocaleFromCookies, getDictionary, createTranslator } from "@/i18n/index";
 
 // ISR: 5分ごとに再生成
@@ -59,6 +59,32 @@ export default async function NewsArticlePage({
   }
 
   const articleUrl = `https://www.wc2026report.com/news/${post.slug}`;
+
+  // 関連記事（同じチームタグを持つ他記事を最大3件）
+  let relatedPosts: Array<{
+    id: string;
+    title: string;
+    slug: string;
+    category: string;
+    publishedAt: string | null;
+  }> = [];
+  if (post.relatedTeams && post.relatedTeams.length > 0) {
+    const allPosts = await getPublishedPosts();
+    relatedPosts = allPosts
+      .filter(
+        (p) =>
+          p.slug !== post.slug &&
+          (p.relatedTeams || []).some((c) => post.relatedTeams.includes(c))
+      )
+      .slice(0, 3)
+      .map((p) => ({
+        id: p.id,
+        title: p.title,
+        slug: p.slug,
+        category: p.category,
+        publishedAt: p.publishedAt,
+      }));
+  }
 
   return (
     <>
@@ -142,6 +168,37 @@ export default async function NewsArticlePage({
           sources={[{ label: post.sourceName, url: post.sourceUrl }]}
           updatedAt={post.publishedAt || undefined}
         />
+      )}
+
+      {/* 関連記事 */}
+      {relatedPosts.length > 0 && (
+        <div className="mt-10 pt-6 border-t border-gray-200">
+          <h2 className="text-base font-bold text-gray-900 mb-3 flex items-center gap-1.5">
+            <Icon name="auto_stories" size={20} className="text-gray-700" />
+            関連する記事
+          </h2>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {relatedPosts.map((rp) => (
+              <Link
+                key={rp.id}
+                href={`/news/${rp.slug}`}
+                className="block bg-white rounded-xl border border-gray-100 p-4 hover:border-gray-200"
+              >
+                <div className="flex items-center gap-2 mb-1.5">
+                  {rp.category && (
+                    <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
+                      {rp.category}
+                    </span>
+                  )}
+                  {rp.publishedAt && (
+                    <span className="text-xs text-gray-400">{rp.publishedAt}</span>
+                  )}
+                </div>
+                <h3 className="text-sm font-bold text-gray-900 leading-snug">{rp.title}</h3>
+              </Link>
+            ))}
+          </div>
+        </div>
       )}
 
       {/* Back link */}

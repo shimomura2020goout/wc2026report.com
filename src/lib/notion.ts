@@ -61,6 +61,7 @@ export interface BlogPost {
   status: string;
   category: string;
   tags: string[];
+  relatedTeams: string[];
   publishedAt: string | null;
   eyecatchUrl: string | null;
   sourceName: string | null;
@@ -135,6 +136,7 @@ function pageToPost(page: any): BlogPost {
     status: extractProperty(page, "ステータス", "select") as string,
     category: extractProperty(page, "カテゴリ", "select") as string,
     tags: extractProperty(page, "タグ", "multi_select") as string[],
+    relatedTeams: (extractProperty(page, "関連チーム", "multi_select") as string[]) || [],
     publishedAt: extractProperty(page, "公開日", "date") as string | null,
     eyecatchUrl: extractProperty(page, "アイキャッチURL", "url") as string | null,
     sourceName: extractProperty(page, "出典名", "rich_text") as string | null,

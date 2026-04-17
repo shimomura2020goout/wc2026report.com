@@ -1,4 +1,4 @@
-import MatchCard from "@/components/MatchCard";
+import MatchPredictionCard from "@/components/MatchPredictionCard";
 import Icon from "@/components/Icon";
 import SourceAttribution from "@/components/SourceAttribution";
 import { BreadcrumbJsonLd, FAQJsonLd } from "@/components/JsonLd";
@@ -73,7 +73,7 @@ export default async function TotoPage() {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           {totoMatches.map((match) => (
-            <MatchCard key={match.id} match={match} />
+            <MatchPredictionCard key={match.id} match={match} />
           ))}
         </div>
         <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 text-sm text-purple-800">

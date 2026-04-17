@@ -7,6 +7,10 @@
     {
       "path": "/api/cron/line-notify",
       "schedule": "*/10 * * * *"
+    },
+    {
+      "path": "/api/predictions/lock",
+      "schedule": "0 * * * *"
     }
   ]
 }

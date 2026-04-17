@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Icon from "@/components/Icon";
 import SourceAttribution from "@/components/SourceAttribution";
+import MyPredictionsSummary from "@/components/MyPredictionsSummary";
 import { BreadcrumbJsonLd } from "@/components/JsonLd";
 import { groupFMatches, getInitialStandings, groupFScenarios } from "@/data/results";
 import { formatMatchDate } from "@/data/matches";
@@ -122,6 +123,8 @@ export default async function ResultsPage() {
             <Icon name="sports_soccer" size={24} className="text-gray-600" />
             {t("results.allMatchesTitle")}
           </h2>
+
+          <MyPredictionsSummary matchIds={groupFMatches.map((m) => m.id)} />
 
           {[1, 2, 3].map((matchday) => {
             const matches = groupFMatches.filter((m) => m.matchday === matchday);
