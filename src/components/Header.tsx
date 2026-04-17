@@ -27,12 +27,32 @@ function isActive(pathname: string, item: typeof navKeys[number]): boolean {
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const [showHint, setShowHint] = useState(false);
   const pathname = usePathname();
   const { t } = useTranslation();
 
   const closeMenu = useCallback(() => {
     setIsClosing(true);
     setTimeout(() => { setIsOpen(false); setIsClosing(false); }, 200);
+  }, []);
+
+  const dismissHint = useCallback(() => {
+    setShowHint(false);
+    try { localStorage.setItem("wc2026_menu_hint_seen", "1"); } catch {}
+  }, []);
+
+  // 初回訪問時のみメニュー誘導ヒントを表示
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    let seen = true;
+    try { seen = Boolean(localStorage.getItem("wc2026_menu_hint_seen")); } catch {}
+    if (seen) return;
+    const showTimer = setTimeout(() => setShowHint(true), 0);
+    const hideTimer = setTimeout(() => setShowHint(false), 3000);
+    return () => {
+      clearTimeout(showTimer);
+      clearTimeout(hideTimer);
+    };
   }, []);
 
   // ドロワー内: 右スワイプで閉じる
@@ -73,7 +93,7 @@ export default function Header() {
 
   return (
     <header className="bg-[#1a1a2e] text-white sticky top-0 z-50 shadow-lg">
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="max-w-7xl mx-auto px-4 relative">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2 font-bold text-lg">
             <Icon name="sports_soccer" size={28} />
@@ -108,14 +128,26 @@ export default function Header() {
           <div className="flex items-center gap-2">
             <LanguageSwitcher />
             <button
-              className="md:hidden p-2 rounded-lg hover:bg-white/10"
-              onClick={() => isOpen ? closeMenu() : setIsOpen(true)}
+              className={`md:hidden w-11 h-11 flex items-center justify-center rounded-lg bg-[#bc002d] hover:bg-[#d0003a] active:scale-95 shadow-md transition-all ${showHint && !isOpen ? "samurai-pulse" : ""}`}
+              onClick={() => {
+                if (showHint) dismissHint();
+                if (isOpen) closeMenu();
+                else setIsOpen(true);
+              }}
               aria-label={t("header.menu")}
             >
-              <Icon name={isOpen ? "close" : "menu"} size={24} />
+              <Icon name={isOpen ? "close" : "menu"} size={28} />
             </button>
           </div>
         </div>
+
+        {/* 初回誘導ツールチップ */}
+        {showHint && !isOpen && (
+          <span className="md:hidden absolute top-14 right-4 bg-white text-[#1a1a2e] text-xs font-medium px-3 py-1.5 rounded-md shadow-lg whitespace-nowrap animate-fade-in-down pointer-events-none z-40">
+            <span className="absolute -top-1 right-5 w-2 h-2 bg-white rotate-45" />
+            {t("header.menuHint")}
+          </span>
+        )}
 
         {/* Mobile drawer */}
         {isOpen && (

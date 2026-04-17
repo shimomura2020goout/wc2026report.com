@@ -271,3 +271,12 @@ html {
 .animate-slide-out-to-right {
   animation: slideOutToRight 0.2s ease-in forwards;
 }
+
+/* メニューボタン誘導ツールチップ用フェードイン */
+@keyframes fade-in-down {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-down {
+  animation: fade-in-down 0.25s ease-out forwards;
+}
