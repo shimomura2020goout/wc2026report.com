@@ -61,6 +61,10 @@ export default function MyPageClient({ posts, todayISO }: MyPageClientProps) {
           favoriteTeamNames.includes(m.homeTeam) || favoriteTeamNames.includes(m.awayTeam)
       )
       .filter((m) => m.date >= todayISO)
+      .sort((a, b) => {
+        if (a.date !== b.date) return a.date.localeCompare(b.date);
+        return a.kickoff.localeCompare(b.kickoff);
+      })
       .slice(0, 5);
   }, [favoriteTeamNames, todayISO]);
 

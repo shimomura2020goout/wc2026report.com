@@ -108,14 +108,14 @@ export default function Header() {
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden lg:flex items-center gap-1">
             {[...navKeys, ...(showMyPage ? [MYPAGE_ITEM] : [])].map((item) => {
               const active = isActive(pathname, item);
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`relative flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  className={`relative flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                     active
                       ? "bg-white/15 text-white"
                       : "text-white/70 hover:bg-white/10 hover:text-white"
@@ -134,7 +134,7 @@ export default function Header() {
           <div className="flex items-center gap-2">
             <LanguageSwitcher />
             <button
-              className={`md:hidden w-11 h-11 flex items-center justify-center rounded-lg bg-[#bc002d] hover:bg-[#d0003a] active:scale-95 shadow-md transition-all ${showHint && !isOpen ? "samurai-pulse" : ""}`}
+              className={`lg:hidden w-11 h-11 flex items-center justify-center rounded-lg bg-[#bc002d] hover:bg-[#d0003a] active:scale-95 shadow-md transition-all ${showHint && !isOpen ? "samurai-pulse" : ""}`}
               onClick={() => {
                 if (showHint) dismissHint();
                 if (isOpen) closeMenu();
@@ -149,7 +149,7 @@ export default function Header() {
 
         {/* 初回誘導ツールチップ */}
         {showHint && !isOpen && (
-          <span className="md:hidden absolute top-14 right-4 bg-white text-[#1a1a2e] text-xs font-medium px-3 py-1.5 rounded-md shadow-lg whitespace-nowrap animate-fade-in-down pointer-events-none z-40">
+          <span className="lg:hidden absolute top-14 right-4 bg-white text-[#1a1a2e] text-xs font-medium px-3 py-1.5 rounded-md shadow-lg whitespace-nowrap animate-fade-in-down pointer-events-none z-40">
             <span className="absolute -top-1 right-5 w-2 h-2 bg-white rotate-45" />
             {t("header.menuHint")}
           </span>
@@ -159,12 +159,12 @@ export default function Header() {
         {isOpen && (
           <>
             <div
-              className={`fixed inset-0 bg-black/40 z-40 md:hidden ${isClosing ? "opacity-0" : "opacity-100"} transition-opacity duration-200`}
+              className={`fixed inset-0 bg-black/40 z-40 lg:hidden ${isClosing ? "opacity-0" : "opacity-100"} transition-opacity duration-200`}
               onClick={closeMenu}
             />
             <nav
               {...drawerSwipeHandlers}
-              className={`fixed top-0 right-0 bottom-0 w-64 bg-[#1a1a2e] z-50 md:hidden shadow-2xl ${
+              className={`fixed top-0 right-0 bottom-0 w-64 bg-[#1a1a2e] z-50 lg:hidden shadow-2xl ${
                 isClosing ? "animate-slide-out-to-right" : "animate-slide-in-right"
               }`}
             >
