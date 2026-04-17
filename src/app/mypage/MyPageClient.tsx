@@ -9,6 +9,8 @@ import { allWorldCupMatches, formatMatchDate } from "@/data/matches";
 import { usePreferences } from "@/context/PreferencesContext";
 import PreferencesEditor from "./PreferencesEditor";
 
+const INITIAL_VISIBLE = 5;
+
 interface MyPost {
   id: string;
   title: string;
@@ -32,6 +34,8 @@ interface MyPageClientProps {
 export default function MyPageClient({ posts, todayISO }: MyPageClientProps) {
   const { prefs, hydrated } = usePreferences();
   const [me, setMe] = useState<PredictionMe | null>(null);
+  const [matchesExpanded, setMatchesExpanded] = useState(false);
+  const [postsExpanded, setPostsExpanded] = useState(false);
 
   const favoriteCountries = prefs.favoriteCountries;
 
@@ -64,16 +68,22 @@ export default function MyPageClient({ posts, todayISO }: MyPageClientProps) {
       .sort((a, b) => {
         if (a.date !== b.date) return a.date.localeCompare(b.date);
         return a.kickoff.localeCompare(b.kickoff);
-      })
-      .slice(0, 5);
+      });
   }, [favoriteTeamNames, todayISO]);
 
   const favoritePosts = useMemo(() => {
     if (favoriteCountries.length === 0) return [];
-    return posts
-      .filter((p) => (p.relatedTeams || []).some((c) => favoriteCountries.includes(c)))
-      .slice(0, 5);
+    return posts.filter((p) =>
+      (p.relatedTeams || []).some((c) => favoriteCountries.includes(c))
+    );
   }, [posts, favoriteCountries]);
+
+  const visibleMatches = matchesExpanded
+    ? favoriteMatches
+    : favoriteMatches.slice(0, INITIAL_VISIBLE);
+  const visiblePosts = postsExpanded
+    ? favoritePosts
+    : favoritePosts.slice(0, INITIAL_VISIBLE);
 
   if (!hydrated) {
     return (
@@ -171,17 +181,41 @@ export default function MyPageClient({ posts, todayISO }: MyPageClientProps) {
         <h2 className="text-base font-bold text-gray-900 mb-3 flex items-center gap-1.5">
           <Icon name="sports_soccer" size={20} className="text-gray-700" />
           応援国の次の試合
+          {favoriteMatches.length > 0 && (
+            <span className="text-xs text-gray-400 font-normal">({favoriteMatches.length})</span>
+          )}
         </h2>
         {favoriteMatches.length === 0 ? (
           <div className="bg-white rounded-xl border border-gray-100 p-6 text-center text-sm text-gray-400">
             該当する試合はまだ組まれていません
           </div>
         ) : (
-          <div className="space-y-3">
-            {favoriteMatches.map((m) => (
-              <MatchCard key={m.id} match={m} />
-            ))}
-          </div>
+          <>
+            <div className="space-y-3">
+              {visibleMatches.map((m) => (
+                <MatchCard key={m.id} match={m} />
+              ))}
+            </div>
+            {favoriteMatches.length > INITIAL_VISIBLE && (
+              <button
+                type="button"
+                onClick={() => setMatchesExpanded((v) => !v)}
+                className="mt-3 w-full flex items-center justify-center gap-1 py-2.5 text-sm font-medium text-blue-600 bg-white border border-gray-100 rounded-xl hover:border-blue-200 hover:bg-blue-50 transition-colors"
+              >
+                {matchesExpanded ? (
+                  <>
+                    <Icon name="expand_less" size={18} />
+                    閉じる
+                  </>
+                ) : (
+                  <>
+                    <Icon name="expand_more" size={18} />
+                    もっと見る（残り {favoriteMatches.length - INITIAL_VISIBLE} 試合）
+                  </>
+                )}
+              </button>
+            )}
+          </>
         )}
       </section>
 
@@ -191,6 +225,9 @@ export default function MyPageClient({ posts, todayISO }: MyPageClientProps) {
           <h2 className="text-base font-bold text-gray-900 flex items-center gap-1.5">
             <Icon name="article" size={20} className="text-gray-700" />
             応援国のニュース
+            {favoritePosts.length > 0 && (
+              <span className="text-xs text-gray-400 font-normal">({favoritePosts.length})</span>
+            )}
           </h2>
           <Link
             href="/news"
@@ -205,32 +242,53 @@ export default function MyPageClient({ posts, todayISO }: MyPageClientProps) {
             関連記事はまだありません
           </div>
         ) : (
-          <div className="space-y-3">
-            {favoritePosts.map((p) => (
-              <Link
-                key={p.id}
-                href={`/news/${p.slug}`}
-                className="block bg-white rounded-xl border border-gray-100 p-4 hover:border-gray-200"
+          <>
+            <div className="space-y-3">
+              {visiblePosts.map((p) => (
+                <Link
+                  key={p.id}
+                  href={`/news/${p.slug}`}
+                  className="block bg-white rounded-xl border border-gray-100 p-4 hover:border-gray-200"
+                >
+                  <div className="flex items-center gap-2 mb-1.5">
+                    {p.category && (
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
+                        {p.category}
+                      </span>
+                    )}
+                    {p.publishedAt && (
+                      <span className="text-xs text-gray-400">{formatMatchDate(p.publishedAt)}</span>
+                    )}
+                  </div>
+                  <h3 className="text-sm font-bold text-gray-900 leading-snug">{p.title}</h3>
+                  {p.summary && (
+                    <p className="text-xs text-gray-500 mt-1 leading-relaxed line-clamp-2">
+                      {p.summary}
+                    </p>
+                  )}
+                </Link>
+              ))}
+            </div>
+            {favoritePosts.length > INITIAL_VISIBLE && (
+              <button
+                type="button"
+                onClick={() => setPostsExpanded((v) => !v)}
+                className="mt-3 w-full flex items-center justify-center gap-1 py-2.5 text-sm font-medium text-blue-600 bg-white border border-gray-100 rounded-xl hover:border-blue-200 hover:bg-blue-50 transition-colors"
               >
-                <div className="flex items-center gap-2 mb-1.5">
-                  {p.category && (
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
-                      {p.category}
-                    </span>
-                  )}
-                  {p.publishedAt && (
-                    <span className="text-xs text-gray-400">{formatMatchDate(p.publishedAt)}</span>
-                  )}
-                </div>
-                <h3 className="text-sm font-bold text-gray-900 leading-snug">{p.title}</h3>
-                {p.summary && (
-                  <p className="text-xs text-gray-500 mt-1 leading-relaxed line-clamp-2">
-                    {p.summary}
-                  </p>
+                {postsExpanded ? (
+                  <>
+                    <Icon name="expand_less" size={18} />
+                    閉じる
+                  </>
+                ) : (
+                  <>
+                    <Icon name="expand_more" size={18} />
+                    もっと見る（残り {favoritePosts.length - INITIAL_VISIBLE} 件）
+                  </>
                 )}
-              </Link>
-            ))}
-          </div>
+              </button>
+            )}
+          </>
         )}
       </section>
     </>

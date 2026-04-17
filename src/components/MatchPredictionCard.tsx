@@ -31,7 +31,9 @@ export default function MatchPredictionCard({
   const [userPick, setUserPick] = useState<Pick | null>(initialUserPick);
   const [submitting, setSubmitting] = useState<Pick | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [configured, setConfigured] = useState<boolean>(true);
+  // Upstash 未設定時のみ true。初回 stats 取得で configured:false が来ても
+  // ボタンは出したままにし、POST 時に 503 が返ってから unavailable に切り替える。
+  const [unavailable, setUnavailable] = useState<boolean>(false);
 
   const kickoff = useMemo(() => kickoffTimestamp(match), [match]);
   const now = Date.now();
@@ -46,11 +48,8 @@ export default function MatchPredictionCard({
       .then((r) => r.json())
       .then((data) => {
         if (cancelled) return;
-        if (data.configured === false) {
-          setConfigured(false);
-          return;
-        }
         if (data.stats) setStats(data.stats);
+        // configured:false でもボタンは出し続ける（POST 時の 503 で最終判定）
       })
       .catch(() => {
         /* noop */
@@ -85,12 +84,14 @@ export default function MatchPredictionCard({
       });
       const data = await res.json();
       if (!res.ok) {
-        if (res.status === 503) setConfigured(false);
+        if (res.status === 503) setUnavailable(true);
         if (data.error === "already_voted") {
           setUserPick(pick);
         }
         setError(
-          data.error === "locked"
+          res.status === 503
+            ? "予想投票は準備中です"
+            : data.error === "locked"
             ? "投票は締切済みです"
             : data.error === "already_voted"
             ? "既に投票済みです"
@@ -113,9 +114,9 @@ export default function MatchPredictionCard({
   return (
     <div>
       <MatchCard match={match} />
-      {!configured ? (
+      {unavailable ? (
         <div className="mt-2 text-xs text-gray-400 text-center py-3 bg-gray-50 rounded-xl border border-gray-100">
-          予想投票は近日公開予定
+          予想投票は準備中です
         </div>
       ) : userPick ? (
         <div className="mt-2 bg-white rounded-xl p-3 border border-gray-100">
