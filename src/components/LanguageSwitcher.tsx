@@ -44,7 +44,7 @@ export default function LanguageSwitcher() {
         aria-label="Language"
       >
         <span className="text-sm leading-none">{current.flag}</span>
-        <span>Lang</span>
+        <span>Language</span>
         <Icon name="expand_more" size={14} className={`transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
 
