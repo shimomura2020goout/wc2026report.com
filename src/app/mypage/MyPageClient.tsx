@@ -4,6 +4,8 @@ import { useMemo, useEffect, useState } from "react";
 import Link from "next/link";
 import Icon from "@/components/Icon";
 import MatchCard from "@/components/MatchCard";
+import PredictionBadge from "@/components/PredictionBadge";
+import NicknameEditor from "@/components/NicknameEditor";
 import { allTeams } from "@/data/teams";
 import { allWorldCupMatches, formatMatchDate } from "@/data/matches";
 import { usePreferences } from "@/context/PreferencesContext";
@@ -23,7 +25,17 @@ interface MyPost {
 
 interface PredictionMe {
   picks: Record<string, "home" | "draw" | "away">;
-  stats: { correct: number; total: number; streak: number };
+  stats: {
+    correct: number;
+    total: number;
+    streak: number;
+    pickCount: number;
+    visits: number;
+  };
+}
+
+interface ProfileData {
+  nickname: string | null;
 }
 
 interface MyPageClientProps {
@@ -34,6 +46,7 @@ interface MyPageClientProps {
 export default function MyPageClient({ posts, todayISO }: MyPageClientProps) {
   const { prefs, hydrated } = usePreferences();
   const [me, setMe] = useState<PredictionMe | null>(null);
+  const [profile, setProfile] = useState<ProfileData | null>(null);
   const [matchesExpanded, setMatchesExpanded] = useState(false);
   const [postsExpanded, setPostsExpanded] = useState(false);
 
@@ -46,9 +59,13 @@ export default function MyPageClient({ posts, todayISO }: MyPageClientProps) {
       .then((data) => {
         if (data) setMe(data);
       })
-      .catch(() => {
-        // silently fail — predictions API may not be wired up yet
-      });
+      .catch(() => {});
+    fetch("/api/profile")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data) setProfile({ nickname: data.nickname ?? null });
+      })
+      .catch(() => {});
   }, [hydrated]);
 
   const favoriteTeamNames = useMemo(() => {
@@ -116,6 +133,16 @@ export default function MyPageClient({ posts, todayISO }: MyPageClientProps) {
 
   return (
     <>
+      {/* ニックネーム */}
+      <section className="mb-6">
+        <div className="bg-white rounded-2xl border border-gray-200 p-5">
+          <NicknameEditor
+            initialNickname={profile?.nickname ?? null}
+            onSaved={(n) => setProfile({ nickname: n })}
+          />
+        </div>
+      </section>
+
       {/* 応援国サマリ */}
       <section className="mb-8">
         <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-2xl p-5 border border-red-100">
@@ -151,10 +178,19 @@ export default function MyPageClient({ posts, todayISO }: MyPageClientProps) {
       {/* 予想的中率 */}
       {me && (
         <section className="mb-8">
-          <h2 className="text-base font-bold text-gray-900 mb-3 flex items-center gap-1.5">
-            <Icon name="insights" size={20} className="text-gray-700" />
-            あなたの予想成績
-          </h2>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-base font-bold text-gray-900 flex items-center gap-1.5">
+              <Icon name="insights" size={20} className="text-gray-700" />
+              あなたの予想成績
+            </h2>
+            <Link
+              href="/rankings"
+              className="text-xs text-blue-600 hover:underline inline-flex items-center gap-1"
+            >
+              ランキングを見る
+              <Icon name="arrow_forward" size={14} />
+            </Link>
+          </div>
           <div className="grid grid-cols-3 gap-3">
             <div className="bg-white rounded-xl p-4 border border-gray-100 text-center">
               <div className="text-xs text-gray-500 mb-1">投票数</div>
@@ -173,6 +209,12 @@ export default function MyPageClient({ posts, todayISO }: MyPageClientProps) {
               </div>
             </div>
           </div>
+          {!profile?.nickname && (
+            <p className="mt-3 text-xs text-gray-500 bg-amber-50 border border-amber-200 rounded-lg p-2.5">
+              <Icon name="info" size={14} className="inline mr-1 text-amber-600" />
+              ランキングに参加するにはニックネームを設定してください
+            </p>
+          )}
         </section>
       )}
 
@@ -192,9 +234,19 @@ export default function MyPageClient({ posts, todayISO }: MyPageClientProps) {
         ) : (
           <>
             <div className="space-y-3">
-              {visibleMatches.map((m) => (
-                <MatchCard key={m.id} match={m} />
-              ))}
+              {visibleMatches.map((m) => {
+                const pick = me?.picks[m.id];
+                return (
+                  <div key={m.id}>
+                    <MatchCard match={m} />
+                    {pick && (
+                      <div className="mt-1.5 flex">
+                        <PredictionBadge pick={pick} homeTeam={m.homeTeam} awayTeam={m.awayTeam} />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
             {favoriteMatches.length > INITIAL_VISIBLE && (
               <button

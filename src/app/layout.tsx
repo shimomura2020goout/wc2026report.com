@@ -10,6 +10,7 @@ import LocaleProvider from "@/components/LocaleProvider";
 import { WebsiteJsonLd } from "@/components/JsonLd";
 import DonationBanner from "@/components/DonationBanner";
 import OnboardingModal from "@/components/OnboardingModal";
+import VisitBeacon from "@/components/VisitBeacon";
 import { PreferencesProvider } from "@/context/PreferencesContext";
 import { getLocaleFromCookies, getDictionary } from "@/i18n/index";
 
@@ -119,6 +120,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <Footer />
             <InstallPrompt />
             <OnboardingModal />
+            <VisitBeacon />
           </PreferencesProvider>
         </LocaleProvider>
       </body>

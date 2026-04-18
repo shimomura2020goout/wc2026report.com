@@ -12,7 +12,13 @@ export interface MatchVoteStats {
 
 export interface UserPredictions {
   picks: Record<string, Pick>;
-  stats: { correct: number; total: number; streak: number };
+  stats: {
+    correct: number;
+    total: number;
+    streak: number;
+    pickCount: number;
+    visits: number;
+  };
 }
 
 export const COOKIE_NAME = "wcup_anon";
@@ -43,6 +49,12 @@ function keyAnonStats(anonId: string) {
 }
 function keyAnonScored(anonId: string) {
   return `anon:${anonId}:scored`;
+}
+function keyAnonNickname(anonId: string) {
+  return `anon:${anonId}:nickname`;
+}
+function keyRank(type: "hits" | "predictions" | "visits") {
+  return `rank:${type}`;
 }
 
 export async function isMatchLocked(kv: Redis, matchId: string): Promise<boolean> {
@@ -80,6 +92,13 @@ export async function recordPick(
     kv.hincrby(keyMatchVotes(matchId), "total", 1),
     kv.sadd(keyMatchPickers(matchId, pick), anonId),
   ]);
+  // 予想数カウンタ更新 + ランキングZSET反映（nickname設定済みのみ）
+  const newPickCount = await kv.hincrby(keyAnonStats(anonId), "pickCount", 1);
+  await kv.expire(keyAnonStats(anonId), COOKIE_MAX_AGE);
+  const nickname = await kv.get<string>(keyAnonNickname(anonId));
+  if (nickname) {
+    await kv.zadd(keyRank("predictions"), { score: newPickCount, member: anonId });
+  }
   const stats = await getMatchStats(kv, matchId);
   return { ok: true, stats };
 }
@@ -129,6 +148,8 @@ export async function getUserPredictions(
       correct: num(statsRaw?.correct),
       total: num(statsRaw?.total),
       streak: num(statsRaw?.streak),
+      pickCount: num(statsRaw?.pickCount),
+      visits: num(statsRaw?.visits),
     },
   };
 }
@@ -175,13 +196,21 @@ export async function reconcileFinishedMatches(kv: Redis): Promise<number> {
       if (scored) continue;
       const userPick = await getExistingPick(kv, anonId, m.id);
       if (!userPick) continue;
-      await kv.hincrby(keyAnonStats(anonId), "total", 1);
+      const newTotal = await kv.hincrby(keyAnonStats(anonId), "total", 1);
+      let newCorrect = 0;
       if (userPick === winner) {
-        await kv.hincrby(keyAnonStats(anonId), "correct", 1);
+        newCorrect = await kv.hincrby(keyAnonStats(anonId), "correct", 1);
       }
       await kv.sadd(keyAnonScored(anonId), m.id);
       await kv.expire(keyAnonStats(anonId), COOKIE_MAX_AGE);
       await kv.expire(keyAnonScored(anonId), COOKIE_MAX_AGE);
+      // ランキングZSETに反映（nickname設定済みユーザのみ）
+      const nickname = await kv.get<string>(keyAnonNickname(anonId));
+      if (nickname && userPick === winner) {
+        await kv.zadd(keyRank("hits"), { score: newCorrect, member: anonId });
+      }
+      // total は的中率の分母なので別にランキングしないが、予想数とは別物として放置
+      void newTotal;
       totalUpdated++;
     }
   }
