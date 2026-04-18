@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Icon from "./Icon";
+import ActiveVisitorsBadge from "./ActiveVisitorsBadge";
 import { useTranslation } from "@/i18n/client";
 
 export default function Footer() {
@@ -55,7 +56,8 @@ export default function Footer() {
           </div>
         </div>
         <div className="border-t border-white/10 mt-8 pt-8 text-sm text-gray-500">
-          <p className="text-center">&copy; 2026 {t("header.siteName")}. All rights reserved.</p>
+          <ActiveVisitorsBadge />
+          <p className="text-center mt-3">&copy; 2026 {t("header.siteName")}. All rights reserved.</p>
           <p className="text-center mt-1">{t("footer.disclaimer")}</p>
           <div className="mt-3 text-center text-xs text-gray-600">
             <p>{t("footer.sourceLabel")}

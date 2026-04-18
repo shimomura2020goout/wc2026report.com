@@ -210,6 +210,37 @@ export async function recordVisit(
   return { incremented: true, visits: next };
 }
 
+/**
+ * 直近24時間のユニーク訪問者数をHyperLogLogで集計する。
+ * 1時間ごとのバケットに PFADD、読み取り時は過去24バケットを PFCOUNT でマージ。
+ */
+const ACTIVE_VISITOR_BUCKET_TTL = 60 * 60 * 48; // 48h, 24h分を安全に保持
+
+function activeVisitorBucketKey(date: Date): string {
+  // "visitors:hll:2026-04-19T12" (UTC 時間単位)
+  return `visitors:hll:${date.toISOString().slice(0, 13)}`;
+}
+
+export async function trackActiveVisitor(kv: Redis, anonId: string): Promise<void> {
+  const key = activeVisitorBucketKey(new Date());
+  await kv.pfadd(key, anonId);
+  await kv.expire(key, ACTIVE_VISITOR_BUCKET_TTL);
+}
+
+export async function getActiveVisitors24h(kv: Redis): Promise<number> {
+  const now = new Date();
+  const keys: string[] = [];
+  for (let i = 0; i < 24; i++) {
+    const d = new Date(now.getTime() - i * 60 * 60 * 1000);
+    keys.push(activeVisitorBucketKey(d));
+  }
+  try {
+    return await kv.pfcount(...keys);
+  } catch {
+    return 0;
+  }
+}
+
 export interface RankingEntry {
   rank: number;
   nickname: string;

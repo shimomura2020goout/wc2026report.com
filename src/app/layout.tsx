@@ -13,6 +13,7 @@ import OnboardingModal from "@/components/OnboardingModal";
 import VisitBeacon from "@/components/VisitBeacon";
 import { PreferencesProvider } from "@/context/PreferencesContext";
 import { getLocaleFromCookies, getDictionary } from "@/i18n/index";
+import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -123,6 +124,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <VisitBeacon />
           </PreferencesProvider>
         </LocaleProvider>
+        <Analytics />
       </body>
     </html>
   );
