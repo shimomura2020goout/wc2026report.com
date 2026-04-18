@@ -5,6 +5,9 @@ const BASE_URL = "https://www.wc2026report.com";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // 静的ページ
+  // 注: /mypage と /rankings は noindex なので sitemap に含めない
+  //     /toto と /calendar はナビ統合で /predictions /TOP に集約したが
+  //     既存URL・被リンクは維持するため sitemap には残し、優先度を下げる
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: BASE_URL,
@@ -13,10 +16,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1.0,
     },
     {
+      url: `${BASE_URL}/predictions`,
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 0.95,
+    },
+    {
       url: `${BASE_URL}/matches`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}/watch`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}/news`,
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 0.85,
     },
     {
       url: `${BASE_URL}/groups`,
@@ -31,34 +52,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     },
     {
+      url: `${BASE_URL}/results`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
       url: `${BASE_URL}/toto`,
       lastModified: new Date(),
       changeFrequency: "weekly",
-      priority: 0.95,
-    },
-    {
-      url: `${BASE_URL}/watch`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.9,
+      priority: 0.7,
     },
     {
       url: `${BASE_URL}/calendar`,
       lastModified: new Date(),
       changeFrequency: "weekly",
-      priority: 0.8,
-    },
-    {
-      url: `${BASE_URL}/news`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.8,
-    },
-    {
-      url: `${BASE_URL}/results`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.8,
+      priority: 0.7,
     },
     {
       url: `${BASE_URL}/about`,
