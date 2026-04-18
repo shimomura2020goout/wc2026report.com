@@ -95,6 +95,8 @@ export async function recordPick(
   // 予想数カウンタ更新 + ランキングZSET反映（nickname設定済みのみ）
   const newPickCount = await kv.hincrby(keyAnonStats(anonId), "pickCount", 1);
   await kv.expire(keyAnonStats(anonId), COOKIE_MAX_AGE);
+  // サイト全体の累計予想数
+  await kv.hincrby("global:stats", "totalPredictions", 1);
   const nickname = await kv.get<string>(keyAnonNickname(anonId));
   if (nickname) {
     await kv.zadd(keyRank("predictions"), { score: newPickCount, member: anonId });

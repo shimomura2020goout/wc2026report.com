@@ -163,6 +163,11 @@ export async function setNickname(
 
   await kv.set(keyAnonNickname(anonId), display, { ex: COOKIE_MAX_AGE });
 
+  // 初回ニックネーム設定 → 参加ユーザ数カウンタを増加
+  if (!currentDisplay) {
+    await kv.hincrby("global:stats", "totalUsers", 1);
+  }
+
   // 既存 stats を rank ZSET に同期（nickname 設定済みユーザのみランキング対象）
   const stats = await kv.hgetall<Record<string, string | number>>(keyAnonStats(anonId));
   if (stats) {
@@ -195,6 +200,8 @@ export async function recordVisit(
   const next = await kv.hincrby(keyAnonStats(anonId), "visits", 1);
   await kv.set(keyAnonVisitLastAt(anonId), nowSec, { ex: COOKIE_MAX_AGE });
   await kv.expire(keyAnonStats(anonId), COOKIE_MAX_AGE);
+  // サイト全体の累計訪問数
+  await kv.hincrby("global:stats", "totalVisits", 1);
   // nickname があればランキングに反映
   const nick = await getNickname(kv, anonId);
   if (nick) {
@@ -208,6 +215,118 @@ export interface RankingEntry {
   nickname: string;
   score: number;
   isSelf: boolean;
+}
+
+export interface GlobalStats {
+  totalUsers: number;
+  totalPredictions: number;
+  totalVisits: number;
+}
+
+export async function getGlobalStats(kv: Redis): Promise<GlobalStats> {
+  const raw = (await kv.hgetall<Record<string, string | number>>("global:stats")) || {};
+  const num = (v: unknown) => (typeof v === "number" ? v : Number(v) || 0);
+  return {
+    totalUsers: num(raw.totalUsers),
+    totalPredictions: num(raw.totalPredictions),
+    totalVisits: num(raw.totalVisits),
+  };
+}
+
+/**
+ * 自分の順位とその前後 window 件を返す。nickname が無い・ランク未登録時は null。
+ */
+export async function getAroundMeRanking(
+  kv: Redis,
+  type: RankingType,
+  anonId: string,
+  window: number = 5
+): Promise<{ myRank: number; myScore: number; entries: RankingEntry[] } | null> {
+  const rankIdx = await kv.zrevrank(`rank:${type}`, anonId);
+  if (rankIdx === null || rankIdx === undefined) return null;
+
+  const start = Math.max(0, rankIdx - window);
+  const stop = rankIdx + window;
+  const raw = (await kv.zrange(`rank:${type}`, start, stop, {
+    rev: true,
+    withScores: true,
+  })) as (string | number)[];
+
+  const entries: RankingEntry[] = [];
+  for (let i = 0; i < raw.length; i += 2) {
+    const entryAnonId = String(raw[i]);
+    const score = Number(raw[i + 1]);
+    const nick = await kv.get<string>(keyAnonNickname(entryAnonId));
+    if (!nick) continue;
+    entries.push({
+      rank: start + Math.floor(i / 2) + 1,
+      nickname: nick,
+      score,
+      isSelf: entryAnonId === anonId,
+    });
+  }
+
+  const myScore = Number(await kv.zscore(`rank:${type}`, anonId)) || 0;
+  return {
+    myRank: rankIdx + 1,
+    myScore,
+    entries,
+  };
+}
+
+export interface HitRateEntry {
+  rank: number;
+  nickname: string;
+  correct: number;
+  total: number;
+  ratio: number;
+  isSelf: boolean;
+}
+
+/**
+ * 的中率ランキング（最低 minPredictions 件以上の予想が条件）。
+ * rank:predictions 上位 scanSize 人から抽出して ratio 降順。
+ */
+export async function getHitRateRanking(
+  kv: Redis,
+  limit: number,
+  minPredictions: number = 5,
+  selfAnonId: string | null = null
+): Promise<HitRateEntry[]> {
+  const scanSize = 150;
+  const raw = (await kv.zrange("rank:predictions", 0, scanSize - 1, {
+    rev: true,
+    withScores: true,
+  })) as (string | number)[];
+
+  const candidates: { anonId: string; nickname: string; correct: number; total: number }[] = [];
+  for (let i = 0; i < raw.length; i += 2) {
+    const aid = String(raw[i]);
+    const nick = await kv.get<string>(keyAnonNickname(aid));
+    if (!nick) continue;
+    const stats = await kv.hgetall<Record<string, string | number>>(keyAnonStats(aid));
+    const correct = Number(stats?.correct) || 0;
+    const total = Number(stats?.total) || 0;
+    if (total < minPredictions) continue;
+    candidates.push({ anonId: aid, nickname: nick, correct, total });
+  }
+
+  candidates.sort((a, b) => {
+    const ra = a.correct / a.total;
+    const rb = b.correct / b.total;
+    if (rb !== ra) return rb - ra;
+    // tie-break: より多く予想した人を上位
+    return b.total - a.total;
+  });
+
+  return candidates.slice(0, limit).map((c, i) => ({
+    rank: i + 1,
+    nickname: c.nickname,
+    correct: c.correct,
+    total: c.total,
+    ratio: Math.round((c.correct / c.total) * 100),
+    isSelf: c.anonId === selfAnonId,
+  }));
 }
 
 export async function getTopRanking(
