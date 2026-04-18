@@ -15,6 +15,7 @@ const navKeys = [
   { href: "/matches", key: "nav.matches", icon: "sports_soccer", also: ["/results"] },
   // /predictions に toto 買い方ガイドを統合、/predictions が実質 toto ゾーン兼務
   { href: "/predictions", key: "nav.predictions", icon: "poll", also: ["/toto"] },
+  { href: "/rankings", key: "nav.rankings", icon: "emoji_events", also: [] as string[] },
   { href: "/teams", key: "nav.teams", icon: "flag", also: ["/groups"] },
   { href: "/watch", key: "nav.watch", icon: "live_tv", also: [] as string[] },
 ];
