@@ -17,19 +17,23 @@ function CardTeamName({ name }: { name: string }) {
   const team = getTeamByName(name);
   const canLink = team && !team.isPlaceholder;
   const isJapan = name === "日本";
-  const className = `text-base sm:text-lg font-bold ${isJapan ? "text-red-700" : "text-gray-900"}`;
+  // whitespace-nowrap で日本語文字の間で改行されないよう保証。
+  // カード幅が極端に狭い場合は truncate で末尾省略（改行よりマシ）。
+  const base = `text-sm sm:text-base font-bold whitespace-nowrap ${
+    isJapan ? "text-red-700" : "text-gray-900"
+  }`;
 
   if (canLink) {
     return (
       <Link
         href={`/teams/${team.code.toLowerCase()}`}
-        className={`${className} hover:underline relative z-10`}
+        className={`${base} hover:underline relative z-10 inline-block max-w-full truncate`}
       >
         {name}
       </Link>
     );
   }
-  return <span className={className}>{name}</span>;
+  return <span className={`${base} inline-block max-w-full truncate`}>{name}</span>;
 }
 
 export default function MatchCard({ match, showType = true, linkToPrediction = true }: MatchCardProps) {
@@ -73,20 +77,20 @@ export default function MatchCard({ match, showType = true, linkToPrediction = t
         </div>
 
         {/* Teams & Score */}
-        <div className="flex items-center justify-center gap-4 my-4">
-          <div className="flex-1 text-right">
+        <div className="flex items-center justify-center gap-2 sm:gap-3 my-4">
+          <div className="flex-1 min-w-0 text-right">
             <CardTeamName name={match.homeTeam} />
           </div>
           {match.status === "finished" && match.homeScore != null && match.awayScore != null ? (
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 shrink-0">
               <span className="text-2xl font-black text-gray-900">{match.homeScore}</span>
               <span className="text-gray-400 font-bold text-sm">-</span>
               <span className="text-2xl font-black text-gray-900">{match.awayScore}</span>
             </div>
           ) : (
-            <div className="text-gray-400 font-bold text-lg">{t("common.vs")}</div>
+            <div className="text-gray-400 font-bold text-base sm:text-lg shrink-0">{t("common.vs")}</div>
           )}
-          <div className="flex-1 text-left">
+          <div className="flex-1 min-w-0 text-left">
             <CardTeamName name={match.awayTeam} />
           </div>
         </div>
