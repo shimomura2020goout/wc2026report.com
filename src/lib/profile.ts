@@ -234,8 +234,9 @@ export async function getActiveVisitors24h(kv: Redis): Promise<number> {
     const d = new Date(now.getTime() - i * 60 * 60 * 1000);
     keys.push(activeVisitorBucketKey(d));
   }
+  if (keys.length === 0) return 0;
   try {
-    return await kv.pfcount(...keys);
+    return await kv.pfcount(...(keys as [string, ...string[]]));
   } catch {
     return 0;
   }
