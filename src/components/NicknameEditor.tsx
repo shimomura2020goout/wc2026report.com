@@ -5,21 +5,30 @@ import Icon from "./Icon";
 
 interface NicknameEditorProps {
   initialNickname: string | null;
+  /** 自動生成されたニックネーム（ゲストxxxxxx）かどうか */
+  isAuto?: boolean;
   onSaved?: (nickname: string) => void;
 }
 
-export default function NicknameEditor({ initialNickname, onSaved }: NicknameEditorProps) {
+export default function NicknameEditor({
+  initialNickname,
+  isAuto = false,
+  onSaved,
+}: NicknameEditorProps) {
   const [editing, setEditing] = useState(!initialNickname);
-  const [value, setValue] = useState(initialNickname ?? "");
+  // 自動生成の場合は空欄からスタート（ユーザがそのまま自分で名前を入れられるように）
+  const [value, setValue] = useState(isAuto ? "" : initialNickname ?? "");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [current, setCurrent] = useState<string | null>(initialNickname);
+  const [currentIsAuto, setCurrentIsAuto] = useState<boolean>(isAuto);
 
   useEffect(() => {
     setCurrent(initialNickname);
-    setValue(initialNickname ?? "");
+    setCurrentIsAuto(isAuto);
+    setValue(isAuto ? "" : initialNickname ?? "");
     setEditing(!initialNickname);
-  }, [initialNickname]);
+  }, [initialNickname, isAuto]);
 
   const save = async () => {
     if (saving) return;
@@ -37,6 +46,7 @@ export default function NicknameEditor({ initialNickname, onSaved }: NicknameEdi
         return;
       }
       setCurrent(data.nickname);
+      setCurrentIsAuto(false);
       setEditing(false);
       if (onSaved) onSaved(data.nickname);
     } catch {
@@ -51,13 +61,21 @@ export default function NicknameEditor({ initialNickname, onSaved }: NicknameEdi
       <div className="flex items-center gap-2 flex-wrap">
         <span className="text-xs text-gray-500">ニックネーム:</span>
         <span className="text-sm font-bold text-gray-900">{current}</span>
+        {currentIsAuto && (
+          <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700 font-medium">
+            自動割当
+          </span>
+        )}
         <button
           type="button"
-          onClick={() => setEditing(true)}
+          onClick={() => {
+            setEditing(true);
+            setValue(currentIsAuto ? "" : current);
+          }}
           className="inline-flex items-center gap-1 text-xs text-blue-600 hover:underline"
         >
           <Icon name="edit" size={14} />
-          変更
+          {currentIsAuto ? "設定する" : "変更"}
         </button>
       </div>
     );

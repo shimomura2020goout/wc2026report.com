@@ -36,6 +36,7 @@ interface PredictionMe {
 
 interface ProfileData {
   nickname: string | null;
+  auto: boolean;
 }
 
 interface MyPageClientProps {
@@ -63,7 +64,7 @@ export default function MyPageClient({ posts, todayISO }: MyPageClientProps) {
     fetch("/api/profile")
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
-        if (data) setProfile({ nickname: data.nickname ?? null });
+        if (data) setProfile({ nickname: data.nickname ?? null, auto: Boolean(data.auto) });
       })
       .catch(() => {});
   }, [hydrated]);
@@ -138,7 +139,8 @@ export default function MyPageClient({ posts, todayISO }: MyPageClientProps) {
         <div className="bg-white rounded-2xl border border-gray-200 p-5">
           <NicknameEditor
             initialNickname={profile?.nickname ?? null}
-            onSaved={(n) => setProfile({ nickname: n })}
+            isAuto={profile?.auto ?? false}
+            onSaved={(n) => setProfile({ nickname: n, auto: false })}
           />
         </div>
       </section>
@@ -209,10 +211,10 @@ export default function MyPageClient({ posts, todayISO }: MyPageClientProps) {
               </div>
             </div>
           </div>
-          {!profile?.nickname && (
+          {profile?.auto && (
             <p className="mt-3 text-xs text-gray-500 bg-amber-50 border border-amber-200 rounded-lg p-2.5">
               <Icon name="info" size={14} className="inline mr-1 text-amber-600" />
-              ランキングに参加するにはニックネームを設定してください
+              現在は自動割当ニックネーム（{profile.nickname}）です。マイページ上部から好きな名前に変更できます。
             </p>
           )}
         </section>

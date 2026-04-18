@@ -9,9 +9,11 @@ import Icon from "./Icon";
 interface MatchCardProps {
   match: Match;
   showType?: boolean;
+  /** 予想コーナーへのクリッカブル遷移を無効化（/predictions ページ上での自己遷移を防ぐ用途） */
+  linkToPrediction?: boolean;
 }
 
-function CardTeamName({ name, align }: { name: string; align: "left" | "right" }) {
+function CardTeamName({ name }: { name: string }) {
   const team = getTeamByName(name);
   const canLink = team && !team.isPlaceholder;
   const isJapan = name === "日本";
@@ -21,7 +23,7 @@ function CardTeamName({ name, align }: { name: string; align: "left" | "right" }
     return (
       <Link
         href={`/teams/${team.code.toLowerCase()}`}
-        className={`${className} hover:underline`}
+        className={`${className} hover:underline relative z-10`}
       >
         {name}
       </Link>
@@ -30,11 +32,27 @@ function CardTeamName({ name, align }: { name: string; align: "left" | "right" }
   return <span className={className}>{name}</span>;
 }
 
-export default function MatchCard({ match, showType = true }: MatchCardProps) {
+export default function MatchCard({ match, showType = true, linkToPrediction = true }: MatchCardProps) {
   const { t } = useTranslation();
 
+  // プレースホルダー（"PO勝者" など）は予想対象にならないため、クリッカブル遷移もしない
+  const canLinkToPrediction = linkToPrediction && !match.isPlaceholder;
+
   return (
-    <div className={`match-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden ${match.isJapan ? "japan-accent" : ""}`}>
+    <div
+      className={`match-card relative bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden ${
+        match.isJapan ? "japan-accent" : ""
+      } ${canLinkToPrediction ? "hover:border-blue-300 hover:shadow-md transition-all cursor-pointer group" : ""}`}
+    >
+      {/* 予想コーナーへの全面クリックオーバーレイ。内側リンクは z-10 で勝たせる */}
+      {canLinkToPrediction && (
+        <Link
+          href={`/predictions#match-${match.id}`}
+          aria-label={`${match.homeTeam} vs ${match.awayTeam} の勝敗を予想する`}
+          className="absolute inset-0 z-0"
+        />
+      )}
+
       <div className="p-4 sm:p-5">
         {/* Date & Type */}
         <div className="flex items-center justify-between mb-3">
@@ -57,7 +75,7 @@ export default function MatchCard({ match, showType = true }: MatchCardProps) {
         {/* Teams & Score */}
         <div className="flex items-center justify-center gap-4 my-4">
           <div className="flex-1 text-right">
-            <CardTeamName name={match.homeTeam} align="right" />
+            <CardTeamName name={match.homeTeam} />
           </div>
           {match.status === "finished" && match.homeScore != null && match.awayScore != null ? (
             <div className="flex items-center gap-1">
@@ -69,7 +87,7 @@ export default function MatchCard({ match, showType = true }: MatchCardProps) {
             <div className="text-gray-400 font-bold text-lg">{t("common.vs")}</div>
           )}
           <div className="flex-1 text-left">
-            <CardTeamName name={match.awayTeam} align="left" />
+            <CardTeamName name={match.awayTeam} />
           </div>
         </div>
 
@@ -85,6 +103,13 @@ export default function MatchCard({ match, showType = true }: MatchCardProps) {
             <span className="inline-flex items-center gap-1 text-xs bg-amber-100 text-amber-700 px-2 py-1 rounded-full font-medium">
               <Icon name="shield" size={14} />
               {t("common.groupName", { name: match.group })}
+            </span>
+          )}
+          {canLinkToPrediction && (
+            <span className="inline-flex items-center gap-1 text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full font-medium group-hover:bg-blue-100">
+              <Icon name="how_to_vote" size={14} />
+              予想する
+              <Icon name="chevron_right" size={14} />
             </span>
           )}
         </div>
@@ -111,7 +136,7 @@ export default function MatchCard({ match, showType = true }: MatchCardProps) {
               href={`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`${match.homeTeam} vs ${match.awayTeam}`)}&dates=${match.date.replace(/-/g, "")}T${match.kickoff.replace(":", "")}00/${match.date.replace(/-/g, "")}T${String(Number(match.kickoff.split(":")[0]) + 2).padStart(2, "0")}${match.kickoff.split(":")[1]}00&ctz=Asia/Tokyo&details=${encodeURIComponent(`W杯2026 ${match.typeLabel || ""} | ${match.venue}（${match.city}）`)}&location=${encodeURIComponent(`${match.venue}, ${match.city}`)}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-blue-500 hover:text-blue-700"
+              className="inline-flex items-center gap-1 text-blue-500 hover:text-blue-700 relative z-10"
             >
               <Icon name="calendar_add_on" size={13} />
               カレンダーに追加
@@ -124,7 +149,7 @@ export default function MatchCard({ match, showType = true }: MatchCardProps) {
           <div className="mt-2 text-center">
             <Link
               href={match.resultLink}
-              className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 hover:underline font-medium"
+              className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 hover:underline font-medium relative z-10"
             >
               <Icon name="article" size={13} />
               {match.status === "finished" ? "試合レポートを読む" : "プレビュー記事を読む"}

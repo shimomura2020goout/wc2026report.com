@@ -12,12 +12,10 @@ export const metadata: Metadata = {
 export const revalidate = 300;
 
 export default function PredictionsPage() {
-  const todayISO = new Date().toISOString().slice(0, 10);
-  const upcoming = allWorldCupMatches
-    .filter((m) => !m.isPlaceholder)
-    .filter((m) => m.date >= todayISO)
-    .sort((a, b) => a.date.localeCompare(b.date) || a.kickoff.localeCompare(b.kickoff))
-    .slice(0, 20);
+  // 全104試合を対象（プレースホルダーのKO対戦は表示するが投票UIはロックされる）
+  const matches = [...allWorldCupMatches].sort(
+    (a, b) => a.date.localeCompare(b.date) || a.kickoff.localeCompare(b.kickoff)
+  );
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
@@ -26,10 +24,10 @@ export default function PredictionsPage() {
         勝敗予想コーナー
       </h1>
       <p className="text-gray-500 mb-6 text-sm">
-        直近20試合の勝敗をタップで予想。的中率はマイページで確認できます。
+        全{matches.length}試合の勝敗をタップで予想。的中率はマイページで確認できます。
       </p>
 
-      <PredictionsClient matches={upcoming} />
+      <PredictionsClient matches={matches} />
     </div>
   );
 }

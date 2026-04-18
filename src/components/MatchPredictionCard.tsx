@@ -11,6 +11,8 @@ interface MatchPredictionCardProps {
   match: Match;
   initialStats?: MatchVoteStats | null;
   initialUserPick?: Pick | null;
+  /** 親コンポーネントが一括fetch済みの場合、個別fetchをスキップする */
+  skipOwnFetch?: boolean;
 }
 
 function kickoffTimestamp(match: Match): number | null {
@@ -26,6 +28,7 @@ export default function MatchPredictionCard({
   match,
   initialStats = null,
   initialUserPick = null,
+  skipOwnFetch = false,
 }: MatchPredictionCardProps) {
   const [stats, setStats] = useState<MatchVoteStats | null>(initialStats);
   const [userPick, setUserPick] = useState<Pick | null>(initialUserPick);
@@ -42,18 +45,24 @@ export default function MatchPredictionCard({
     (kickoff !== null && kickoff - now < LOCK_LEAD_MS) ||
     match.isPlaceholder === true;
 
+  // 親から initialStats/initialUserPick が更新されたら反映（一括fetch完了時）
   useEffect(() => {
+    if (initialStats) setStats(initialStats);
+  }, [initialStats]);
+  useEffect(() => {
+    if (initialUserPick) setUserPick(initialUserPick);
+  }, [initialUserPick]);
+
+  useEffect(() => {
+    if (skipOwnFetch) return;
     let cancelled = false;
     fetch(`/api/predictions/stats?matchId=${encodeURIComponent(match.id)}`)
       .then((r) => r.json())
       .then((data) => {
         if (cancelled) return;
         if (data.stats) setStats(data.stats);
-        // configured:false でもボタンは出し続ける（POST 時の 503 で最終判定）
       })
-      .catch(() => {
-        /* noop */
-      });
+      .catch(() => {});
 
     fetch("/api/predictions/me")
       .then((r) => (r.ok ? r.json() : null))
@@ -64,13 +73,11 @@ export default function MatchPredictionCard({
           setUserPick(pick);
         }
       })
-      .catch(() => {
-        /* noop */
-      });
+      .catch(() => {});
     return () => {
       cancelled = true;
     };
-  }, [match.id]);
+  }, [match.id, skipOwnFetch]);
 
   const submit = async (pick: Pick) => {
     if (uiLocked || submitting) return;
@@ -112,8 +119,8 @@ export default function MatchPredictionCard({
   const awayLabel = match.awayTeam;
 
   return (
-    <div>
-      <MatchCard match={match} />
+    <div id={`match-${match.id}`} className="scroll-mt-20">
+      <MatchCard match={match} linkToPrediction={false} />
       {unavailable ? (
         <div className="mt-2 text-xs text-gray-400 text-center py-3 bg-gray-50 rounded-xl border border-gray-100">
           予想投票は準備中です

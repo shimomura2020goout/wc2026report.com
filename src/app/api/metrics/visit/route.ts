@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { getRedis } from "@/lib/kv";
 import { COOKIE_NAME, COOKIE_MAX_AGE } from "@/lib/predictions";
-import { recordVisit } from "@/lib/profile";
+import { ensureNickname, recordVisit } from "@/lib/profile";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -21,6 +21,8 @@ export async function POST() {
     issuedCookie = true;
   }
 
+  // 訪問時にニックネーム未設定なら自動割当（ランキング対象化）
+  await ensureNickname(kv, anonId);
   const result = await recordVisit(kv, anonId);
 
   const res = NextResponse.json({ ok: true, ...result });

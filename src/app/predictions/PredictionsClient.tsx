@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 import Icon from "@/components/Icon";
 import MatchPredictionCard from "@/components/MatchPredictionCard";
 import type { Match } from "@/data/matches";
+import type { MatchVoteStats, Pick } from "@/lib/predictions";
 
 interface MyData {
-  picks: Record<string, "home" | "draw" | "away">;
+  picks: Record<string, Pick>;
   stats: { correct: number; total: number; streak: number };
 }
 
@@ -14,8 +15,12 @@ interface PredictionsClientProps {
   matches: Match[];
 }
 
+const BATCH_SIZE = 50;
+
 export default function PredictionsClient({ matches }: PredictionsClientProps) {
   const [me, setMe] = useState<MyData | null>(null);
+  const [statsMap, setStatsMap] = useState<Record<string, MatchVoteStats>>({});
+  const [fetched, setFetched] = useState(false);
 
   useEffect(() => {
     fetch("/api/predictions/me")
@@ -23,10 +28,30 @@ export default function PredictionsClient({ matches }: PredictionsClientProps) {
       .then((data) => {
         if (data) setMe(data);
       })
-      .catch(() => {
-        /* noop */
-      });
-  }, []);
+      .catch(() => {});
+
+    // 全試合分のstatsを一括取得（Upstash API呼び出しを削減）
+    const allIds = matches.map((m) => m.id);
+    const batches: string[][] = [];
+    for (let i = 0; i < allIds.length; i += BATCH_SIZE) {
+      batches.push(allIds.slice(i, i + BATCH_SIZE));
+    }
+    Promise.all(
+      batches.map((ids) =>
+        fetch(`/api/predictions/stats?matchIds=${ids.join(",")}`)
+          .then((r) => r.json())
+          .catch(() => ({ stats: {} }))
+      )
+    )
+      .then((results) => {
+        const merged: Record<string, MatchVoteStats> = {};
+        for (const r of results) {
+          if (r.stats) Object.assign(merged, r.stats);
+        }
+        setStatsMap(merged);
+      })
+      .finally(() => setFetched(true));
+  }, [matches]);
 
   const hitRate =
     me && me.stats.total > 0 ? Math.round((me.stats.correct / me.stats.total) * 100) : null;
@@ -62,7 +87,13 @@ export default function PredictionsClient({ matches }: PredictionsClientProps) {
 
       <div className="space-y-5">
         {matches.map((m) => (
-          <MatchPredictionCard key={m.id} match={m} />
+          <MatchPredictionCard
+            key={m.id}
+            match={m}
+            initialStats={statsMap[m.id] ?? null}
+            initialUserPick={me?.picks[m.id] ?? null}
+            skipOwnFetch={fetched}
+          />
         ))}
         {matches.length === 0 && (
           <div className="text-center py-16 text-gray-400">

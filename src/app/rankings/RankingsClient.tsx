@@ -19,11 +19,22 @@ interface RankingResponse {
   entries: RankingEntry[];
 }
 
-const TABS: { key: RankingType; label: string; icon: string; unit: string }[] = [
-  { key: "hits", label: "予想的中", icon: "military_tech", unit: "的中" },
-  { key: "predictions", label: "予想数", icon: "how_to_vote", unit: "予想" },
-  { key: "visits", label: "訪問数", icon: "visibility", unit: "回" },
-];
+const TAB_DEFS: Record<RankingType, { key: RankingType; label: string; icon: string; unit: string }> = {
+  hits: { key: "hits", label: "予想的中", icon: "military_tech", unit: "的中" },
+  predictions: { key: "predictions", label: "予想数", icon: "how_to_vote", unit: "予想" },
+  visits: { key: "visits", label: "訪問数", icon: "visibility", unit: "回" },
+};
+
+// W杯グループリーグ開幕（2026-06-11）以降は「予想的中」を先頭、それ以前は「予想数/訪問数」を先頭
+const WC_OPENING_ISO = "2026-06-11";
+
+function getTabOrder(): RankingType[] {
+  const todayISO = new Date().toISOString().slice(0, 10);
+  if (todayISO < WC_OPENING_ISO) {
+    return ["predictions", "visits", "hits"];
+  }
+  return ["hits", "predictions", "visits"];
+}
 
 const RANK_MEDAL: Record<number, { color: string; icon: string }> = {
   1: { color: "bg-yellow-400 text-yellow-900", icon: "emoji_events" },
@@ -32,7 +43,9 @@ const RANK_MEDAL: Record<number, { color: string; icon: string }> = {
 };
 
 export default function RankingsClient() {
-  const [active, setActive] = useState<RankingType>("hits");
+  const tabOrder = getTabOrder();
+  const tabs = tabOrder.map((k) => TAB_DEFS[k]);
+  const [active, setActive] = useState<RankingType>(tabOrder[0]);
   const [data, setData] = useState<Record<RankingType, RankingResponse | null>>({
     hits: null,
     predictions: null,
@@ -62,13 +75,13 @@ export default function RankingsClient() {
 
   const current = data[active];
   const isLoading = loading[active];
-  const activeTab = TABS.find((t) => t.key === active)!;
+  const activeTab = TAB_DEFS[active];
 
   return (
     <>
       {/* タブ */}
       <div className="flex gap-2 mb-5 overflow-x-auto scrollbar-hide">
-        {TABS.map((tab) => {
+        {tabs.map((tab) => {
           const isActive = tab.key === active;
           return (
             <button

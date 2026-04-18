@@ -72,6 +72,47 @@ export async function getNickname(kv: Redis, anonId: string): Promise<string | n
   return (await kv.get<string>(keyAnonNickname(anonId))) || null;
 }
 
+/** 自動生成されたニックネーム（プレフィックス付き）。ユーザが変更していないかの識別にも使う */
+export const AUTO_NICKNAME_PREFIX = "ゲスト";
+
+function randomHex(len: number): string {
+  const chars = "0123456789abcdef";
+  let out = "";
+  for (let i = 0; i < len; i++) {
+    out += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return out;
+}
+
+function generateAutoNickname(): string {
+  return `${AUTO_NICKNAME_PREFIX}${randomHex(6)}`;
+}
+
+export function isAutoNickname(name: string | null | undefined): boolean {
+  if (!name) return false;
+  return new RegExp(`^${AUTO_NICKNAME_PREFIX}[0-9a-f]{6}$`).test(name);
+}
+
+/**
+ * nicknameが未設定なら自動生成して予約する。既存があればそれを返す。
+ * setNickname を内部で呼ぶので ZSET 反映も行われる（初回時点では stats 0 のため ZADD はスキップ）。
+ */
+export async function ensureNickname(kv: Redis, anonId: string): Promise<string> {
+  const existing = await getNickname(kv, anonId);
+  if (existing) return existing;
+
+  for (let i = 0; i < 5; i++) {
+    const candidate = generateAutoNickname();
+    const result = await setNickname(kv, anonId, candidate);
+    if (result.ok && result.nickname) return result.nickname;
+    // taken の場合は別候補で再試行
+  }
+  // 衝突が5回続くのは天文学的に稀。fallback に anonId の先頭を使う
+  const fallback = `${AUTO_NICKNAME_PREFIX}${anonId.slice(0, 6)}`;
+  await kv.set(keyAnonNickname(anonId), fallback, { ex: COOKIE_MAX_AGE });
+  return fallback;
+}
+
 export interface SetNicknameResult {
   ok: boolean;
   reason?: "invalid" | "taken" | "internal";

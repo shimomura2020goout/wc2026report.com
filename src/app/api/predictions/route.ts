@@ -10,6 +10,7 @@ import {
   matchExists,
   recordPick,
 } from "@/lib/predictions";
+import { ensureNickname } from "@/lib/profile";
 
 export const runtime = "nodejs";
 
@@ -44,6 +45,8 @@ export async function POST(req: NextRequest) {
     issuedCookie = true;
   }
 
+  // 投票時にニックネーム未設定なら自動割当（ランキング対象化）
+  await ensureNickname(kv, anonId);
   const result = await recordPick(kv, anonId, matchId, pick);
 
   const buildResponse = (payload: unknown, status = 200) => {
