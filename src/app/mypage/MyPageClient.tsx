@@ -50,6 +50,8 @@ export default function MyPageClient({ posts, todayISO }: MyPageClientProps) {
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [matchesExpanded, setMatchesExpanded] = useState(false);
   const [postsExpanded, setPostsExpanded] = useState(false);
+  const [historyExpanded, setHistoryExpanded] = useState(false);
+  const [historyFilter, setHistoryFilter] = useState<"all" | "pending" | "hit" | "miss">("all");
 
   const favoriteCountries = prefs.favoriteCountries;
 
@@ -96,12 +98,56 @@ export default function MyPageClient({ posts, todayISO }: MyPageClientProps) {
     );
   }, [posts, favoriteCountries]);
 
+  // 予想履歴（全予想 × 試合データ × 結果ステータス）
+  const predictionHistory = useMemo(() => {
+    if (!me) return [];
+    return Object.entries(me.picks)
+      .map(([matchId, pick]) => {
+        const match = allWorldCupMatches.find((m) => m.id === matchId);
+        if (!match) return null;
+        let status: "pending" | "hit" | "miss" = "pending";
+        let winner: "home" | "draw" | "away" | null = null;
+        if (
+          match.status === "finished" &&
+          match.homeScore != null &&
+          match.awayScore != null
+        ) {
+          if (match.homeScore > match.awayScore) winner = "home";
+          else if (match.homeScore < match.awayScore) winner = "away";
+          else winner = "draw";
+          status = winner === pick ? "hit" : "miss";
+        }
+        return { match, pick, status, winner };
+      })
+      .filter((x): x is NonNullable<typeof x> => x !== null)
+      .sort((a, b) => {
+        // 結果待ち → 最新順 / 確定 → 新しい順
+        if (a.status === "pending" && b.status !== "pending") return -1;
+        if (a.status !== "pending" && b.status === "pending") return 1;
+        return b.match.date.localeCompare(a.match.date);
+      });
+  }, [me]);
+
+  const filteredHistory = useMemo(() => {
+    if (historyFilter === "all") return predictionHistory;
+    return predictionHistory.filter((h) => h.status === historyFilter);
+  }, [predictionHistory, historyFilter]);
+
+  const historyCounts = useMemo(() => {
+    const counts = { all: predictionHistory.length, pending: 0, hit: 0, miss: 0 };
+    predictionHistory.forEach((h) => counts[h.status]++);
+    return counts;
+  }, [predictionHistory]);
+
   const visibleMatches = matchesExpanded
     ? favoriteMatches
     : favoriteMatches.slice(0, INITIAL_VISIBLE);
   const visiblePosts = postsExpanded
     ? favoritePosts
     : favoritePosts.slice(0, INITIAL_VISIBLE);
+  const visibleHistory = historyExpanded
+    ? filteredHistory
+    : filteredHistory.slice(0, INITIAL_VISIBLE);
 
   if (!hydrated) {
     return (
@@ -216,6 +262,94 @@ export default function MyPageClient({ posts, todayISO }: MyPageClientProps) {
               <Icon name="info" size={14} className="inline mr-1 text-amber-600" />
               現在は自動割当ニックネーム（{profile.nickname}）です。マイページ上部から好きな名前に変更できます。
             </p>
+          )}
+        </section>
+      )}
+
+      {/* 予想履歴 */}
+      {predictionHistory.length > 0 && (
+        <section className="mb-8">
+          <h2 className="text-base font-bold text-gray-900 mb-3 flex items-center gap-1.5">
+            <Icon name="history" size={20} className="text-gray-700" />
+            あなたの予想履歴
+            <span className="text-xs text-gray-400 font-normal">
+              ({predictionHistory.length})
+            </span>
+          </h2>
+
+          {/* ステータス切替チップ */}
+          <div className="flex gap-2 mb-3 overflow-x-auto scrollbar-hide">
+            {(
+              [
+                { key: "all", label: "すべて", count: historyCounts.all, color: "gray" },
+                { key: "pending", label: "結果待ち", count: historyCounts.pending, color: "blue" },
+                { key: "hit", label: "的中", count: historyCounts.hit, color: "green" },
+                { key: "miss", label: "外れ", count: historyCounts.miss, color: "red" },
+              ] as const
+            ).map((tab) => {
+              const isActive = historyFilter === tab.key;
+              const colorMap: Record<string, string> = {
+                gray: "bg-gray-900 text-white border-gray-900",
+                blue: "bg-blue-600 text-white border-blue-600",
+                green: "bg-green-600 text-white border-green-600",
+                red: "bg-red-600 text-white border-red-600",
+              };
+              return (
+                <button
+                  key={tab.key}
+                  type="button"
+                  onClick={() => {
+                    setHistoryFilter(tab.key);
+                    setHistoryExpanded(false);
+                  }}
+                  disabled={tab.count === 0 && tab.key !== "all"}
+                  className={`shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${
+                    isActive
+                      ? colorMap[tab.color]
+                      : "bg-white text-gray-600 border-gray-200 hover:border-gray-300"
+                  }`}
+                >
+                  {tab.label}
+                  <span className={isActive ? "opacity-80" : "text-gray-400"}>
+                    {tab.count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* 履歴リスト */}
+          {filteredHistory.length === 0 ? (
+            <div className="bg-white rounded-xl border border-gray-100 p-6 text-center text-sm text-gray-400">
+              該当する予想がありません
+            </div>
+          ) : (
+            <>
+              <div className="space-y-2">
+                {visibleHistory.map((h) => (
+                  <HistoryCard key={h.match.id} history={h} />
+                ))}
+              </div>
+              {filteredHistory.length > INITIAL_VISIBLE && (
+                <button
+                  type="button"
+                  onClick={() => setHistoryExpanded((v) => !v)}
+                  className="mt-3 w-full flex items-center justify-center gap-1 py-2.5 text-sm font-medium text-blue-600 bg-white border border-gray-100 rounded-xl hover:border-blue-200 hover:bg-blue-50 transition-colors"
+                >
+                  {historyExpanded ? (
+                    <>
+                      <Icon name="expand_less" size={18} />
+                      閉じる
+                    </>
+                  ) : (
+                    <>
+                      <Icon name="expand_more" size={18} />
+                      もっと見る（残り {filteredHistory.length - INITIAL_VISIBLE} 件）
+                    </>
+                  )}
+                </button>
+              )}
+            </>
           )}
         </section>
       )}
@@ -346,5 +480,100 @@ export default function MyPageClient({ posts, todayISO }: MyPageClientProps) {
         )}
       </section>
     </>
+  );
+}
+
+interface HistoryCardProps {
+  history: {
+    match: (typeof allWorldCupMatches)[number];
+    pick: "home" | "draw" | "away";
+    status: "pending" | "hit" | "miss";
+    winner: "home" | "draw" | "away" | null;
+  };
+}
+
+function HistoryCard({ history }: HistoryCardProps) {
+  const { match, pick, status, winner } = history;
+
+  const statusConfig = {
+    pending: {
+      label: "結果待ち",
+      icon: "schedule",
+      badgeClass: "bg-blue-100 text-blue-700 border-blue-200",
+      borderClass: "border-gray-100",
+    },
+    hit: {
+      label: "的中",
+      icon: "check_circle",
+      badgeClass: "bg-green-100 text-green-700 border-green-200",
+      borderClass: "border-green-200 bg-green-50/30",
+    },
+    miss: {
+      label: "外れ",
+      icon: "cancel",
+      badgeClass: "bg-red-100 text-red-700 border-red-200",
+      borderClass: "border-red-200 bg-red-50/30",
+    },
+  }[status];
+
+  const pickLabel =
+    pick === "home" ? match.homeTeam : pick === "away" ? match.awayTeam : "引分";
+  const winnerLabel =
+    winner === "home"
+      ? match.homeTeam
+      : winner === "away"
+      ? match.awayTeam
+      : winner === "draw"
+      ? "引分"
+      : null;
+
+  return (
+    <div className={`rounded-xl border p-3.5 bg-white ${statusConfig.borderClass}`}>
+      <div className="flex items-center gap-2 mb-2">
+        <span
+          className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full border ${statusConfig.badgeClass}`}
+        >
+          <Icon name={statusConfig.icon} size={13} />
+          {statusConfig.label}
+        </span>
+        <span className="text-xs text-gray-500">{formatMatchDate(match.date)}</span>
+        {match.group && (
+          <span className="text-[10px] text-amber-700 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded-full ml-auto">
+            グループ{match.group}
+          </span>
+        )}
+      </div>
+
+      <div className="flex items-center gap-2 mb-2">
+        <span className={`flex-1 text-right text-sm font-bold truncate ${match.homeTeam === "日本" ? "text-red-700" : "text-gray-900"}`}>
+          {match.homeTeam}
+        </span>
+        {match.status === "finished" && match.homeScore != null && match.awayScore != null ? (
+          <span className="shrink-0 inline-flex items-center gap-1 px-2 py-0.5 bg-gray-900 text-white rounded text-sm font-black">
+            {match.homeScore} - {match.awayScore}
+          </span>
+        ) : (
+          <span className="shrink-0 text-gray-400 text-xs font-bold">VS</span>
+        )}
+        <span className={`flex-1 text-left text-sm font-bold truncate ${match.awayTeam === "日本" ? "text-red-700" : "text-gray-900"}`}>
+          {match.awayTeam}
+        </span>
+      </div>
+
+      <div className="flex items-center gap-2 text-xs text-gray-600 flex-wrap">
+        <span className="inline-flex items-center gap-1">
+          <Icon name="how_to_vote" size={13} className="text-gray-400" />
+          あなたの予想:
+          <strong className="text-gray-900">{pickLabel}</strong>
+        </span>
+        {winnerLabel && (
+          <span className="inline-flex items-center gap-1">
+            <Icon name="sports_score" size={13} className="text-gray-400" />
+            結果:
+            <strong className="text-gray-900">{winnerLabel}</strong>
+          </span>
+        )}
+      </div>
+    </div>
   );
 }
