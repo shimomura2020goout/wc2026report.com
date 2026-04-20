@@ -39,8 +39,11 @@ function CardTeamName({ name }: { name: string }) {
 export default function MatchCard({ match, showType = true, linkToPrediction = true }: MatchCardProps) {
   const { t } = useTranslation();
 
-  // プレースホルダー（"PO勝者" など）は予想対象にならないため、クリッカブル遷移もしない
-  const canLinkToPrediction = linkToPrediction && !match.isPlaceholder;
+  // 予想コーナーは W杯全104試合のみが対象。
+  // キリンチャレンジカップ / キリンカップ / 親善試合は /predictions に存在しないため遷移させない。
+  // プレースホルダー（"PO勝者" など）も投票対象外なのでクリッカブル遷移しない。
+  const isWorldCupMatch = match.type === "worldcup_gl" || match.type === "worldcup_ko";
+  const canLinkToPrediction = linkToPrediction && isWorldCupMatch && !match.isPlaceholder;
 
   return (
     <div
