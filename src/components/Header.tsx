@@ -109,17 +109,21 @@ export default function Header() {
 
           {/* Desktop nav */}
           <nav className="hidden lg:flex items-center gap-1">
-            {[...navKeys, ...(showMyPage ? [MYPAGE_ITEM] : [])].map((item) => {
+            {[...navKeys, MYPAGE_ITEM].map((item) => {
               const active = isActive(pathname, item);
+              const isMyPage = item.href === MYPAGE_ITEM.href;
+              const hideMyPage = isMyPage && !showMyPage;
               return (
                 <Link
                   key={item.href}
                   href={item.href}
+                  aria-hidden={hideMyPage || undefined}
+                  tabIndex={hideMyPage ? -1 : undefined}
                   className={`relative flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                     active
                       ? "bg-white/15 text-white"
                       : "text-white/70 hover:bg-white/10 hover:text-white"
-                  }`}
+                  } ${hideMyPage ? "invisible pointer-events-none" : ""}`}
                 >
                   <Icon name={item.icon} size={18} />
                   {t(item.key)}

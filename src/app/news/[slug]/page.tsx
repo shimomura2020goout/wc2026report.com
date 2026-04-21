@@ -246,7 +246,7 @@ function inlineMarkdown(text: string): string {
   let s = text;
   // 画像（リンクより先に処理）
   s = s.replace(/!\[([^\]]*)\]\(([^)]+)\)/g,
-    '<figure class="my-4"><img src="$2" alt="$1" class="w-full rounded-lg shadow-md" loading="lazy" /><figcaption class="text-xs text-gray-400 text-center mt-1">$1</figcaption></figure>'
+    '<figure class="my-4"><img src="$2" alt="$1" class="w-full rounded-lg shadow-md bg-gray-100" style="aspect-ratio:16/9;object-fit:contain" loading="lazy" decoding="async" /><figcaption class="text-xs text-gray-400 text-center mt-1">$1</figcaption></figure>'
   );
   // リンク（#で始まる同ページ内アンカーは新規タブで開かない）
   s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_m, label, rawUrl) => {

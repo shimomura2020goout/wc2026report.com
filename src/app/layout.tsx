@@ -18,6 +18,7 @@ import { Analytics } from "@vercel/analytics/next";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const BASE_URL = "https://www.wc2026report.com";

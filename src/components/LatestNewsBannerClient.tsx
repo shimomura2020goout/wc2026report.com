@@ -21,11 +21,11 @@ export default function LatestNewsBannerClient({ posts }: { posts: NewsBannerIte
 
   return (
     <div
-      className={`transition-all duration-300 z-40 ${
+      className={`z-40 text-white sticky top-16 transition-colors duration-300 ${
         isScrolled
-          ? "sticky top-16 bg-[#1a1a2e]/90 backdrop-blur-sm border-b border-white/5"
+          ? "bg-[#1a1a2e]/90 backdrop-blur-sm border-b border-white/5"
           : "bg-gradient-to-r from-blue-600 to-indigo-700"
-      } text-white`}
+      }`}
     >
       <div className="max-w-7xl mx-auto px-4">
         {posts.map((post, i) => {
@@ -37,9 +37,9 @@ export default function LatestNewsBannerClient({ posts }: { posts: NewsBannerIte
             <Link
               key={post.slug}
               href={`/news/${post.slug}`}
-              className={`flex items-center gap-2 text-sm hover:opacity-80 transition-opacity group ${
-                isScrolled ? "py-1.5 opacity-90" : "py-2"
-              } ${i > 0 ? "border-t border-white/10" : ""}`}
+              className={`flex items-center gap-2 text-sm py-2 hover:opacity-80 transition-opacity group ${
+                i > 0 ? "border-t border-white/10" : ""
+              }`}
             >
               {isRecent && (
                 <span className={`text-white text-[10px] font-bold px-1.5 py-0.5 rounded-sm tracking-wider shrink-0 ${
@@ -49,7 +49,7 @@ export default function LatestNewsBannerClient({ posts }: { posts: NewsBannerIte
                 </span>
               )}
               <Icon name="article" size={15} className="shrink-0 opacity-70" />
-              <span className={`truncate ${isScrolled ? "text-xs" : "text-sm font-medium"}`}>
+              <span className="truncate text-sm font-medium">
                 {post.title}
               </span>
               {post.publishedAt && (

@@ -5,15 +5,18 @@ import Script from "next/script";
 import Icon from "./Icon";
 
 export default function DonationBanner() {
-  const [dismissed, setDismissed] = useState(true); // default hidden until check
+  // SSR / 初期状態では表示を既定にし、dismissed 済みユーザーのみ useEffect で非表示に切り替える。
+  // これにより新規・未 dismiss ユーザーではレイアウトシフトが発生しなくなる（CLS 改善）。
+  const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem("donation_banner_dismissed");
     if (stored) {
       const expiry = Number(stored);
-      if (Date.now() < expiry) return; // still within cooldown
+      if (Date.now() < expiry) {
+        setDismissed(true);
+      }
     }
-    setDismissed(false);
   }, []);
 
   // GA4イベント送信

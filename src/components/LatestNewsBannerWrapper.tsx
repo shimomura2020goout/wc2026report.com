@@ -11,5 +11,16 @@ export default function LatestNewsBannerWrapper({ children }: { children: React.
   // ニュースページ（/news, /news/xxx）では表示しない
   if (pathname.startsWith("/news")) return null;
 
-  return <Suspense fallback={null}>{children}</Suspense>;
+  return (
+    <Suspense
+      fallback={
+        <div
+          aria-hidden
+          className="h-10 bg-gradient-to-r from-blue-600 to-indigo-700"
+        />
+      }
+    >
+      {children}
+    </Suspense>
+  );
 }
