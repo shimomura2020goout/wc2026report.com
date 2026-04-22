@@ -695,4 +695,5 @@ export const playerColumnSlugs: Record<string, string> = {
   "堂安律": "doan-ritsu-japan-column-2026-04-21",
   "鈴木彩艶": "player-story-zion-suzuki",
   "シャビ・シモンズ": "player-story-xavi-simons",
+  "アルダ・ギュレル": "player-story-arda-guler",
 };
