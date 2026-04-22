@@ -297,7 +297,7 @@ export const teamDetails: Record<string, TeamDetail> = {
     coachNationality: "オランダ",
     nickname: "オランイェ（Oranje）",
     kitColors: "オレンジ・白",
-    starPlayers: ["コーディ・ガクポ", "ヴィルジル・ファンダイク", "ライアン・フラーフェンベルフ"],
+    starPlayers: ["コーディ・ガクポ", "ヴィルジル・ファンダイク", "ライアン・フラーフェンベルフ", "シャビ・シモンズ"],
     description: "トータルフットボールの伝統を持つ強豪。3度のW杯準優勝を誇るが、優勝経験はない。ガクポ、ファンダイクを軸に悲願の初優勝を目指す。日本とはGL第1節で激突。",
     strengths: ["ファンダイクの守備統率力", "攻撃的なサッカーの伝統", "個々の技術の高さ"],
     weaknesses: ["決勝での勝負弱さ（3度準優勝）", "世代交代の過渡期", "安定感に欠ける"],
@@ -310,7 +310,7 @@ export const teamDetails: Record<string, TeamDetail> = {
     coachNationality: "日本",
     nickname: "サムライブルー / SAMURAI BLUE",
     kitColors: "青・白",
-    starPlayers: ["久保建英", "三笘薫", "中村敬斗"],
+    starPlayers: ["久保建英", "三笘薫", "中村敬斗", "上田綺世", "堂安律", "鈴木彩艶"],
     description: "アジア予選を圧倒的な成績で突破した日本代表。2022年はスペイン・ドイツを撃破してグループ首位通過。今大会の目標は「ベスト8以上」。欧州トップリーグで活躍する選手が過去最多で、史上最強の呼び声も高い。",
     strengths: ["欧州組の質と量がアジア最高", "三笘・久保の個人打開力", "2022年の経験と自信"],
     weaknesses: ["ベスト8の壁", "フィジカル面での対欧州・南米の差", "大会中のコンディション調整"],
@@ -690,4 +690,9 @@ export function hasTeamDetail(code: string): boolean {
 export const playerColumnSlugs: Record<string, string> = {
   "中村敬斗": "player-story-keito-nakamura",
   "ヴィクトル・ギョケレシュ": "player-story-viktor-gyokeres",
+  "三笘薫": "mitoma-kaoru-column-2026-04-20",
+  "上田綺世": "ayase-ueda-japan-column-2026",
+  "堂安律": "doan-ritsu-japan-column-2026-04-21",
+  "鈴木彩艶": "player-story-zion-suzuki",
+  "シャビ・シモンズ": "player-story-xavi-simons",
 };
