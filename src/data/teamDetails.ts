@@ -310,7 +310,7 @@ export const teamDetails: Record<string, TeamDetail> = {
     coachNationality: "日本",
     nickname: "サムライブルー / SAMURAI BLUE",
     kitColors: "青・白",
-    starPlayers: ["久保建英", "三笘薫", "中村敬斗", "上田綺世", "堂安律", "鈴木彩艶", "佐野海舟"],
+    starPlayers: ["久保建英", "三笘薫", "中村敬斗", "上田綺世", "堂安律", "鈴木彩艶", "佐野海舟", "鎌田大地"],
     description: "アジア予選を圧倒的な成績で突破した日本代表。2022年はスペイン・ドイツを撃破してグループ首位通過。今大会の目標は「ベスト8以上」。欧州トップリーグで活躍する選手が過去最多で、史上最強の呼び声も高い。",
     strengths: ["欧州組の質と量がアジア最高", "三笘・久保の個人打開力", "2022年の経験と自信"],
     weaknesses: ["ベスト8の壁", "フィジカル面での対欧州・南米の差", "大会中のコンディション調整"],
@@ -697,4 +697,5 @@ export const playerColumnSlugs: Record<string, string> = {
   "シャビ・シモンズ": "player-story-xavi-simons",
   "アルダ・ギュレル": "player-story-arda-guler",
   "佐野海舟": "sano-kaishu-japan-column-2026",
+  "鎌田大地": "kamada-daichi-japan-column-2026",
 };
