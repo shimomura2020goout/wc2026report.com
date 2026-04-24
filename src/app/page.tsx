@@ -5,7 +5,7 @@ import SourceAttribution from "@/components/SourceAttribution";
 import Icon from "@/components/Icon";
 import StickyPromoBanner from "@/components/StickyPromoBanner";
 import SquadAnnouncementBanner from "@/components/SquadAnnouncementBanner";
-import CalendarView from "@/components/CalendarView";
+import HomeRankingTeaser from "@/components/HomeRankingTeaser";
 import { japanMatches, worldCupGroups } from "@/data/matches";
 import { calendarEvents } from "@/data/events";
 import { getTeamByName } from "@/data/teams";
@@ -147,6 +147,95 @@ export default async function Home() {
             {t("home.seeAll104")}
             <Icon name="arrow_forward" size={18} />
           </Link>
+        </div>
+      </section>
+
+      {/* 開催まで盛り上がろうセクション: ランキング集計 + 動線カード */}
+      <section className="bg-gradient-to-br from-indigo-50 via-white to-rose-50 py-12 sm:py-16 px-4">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-8">
+            <span className="inline-block text-xs font-bold text-rose-600 bg-rose-100 px-3 py-1 rounded-full mb-3">
+              🎉 W杯2026 開催まで約2か月
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+              みんなでW杯2026を盛り上げよう
+            </h2>
+            <p className="text-gray-500 text-sm sm:text-base">
+              マイページで名前をつけて、予想ページで対戦結果を予想。ランキング上位を目指して気分を盛り上げましょう。
+            </p>
+          </div>
+
+          {/* ランキング集計結果 */}
+          <div className="mb-10">
+            <HomeRankingTeaser />
+          </div>
+
+          {/* 4つの動線カード */}
+          <h3 className="text-center text-sm font-bold text-gray-600 mb-4 flex items-center justify-center gap-2">
+            <Icon name="route" size={18} className="text-indigo-500" />
+            開催までの約2か月、こう楽しもう
+          </h3>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <Link
+              href="/mypage"
+              className="group bg-white rounded-2xl border border-gray-100 p-4 sm:p-5 hover:border-green-300 hover:shadow-md transition-all"
+            >
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center mb-3">
+                <Icon name="account_circle" size={22} className="text-white" />
+              </div>
+              <div className="text-xs font-bold text-green-700 mb-0.5">STEP 1</div>
+              <div className="font-bold text-gray-900 text-sm sm:text-base mb-1">マイページ</div>
+              <div className="text-xs text-gray-500 leading-snug">ニックネーム登録</div>
+              <div className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-green-600 group-hover:gap-2 transition-all">
+                登録する <Icon name="arrow_forward" size={14} />
+              </div>
+            </Link>
+
+            <Link
+              href="/teams"
+              className="group bg-white rounded-2xl border border-gray-100 p-4 sm:p-5 hover:border-blue-300 hover:shadow-md transition-all"
+            >
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-400 to-cyan-600 flex items-center justify-center mb-3">
+                <Icon name="flag" size={22} className="text-white" />
+              </div>
+              <div className="text-xs font-bold text-blue-700 mb-0.5">STEP 2</div>
+              <div className="font-bold text-gray-900 text-sm sm:text-base mb-1">出場国チェック</div>
+              <div className="text-xs text-gray-500 leading-snug">対戦相手を予習</div>
+              <div className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-blue-600 group-hover:gap-2 transition-all">
+                32か国を見る <Icon name="arrow_forward" size={14} />
+              </div>
+            </Link>
+
+            <Link
+              href="/predictions"
+              className="group bg-white rounded-2xl border border-gray-100 p-4 sm:p-5 hover:border-orange-300 hover:shadow-md transition-all"
+            >
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center mb-3">
+                <Icon name="poll" size={22} className="text-white" />
+              </div>
+              <div className="text-xs font-bold text-orange-700 mb-0.5">STEP 3</div>
+              <div className="font-bold text-gray-900 text-sm sm:text-base mb-1">勝敗を予想</div>
+              <div className="text-xs text-gray-500 leading-snug">全試合でポイント獲得</div>
+              <div className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-orange-600 group-hover:gap-2 transition-all">
+                予想する <Icon name="arrow_forward" size={14} />
+              </div>
+            </Link>
+
+            <Link
+              href="/rankings"
+              className="group bg-white rounded-2xl border border-gray-100 p-4 sm:p-5 hover:border-amber-300 hover:shadow-md transition-all"
+            >
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-yellow-600 flex items-center justify-center mb-3">
+                <Icon name="emoji_events" size={22} className="text-white" />
+              </div>
+              <div className="text-xs font-bold text-amber-700 mb-0.5">STEP 4</div>
+              <div className="font-bold text-gray-900 text-sm sm:text-base mb-1">ランキング</div>
+              <div className="text-xs text-gray-500 leading-snug">上位の的中者を見る</div>
+              <div className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-amber-600 group-hover:gap-2 transition-all">
+                ランキング <Icon name="arrow_forward" size={14} />
+              </div>
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -353,37 +442,6 @@ export default async function Home() {
         </div>
         <img src="https://h.accesstrade.net/sp/rr?rk=0100pjmj00opav" width="1" height="1" alt="" className="hidden" />
         <p className="text-[10px] text-gray-400 mt-1 text-right">※ アフィリエイト広告を含みます</p>
-      </section>
-
-      {/* Calendar Section — 旧 /calendar ページを統合 */}
-      <section id="calendar" className="bg-gray-50 py-12 sm:py-16 px-4 scroll-mt-20">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 flex items-center justify-center gap-2">
-              <Icon name="calendar_month" size={28} className="text-blue-600" />
-              {t("calendar.pageTitle")}
-            </h2>
-            <p className="text-gray-500 text-sm sm:text-base">
-              {t("calendar.pageDescription")}
-            </p>
-          </div>
-
-          <CalendarView />
-
-          <div className="mt-8 bg-white border border-blue-200 rounded-xl p-4 text-sm text-blue-800">
-            <div className="flex items-start gap-2">
-              <Icon name="info" size={18} className="text-blue-500 mt-0.5" />
-              <div>
-                <p className="font-medium mb-1">{t("calendar.aboutTitle")}</p>
-                <ul className="list-disc list-inside space-y-1 text-blue-700">
-                  <li>{t("calendar.aboutNote1")}</li>
-                  <li>{t("calendar.aboutNote2")}</li>
-                  <li>{t("calendar.aboutNote3")}</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
       </section>
 
       {/* 追従プロモバナー */}

@@ -43,10 +43,20 @@ export default function MatchScheduleView({
     { id: "all", label: "全試合", count: groupStageMatches.length + knockoutMatches.length },
   ];
 
+  // 日本代表タブでは W杯試合 と 親善試合/キリン を分離表示
+  const japanWorldCupMatches = useMemo(
+    () => japanMatches.filter((m) => m.type === "worldcup_gl" || m.type === "worldcup_ko"),
+    [japanMatches]
+  );
+  const japanFriendlyMatches = useMemo(
+    () => japanMatches.filter((m) => m.type === "friendly" || m.type === "kirin" || m.type === "kirin_cup"),
+    [japanMatches]
+  );
+
   const filteredMatches = useMemo(() => {
     switch (activeTab) {
       case "japan":
-        return japanMatches;
+        return japanWorldCupMatches;
       case "group": {
         let matches = groupStageMatches;
         if (selectedGroup !== "all") {
@@ -68,7 +78,7 @@ export default function MatchScheduleView({
       default:
         return [];
     }
-  }, [activeTab, selectedGroup, selectedMatchday, selectedRound, japanMatches, groupStageMatches, knockoutMatches]);
+  }, [activeTab, selectedGroup, selectedMatchday, selectedRound, japanWorldCupMatches, groupStageMatches, knockoutMatches]);
 
   return (
     <div>
@@ -220,6 +230,23 @@ export default function MatchScheduleView({
             />
           ))}
         </div>
+      )}
+
+      {/* 日本代表タブ: 親善試合・キリンチャレンジカップ（アコーディオン） */}
+      {activeTab === "japan" && japanFriendlyMatches.length > 0 && (
+        <details className="mt-6 group bg-gray-50 rounded-xl border border-gray-200">
+          <summary className="flex items-center gap-2 cursor-pointer list-none [&::-webkit-details-marker]:hidden px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-xl">
+            <Icon name="handshake" size={18} className="text-gray-500" />
+            親善試合・キリンチャレンジカップ
+            <span className="text-xs text-gray-400 ml-auto mr-2">({japanFriendlyMatches.length}試合)</span>
+            <Icon name="expand_more" size={20} className="text-gray-400 group-open:rotate-180 transition-transform" />
+          </summary>
+          <div className="px-4 pb-4 pt-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {japanFriendlyMatches.map((match) => (
+              <MatchCard key={match.id} match={match} />
+            ))}
+          </div>
+        </details>
       )}
     </div>
   );

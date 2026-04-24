@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import MatchScheduleView from "@/components/MatchScheduleView";
 import PlayoffSection from "@/components/PlayoffSection";
+import CalendarView from "@/components/CalendarView";
 import SourceAttribution from "@/components/SourceAttribution";
 import Icon from "@/components/Icon";
 import { BreadcrumbJsonLd, SportsEventJsonLd } from "@/components/JsonLd";
@@ -63,7 +64,7 @@ export default async function MatchesPage() {
           {t("matches.pageDescription")}
         </p>
 
-        {/* 視聴ガイドへの誘導バナ��� */}
+        {/* 視聴ガイドへの誘導バナー */}
         <Link
           href="/watch"
           className="flex items-center gap-2 bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-xl px-4 py-3 mb-6 hover:from-gray-800 hover:to-gray-700 transition-all"
@@ -73,17 +74,41 @@ export default async function MatchesPage() {
           <Icon name="arrow_forward" size={16} className="ml-auto text-gray-400" />
         </Link>
 
+        {/* サッカーカレンダー 2026（最上位） */}
+        <section id="calendar" className="mb-10 scroll-mt-20">
+          <div className="mb-4">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1 flex items-center gap-2">
+              <Icon name="calendar_month" size={24} className="text-blue-600" />
+              {t("calendar.pageTitle")}
+            </h2>
+            <p className="text-gray-500 text-sm">
+              {t("calendar.pageDescription")}
+            </p>
+          </div>
+
+          <CalendarView />
+
+          <div className="mt-4 bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-800">
+            <div className="flex items-start gap-2">
+              <Icon name="info" size={18} className="text-blue-500 mt-0.5" />
+              <div>
+                <p className="font-medium mb-1">{t("calendar.aboutTitle")}</p>
+                <ul className="list-disc list-inside space-y-1 text-blue-700">
+                  <li>{t("calendar.aboutNote1")}</li>
+                  <li>{t("calendar.aboutNote2")}</li>
+                  <li>{t("calendar.aboutNote3")}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* メインスケジュールビュー */}
         <MatchScheduleView
           japanMatches={japanMatches}
           groupStageMatches={allGroupStageMatches}
           knockoutMatches={allKnockoutMatches}
         />
-
-        {/* プレーオフ結果 */}
-        <div className="mt-10">
-          <PlayoffSection />
-        </div>
 
         {/* 注意書き */}
         <div className="mt-8 bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-800">
@@ -125,13 +150,26 @@ export default async function MatchesPage() {
           </Link>
         </div>
 
+        {/* プレーオフ結果（最下部・アコーディオン） */}
+        <details className="mt-10 group bg-gray-50 rounded-xl border border-gray-200">
+          <summary className="flex items-center gap-2 cursor-pointer list-none [&::-webkit-details-marker]:hidden px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-xl">
+            <Icon name="emoji_events" size={18} className="text-gray-500" />
+            プレーオフ結果（UEFA・大陸間）
+            <span className="text-xs text-gray-400 ml-auto mr-2">8枠確定済み</span>
+            <Icon name="expand_more" size={20} className="text-gray-400 group-open:rotate-180 transition-transform" />
+          </summary>
+          <div className="px-4 pb-4 pt-2">
+            <PlayoffSection />
+          </div>
+        </details>
+
         <SourceAttribution
           sources={[
             { label: "FIFA公式 — FIFA World Cup 26", url: "https://www.fifa.com/fifaplus/en/tournaments/mens/worldcup/canadamexicousa2026" },
             { label: "JFA公式 — SAMURAI BLUE", url: "https://www.jfa.jp/samuraiblue/" },
             { label: "DAZN — 放映スケジュール", url: "https://www.dazn.com/ja-JP" },
           ]}
-          updatedAt="2026年4月15日"
+          updatedAt="2026年4月24日"
         />
       </div>
     </>
