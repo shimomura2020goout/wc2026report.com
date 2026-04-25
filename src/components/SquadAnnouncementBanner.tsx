@@ -99,6 +99,14 @@ export default function SquadAnnouncementBanner({ event }: Props) {
                   <Icon name="arrow_forward" size={14} />
                 </Link>
               )}
+              <Link
+                href="/teams/jpn"
+                className="inline-flex items-center justify-center gap-1.5 border-2 border-[#ffd700]/70 text-[#ffd700] font-bold px-4 py-2.5 rounded-full hover:bg-[#ffd700]/10 hover:border-[#ffd700] transition-colors text-sm"
+              >
+                <Icon name="groups" size={16} />
+                日本チーム情報を確認
+                <Icon name="arrow_forward" size={14} />
+              </Link>
               <a
                 href={gcalUrl}
                 target="_blank"
