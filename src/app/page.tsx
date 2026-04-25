@@ -5,6 +5,7 @@ import SourceAttribution from "@/components/SourceAttribution";
 import Icon from "@/components/Icon";
 import StickyPromoBanner from "@/components/StickyPromoBanner";
 import SquadAnnouncementBanner from "@/components/SquadAnnouncementBanner";
+import OrganicTotoBanner from "@/components/OrganicTotoBanner";
 import HomeRankingTeaser from "@/components/HomeRankingTeaser";
 import { japanMatches, worldCupGroups } from "@/data/matches";
 import { calendarEvents } from "@/data/events";
@@ -65,6 +66,8 @@ export default async function Home() {
         {squadAnnouncementEvent && (
           <SquadAnnouncementBanner event={squadAnnouncementEvent} />
         )}
+
+        <OrganicTotoBanner />
 
         <div className="text-center mb-8">
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
