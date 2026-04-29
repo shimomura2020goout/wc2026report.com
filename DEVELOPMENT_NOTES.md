@@ -209,3 +209,51 @@
 | WOWOW | アクセストレード | /watch, /page.tsx (トップ) |
 | ドコモスポーツくじ | ドコモアフィリエイト | /toto |
 | 楽天toto | 楽天アフィリエイト | /toto |
+
+---
+
+## 予想ページ（/predictions）の構成
+
+### データ層
+- **保存先**: Vercel KV（Upstash Redis）。クライアント側localStorageは使わない
+- **主要キー**:
+  - `match:{matchId}:votes` — ハッシュ `{home, draw, away, total}`
+  - `match:{matchId}:pickers:{pick}` — anonId のセット（reconcile 用）
+  - `match:{matchId}:locked` — キックオフ後のロック
+  - `anon:{anonId}:picks` / `:stats` / `:nickname` / `:scored`
+  - `rank:{hits|predictions|visits}` — ランキングZSET（nickname 設定済みユーザのみ）
+- **匿名ID**: httpOnly cookie `wcup_anon`（400日）
+- **投票ロック**: キックオフ2時間前から UI ロック、キックオフ後はサーバー側で `:locked` セット
+
+### API
+| ルート | 役割 | キャッシュ |
+|---|---|---|
+| `POST /api/predictions` | 投票記録（HSETNX で重複防止） | - |
+| `GET /api/predictions/stats?matchId=X` | 単一試合の集計 | 60秒 |
+| `GET /api/predictions/stats?matchIds=A,B,...` | 一括集計（最大200件） | - |
+| `GET /api/predictions/me` | 自分の投票履歴・成績 | - |
+| `GET /api/predictions/lock` | 試合ロック処理 | - |
+
+### UI 層（クライアント）
+`PredictionsClient.tsx` が初回マウントで全104試合の stats を `BATCH_SIZE=50` で一括ロードし、`statsMap` に保持。子コンポーネントはこの `statsMap` を共有して個別 fetch を避ける（`skipOwnFetch` プロップ）。
+
+### 投票が多い対戦カード TOP10（`PopularMatchesSection.tsx`）
+- 親が持つ `statsMap` をそのまま消費（追加 API 呼び出しなし）
+- **抽出条件**: `match.status === "scheduled" && !match.isPlaceholder`（未開催のみ。終了試合・KOプレースホルダー除外）
+- **0票試合は除外**（意味のあるランキングのみ表示）
+- **0件のときはセクション全体を非表示**（早期 return null）
+- 並び順: `total` 降順 → 同票時は `date+kickoff` 昇順
+- 1〜3 位は金/銀/銅でハイライト
+- タップで `document.getElementById('match-${id}')?.scrollIntoView()` で該当カードへスクロール（`MatchPredictionCard` に既存の `id="match-${id}"` と `scroll-mt-20`）
+
+### ソートトグル（日付順 ⇄ 投票数順）
+- スティッキーフィルター行の右側に**横スクロール外**で常時表示
+- 投票数順時はオレンジでアクティブ表示、結果サマリにも `· 投票数順` を追記
+- フィルター（日本戦/応援国/グループ等）と併用可能
+- ソートは `filteredMatches` の上に `useMemo` で重ねる（元配列を破壊しない）
+- 「条件クリア」は search/filter/sortMode の3つを同時にリセット
+
+### 注意事項
+- TOP10 は `fetched === false` の間は何も描画しない（チラつき防止）
+- KV 未設定時は `configured: false` が返る → `statsMap` は空のまま、TOP10 セクションは自動的に非表示
+- 過去試合の `total` は時点情報として保持されるが、TOP10 は未開催のみのため自然と除外される

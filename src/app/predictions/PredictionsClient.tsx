@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Icon from "@/components/Icon";
 import MatchPredictionCard from "@/components/MatchPredictionCard";
+import PopularMatchesSection from "@/components/PopularMatchesSection";
 import type { Match } from "@/data/matches";
 import type { MatchVoteStats, Pick } from "@/lib/predictions";
 import { allTeams } from "@/data/teams";
@@ -37,6 +38,7 @@ export default function PredictionsClient({ matches }: PredictionsClientProps) {
 
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<QuickFilter>("all");
+  const [sortMode, setSortMode] = useState<"date" | "votes">("date");
   const [showGroupMenu, setShowGroupMenu] = useState(false);
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
 
@@ -112,13 +114,20 @@ export default function PredictionsClient({ matches }: PredictionsClientProps) {
     });
   }, [matches, search, filter, favoriteTeamNames, me]);
 
-  const visibleMatches = filteredMatches.slice(0, visibleCount);
-  const hasMore = filteredMatches.length > visibleCount;
+  const sortedMatches = useMemo(() => {
+    if (sortMode === "date") return filteredMatches;
+    return [...filteredMatches].sort(
+      (a, b) => (statsMap[b.id]?.total ?? 0) - (statsMap[a.id]?.total ?? 0)
+    );
+  }, [filteredMatches, sortMode, statsMap]);
 
-  // フィルター変更時は表示件数をリセット
+  const visibleMatches = sortedMatches.slice(0, visibleCount);
+  const hasMore = sortedMatches.length > visibleCount;
+
+  // フィルター/ソート変更時は表示件数をリセット
   useEffect(() => {
     setVisibleCount(INITIAL_VISIBLE);
-  }, [search, filter]);
+  }, [search, filter, sortMode]);
 
   const filterLabel = (() => {
     if (filter === "all") return "すべて";
@@ -159,6 +168,12 @@ export default function PredictionsClient({ matches }: PredictionsClientProps) {
         </div>
       )}
 
+      <PopularMatchesSection
+        matches={matches}
+        statsMap={statsMap}
+        fetched={fetched}
+      />
+
       {/* 検索 & フィルター (スティッキー) */}
       <div className="sticky top-16 z-20 bg-white/95 backdrop-blur-sm border-y border-gray-100 -mx-4 px-4 py-3 mb-4 space-y-2">
         {/* 検索 */}
@@ -187,8 +202,9 @@ export default function PredictionsClient({ matches }: PredictionsClientProps) {
           )}
         </div>
 
-        {/* フィルターチップ */}
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide relative">
+        {/* フィルターチップ + 並び替えトグル（常時表示） */}
+        <div className="flex items-center gap-2">
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide relative flex-1 min-w-0">
           <FilterChip
             label="すべて"
             icon="filter_list_off"
@@ -270,18 +286,41 @@ export default function PredictionsClient({ matches }: PredictionsClientProps) {
           </div>
         </div>
 
+          {/* 並び替えトグル（横スクロール外。常に右側に表示） */}
+          <button
+            type="button"
+            onClick={() => setSortMode((s) => (s === "date" ? "votes" : "date"))}
+            className={`shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium transition-colors border whitespace-nowrap ${
+              sortMode === "votes"
+                ? "bg-orange-500 text-white border-orange-500"
+                : "bg-white text-gray-600 border-gray-200 hover:border-gray-300"
+            }`}
+            aria-label="並び替え切替"
+          >
+            <Icon
+              name={sortMode === "votes" ? "trending_up" : "schedule"}
+              size={14}
+            />
+            {sortMode === "votes" ? "投票数順" : "日付順"}
+          </button>
+        </div>
+
         {/* 結果サマリ */}
-        {(search || filter !== "all") && (
+        {(search || filter !== "all" || sortMode !== "date") && (
           <div className="flex items-center gap-2 text-xs text-gray-500">
             <span>
               <strong className="text-gray-700">{filteredMatches.length}</strong> 試合ヒット
               {filter !== "all" && <span className="ml-1">({filterLabel})</span>}
+              {sortMode === "votes" && (
+                <span className="ml-1 text-orange-600">· 投票数順</span>
+              )}
             </span>
             <button
               type="button"
               onClick={() => {
                 setSearch("");
                 setFilter("all");
+                setSortMode("date");
               }}
               className="ml-auto text-blue-600 hover:underline"
             >
