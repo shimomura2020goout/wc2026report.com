@@ -106,7 +106,7 @@ export const calendarEvents: CalendarEvent[] = [
     category: "japan",
     description: "森保一監督がW杯2026に挑むSAMURAI BLUEの最終登録メンバー26名を発表。JFAハウス（東京都文京区）14:00〜 記者会見。",
     isHighlight: true,
-    link: "/news/japan-squad-announcement-may-15-2026",
+    link: "/japan-squad",
   },
   {
     id: "evt-cl-sf",
