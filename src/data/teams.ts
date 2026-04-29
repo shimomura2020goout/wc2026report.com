@@ -14,7 +14,7 @@ export interface Team {
 }
 
 // ========================================
-// 全48チーム — Notion から自動生成（2026-04-15）
+// 全48チーム — Notion から自動生成（2026-04-29）
 // このファイルは scripts/syncTeams.ts で自動生成されます。直接編集しないでください。
 // 編集は Notion の Teams DB で行い、`npm run sync:teams` を実行してください。
 // ========================================
@@ -23,14 +23,14 @@ export const allTeams: Team[] = [
   // --- グループ A ---
   { name: "メキシコ", code: "MEX", group: "A", fifaRanking: 15, fifaPoints: 1681.03, fifaPrevPoints: 1676, region: "CONCACAF", regionLabel: "北中米カリブ海", wcAppearances: 17, bestResult: "ベスト8（1970, 1986）", flag: "🇲🇽" },
   { name: "韓国", code: "KOR", group: "A", fifaRanking: 25, fifaPoints: 1588.67, fifaPrevPoints: 1599, region: "AFC", regionLabel: "アジア", wcAppearances: 11, bestResult: "4位（2002）", flag: "🇰🇷" },
-  { name: "南アフリカ", code: "RSA", group: "A", fifaRanking: 59, fifaPoints: 1429.73, fifaPrevPoints: 1433, region: "CAF", regionLabel: "アフリカ", wcAppearances: 4, bestResult: "GL敗退（1998-2010）", flag: "🇿🇦" },
+  { name: "南アフリカ", code: "RSA", group: "A", fifaRanking: 60, fifaPoints: 1429.73, fifaPrevPoints: 1433, region: "CAF", regionLabel: "アフリカ", wcAppearances: 4, bestResult: "GL敗退（1998-2010）", flag: "🇿🇦" },
   { name: "チェコ", code: "CZE", group: "A", fifaRanking: 41, fifaPoints: 1513.74, fifaPrevPoints: 1487, region: "UEFA", regionLabel: "ヨーロッパ", wcAppearances: 2, bestResult: "準優勝（1962 ※チェコスロバキア時代）", flag: "🇨🇿" },
 
   // --- グループ B ---
   { name: "カナダ", code: "CAN", group: "B", fifaRanking: 30, fifaPoints: 1556.48, fifaPrevPoints: 1559, region: "CONCACAF", regionLabel: "北中米カリブ海", wcAppearances: 3, bestResult: "GL敗退（1986, 2022）", flag: "🇨🇦" },
   { name: "カタール", code: "QAT", group: "B", fifaRanking: 55, fifaPoints: 1454.96, fifaPrevPoints: 1455, region: "AFC", regionLabel: "アジア", wcAppearances: 2, bestResult: "GL敗退（2022）", flag: "🇶🇦" },
   { name: "スイス", code: "SUI", group: "B", fifaRanking: 19, fifaPoints: 1649.4, fifaPrevPoints: 1655, region: "UEFA", regionLabel: "ヨーロッパ", wcAppearances: 13, bestResult: "ベスト8（1934-1954）", flag: "🇨🇭" },
-  { name: "ボスニア・ヘルツェゴビナ", code: "BIH", group: "B", fifaRanking: 63, fifaPoints: 1398.23, fifaPrevPoints: 1362, region: "UEFA", regionLabel: "ヨーロッパ", wcAppearances: 1, bestResult: "初出場", flag: "🇧🇦" },
+  { name: "ボスニア・ヘルツェゴビナ", code: "BIH", group: "B", fifaRanking: 65, fifaPoints: 1398.23, fifaPrevPoints: 1362, region: "UEFA", regionLabel: "ヨーロッパ", wcAppearances: 1, bestResult: "初出場", flag: "🇧🇦" },
 
   // --- グループ C ---
   { name: "ブラジル", code: "BRA", group: "C", fifaRanking: 6, fifaPoints: 1761.16, fifaPrevPoints: 1760, region: "CONMEBOL", regionLabel: "南米", wcAppearances: 23, bestResult: "優勝（1958-2002・5回）", flag: "🇧🇷" },
@@ -66,7 +66,7 @@ export const allTeams: Team[] = [
   { name: "スペイン", code: "ESP", group: "H", fifaRanking: 2, fifaPoints: 1876.4, fifaPrevPoints: 1877, region: "UEFA", regionLabel: "ヨーロッパ", wcAppearances: 17, bestResult: "優勝（2010）", flag: "🇪🇸" },
   { name: "サウジアラビア", code: "KSA", group: "H", fifaRanking: 61, fifaPoints: 1421.43, fifaPrevPoints: 1429, region: "AFC", regionLabel: "アジア", wcAppearances: 7, bestResult: "ベスト16（1994）", flag: "🇸🇦" },
   { name: "ウルグアイ", code: "URU", group: "H", fifaRanking: 17, fifaPoints: 1673.07, fifaPrevPoints: 1673, region: "CONMEBOL", regionLabel: "南米", wcAppearances: 15, bestResult: "優勝（1930, 1950）", flag: "🇺🇾" },
-  { name: "カーボベルデ", code: "CPV", group: "H", fifaRanking: 68, fifaPoints: 1371.13, fifaPrevPoints: 1370, region: "CAF", regionLabel: "アフリカ", wcAppearances: 1, bestResult: "初出場", flag: "🇨🇻" },
+  { name: "カーボベルデ", code: "CPV", group: "H", fifaRanking: 69, fifaPoints: 1371.13, fifaPrevPoints: 1370, region: "CAF", regionLabel: "アフリカ", wcAppearances: 1, bestResult: "初出場", flag: "🇨🇻" },
 
   // --- グループ I ---
   { name: "フランス", code: "FRA", group: "I", fifaRanking: 1, fifaPoints: 1877.32, fifaPrevPoints: 1870, region: "UEFA", regionLabel: "ヨーロッパ", wcAppearances: 17, bestResult: "優勝（1998, 2018）", flag: "🇫🇷" },
@@ -78,7 +78,7 @@ export const allTeams: Team[] = [
   { name: "アルゼンチン", code: "ARG", group: "J", fifaRanking: 3, fifaPoints: 1874.82, fifaPrevPoints: 1873, region: "CONMEBOL", regionLabel: "南米", wcAppearances: 19, bestResult: "優勝（1978-2022・3回）", flag: "🇦🇷" },
   { name: "アルジェリア", code: "ALG", group: "J", fifaRanking: 28, fifaPoints: 1564.26, fifaPrevPoints: 1561, region: "CAF", regionLabel: "アフリカ", wcAppearances: 5, bestResult: "ベスト16（2014）", flag: "🇩🇿" },
   { name: "オーストリア", code: "AUT", group: "J", fifaRanking: 24, fifaPoints: 1593.45, fifaPrevPoints: 1586, region: "UEFA", regionLabel: "ヨーロッパ", wcAppearances: 8, bestResult: "3位（1954）", flag: "🇦🇹" },
-  { name: "ヨルダン", code: "JOR", group: "J", fifaRanking: 64, fifaPoints: 1391.45, fifaPrevPoints: 1389, region: "AFC", regionLabel: "アジア", wcAppearances: 1, bestResult: "初出場", flag: "🇯🇴" },
+  { name: "ヨルダン", code: "JOR", group: "J", fifaRanking: 63, fifaPoints: 1391.45, fifaPrevPoints: 1389, region: "AFC", regionLabel: "アジア", wcAppearances: 1, bestResult: "初出場", flag: "🇯🇴" },
 
   // --- グループ K ---
   { name: "ポルトガル", code: "POR", group: "K", fifaRanking: 5, fifaPoints: 1763.83, fifaPrevPoints: 1760, region: "UEFA", regionLabel: "ヨーロッパ", wcAppearances: 9, bestResult: "3位（1966）", flag: "🇵🇹" },
@@ -88,7 +88,7 @@ export const allTeams: Team[] = [
 
   // --- グループ L ---
   { name: "イングランド", code: "ENG", group: "L", fifaRanking: 4, fifaPoints: 1825.97, fifaPrevPoints: 1834, region: "UEFA", regionLabel: "ヨーロッパ", wcAppearances: 17, bestResult: "優勝（1966）", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿" },
-  { name: "ガーナ", code: "GHA", group: "L", fifaRanking: 73, fifaPoints: 1346.31, fifaPrevPoints: 1351, region: "CAF", regionLabel: "アフリカ", wcAppearances: 5, bestResult: "ベスト8（2010）", flag: "🇬🇭" },
+  { name: "ガーナ", code: "GHA", group: "L", fifaRanking: 74, fifaPoints: 1346.31, fifaPrevPoints: 1351, region: "CAF", regionLabel: "アフリカ", wcAppearances: 5, bestResult: "ベスト8（2010）", flag: "🇬🇭" },
   { name: "パナマ", code: "PAN", group: "L", fifaRanking: 33, fifaPoints: 1540.64, fifaPrevPoints: 1539, region: "CONCACAF", regionLabel: "北中米カリブ海", wcAppearances: 3, bestResult: "GL敗退（2018, 2026）", flag: "🇵🇦" },
   { name: "クロアチア", code: "CRO", group: "L", fifaRanking: 11, fifaPoints: 1717.06, fifaPrevPoints: 1717, region: "UEFA", regionLabel: "ヨーロッパ", wcAppearances: 7, bestResult: "準優勝（2018）", flag: "🇭🇷" },
 ];
