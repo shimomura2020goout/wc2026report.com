@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Icon from "@/components/Icon";
+import { allTeams } from "@/data/teams";
 import RankingsClient from "./RankingsClient";
 
 export const metadata: Metadata = {
   title: "ランキング",
-  description: "予想的中・予想数・訪問数のユーザランキング",
+  description: "予想的中・予想数・訪問数のユーザランキングと出場国FIFAランキング",
   robots: { index: false, follow: true },
 };
 
@@ -18,10 +19,10 @@ export default function RankingsPage() {
         ランキング
       </h1>
       <p className="text-gray-500 mb-6 text-sm">
-        ニックネームを設定したユーザのみ表示されます。集計は約1分キャッシュ。
+        予想ランキング（ニックネーム設定ユーザのみ）と出場国FIFAランキング。
       </p>
 
-      <RankingsClient />
+      <RankingsClient teams={allTeams} />
     </div>
   );
 }

@@ -3,8 +3,11 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Icon from "@/components/Icon";
+import type { Team } from "@/data/teams";
+import CountryRankingTable from "./CountryRankingTable";
 
 type RankingType = "hits" | "predictions" | "visits";
+type Category = "predictions" | "countries";
 
 interface RankingEntry {
   rank: number;
@@ -68,9 +71,14 @@ function formatNumber(n: number): string {
   return n.toLocaleString("ja-JP");
 }
 
-export default function RankingsClient() {
+interface RankingsClientProps {
+  teams: Team[];
+}
+
+export default function RankingsClient({ teams }: RankingsClientProps) {
   const tabOrder = getTabOrder();
   const tabs = tabOrder.map((k) => TAB_DEFS[k]);
+  const [category, setCategory] = useState<Category>("predictions");
   const [active, setActive] = useState<RankingType>(tabOrder[0]);
 
   const [topData, setTopData] = useState<Record<RankingType, RankingResponse | null>>({
@@ -190,6 +198,37 @@ export default function RankingsClient() {
         </div>
       </section>
 
+      {/* 親タブ: 予想ランキング / 出場国ランキング */}
+      <div className="mb-5 flex">
+        <div className="flex gap-1 bg-gray-100 p-1 rounded-xl">
+          {([
+            { id: "predictions" as Category, label: "予想ランキング", icon: "how_to_vote" },
+            { id: "countries" as Category, label: "出場国ランキング", icon: "public" },
+          ]).map((cat) => {
+            const isActive = category === cat.id;
+            return (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => setCategory(cat.id)}
+                className={`flex items-center gap-1 px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                  isActive
+                    ? "bg-white text-gray-900 shadow-sm"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                <Icon name={cat.icon} size={16} />
+                {cat.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {category === "countries" ? (
+        <CountryRankingTable teams={teams} />
+      ) : (
+      <>
       {/* タブ */}
       <div className="flex gap-2 mb-5 overflow-x-auto scrollbar-hide">
         {tabs.map((tab) => {
@@ -375,6 +414,8 @@ export default function RankingsClient() {
           <li>予想職人（的中率）は5予想以上の中から算出されます</li>
         </ul>
       </div>
+      </>
+      )}
     </>
   );
 }
