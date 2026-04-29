@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { allTeams } from "@/data/teams";
+import { allWorldCupMatches } from "@/data/matches";
 
 const BASE_URL = "https://www.wc2026report.com";
 
@@ -26,6 +27,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}/kickoff`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.85,
     },
     {
       url: `${BASE_URL}/watch`,
@@ -102,5 +109,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     }));
 
-  return [...staticPages, ...teamPages, ...articlePages];
+  // 国別の試合日程ページ（SEOサテライト）
+  const teamMatchesPages: MetadataRoute.Sitemap = allTeams
+    .filter((t) => !t.isPlaceholder)
+    .map((t) => ({
+      url: `${BASE_URL}/matches/team/${t.code.toLowerCase()}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.75,
+    }));
+
+  // 日別の試合一覧ページ（SEOサテライト）
+  const uniqueMatchDates = Array.from(new Set(allWorldCupMatches.map((m) => m.date)));
+  const dateMatchesPages: MetadataRoute.Sitemap = uniqueMatchDates.map((d) => ({
+    url: `${BASE_URL}/matches/date/${d.replace(/-/g, "")}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.7,
+  }));
+
+  return [
+    ...staticPages,
+    ...teamPages,
+    ...teamMatchesPages,
+    ...dateMatchesPages,
+    ...articlePages,
+  ];
 }

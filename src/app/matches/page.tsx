@@ -67,12 +67,49 @@ export default async function MatchesPage() {
         {/* 視聴ガイドへの誘導バナー */}
         <Link
           href="/watch"
-          className="flex items-center gap-2 bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-xl px-4 py-3 mb-6 hover:from-gray-800 hover:to-gray-700 transition-all"
+          className="flex items-center gap-2 bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-xl px-4 py-3 mb-4 hover:from-gray-800 hover:to-gray-700 transition-all"
         >
           <Icon name="live_tv" size={20} className="text-green-400" />
           <span className="text-sm font-medium">W杯の放送・配信情報をチェック</span>
           <Icon name="arrow_forward" size={16} className="ml-auto text-gray-400" />
         </Link>
+
+        {/* 試合日程の切り口ナビ（国別 / 日別 / 時間帯別） */}
+        <nav aria-label="試合日程の切り口" className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+          <Link
+            href="/matches/team/jpn"
+            className="flex items-center gap-3 rounded-xl border-2 border-red-200 bg-red-50 px-4 py-3 hover:bg-red-100 transition-colors"
+          >
+            <span className="text-2xl">🇯🇵</span>
+            <div className="flex-1">
+              <div className="text-sm font-bold text-gray-900">国別の試合日程</div>
+              <div className="text-xs text-gray-600">日本代表ほか48カ国別ページ</div>
+            </div>
+            <Icon name="arrow_forward" size={16} className="text-gray-400" />
+          </Link>
+          <Link
+            href="/matches/date/20260615"
+            className="flex items-center gap-3 rounded-xl border-2 border-amber-200 bg-amber-50 px-4 py-3 hover:bg-amber-100 transition-colors"
+          >
+            <Icon name="calendar_today" size={24} className="text-amber-600" />
+            <div className="flex-1">
+              <div className="text-sm font-bold text-gray-900">日別の試合一覧</div>
+              <div className="text-xs text-gray-600">その日に行われる全試合をチェック</div>
+            </div>
+            <Icon name="arrow_forward" size={16} className="text-gray-400" />
+          </Link>
+          <Link
+            href="/kickoff"
+            className="flex items-center gap-3 rounded-xl border-2 border-indigo-200 bg-indigo-50 px-4 py-3 hover:bg-indigo-100 transition-colors"
+          >
+            <Icon name="schedule" size={24} className="text-indigo-600" />
+            <div className="flex-1">
+              <div className="text-sm font-bold text-gray-900">日本時間 早見表</div>
+              <div className="text-xs text-gray-600">時間帯別の全104試合まとめ</div>
+            </div>
+            <Icon name="arrow_forward" size={16} className="text-gray-400" />
+          </Link>
+        </nav>
 
         {/* サッカーカレンダー 2026（最上位） */}
         <section id="calendar" className="mb-10 scroll-mt-20">
