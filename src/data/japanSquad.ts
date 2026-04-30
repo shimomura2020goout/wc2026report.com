@@ -201,9 +201,10 @@ export const playerSquad: SquadPlayer[] = [
   {
     name: "伊東純也",
     position: "MF",
-    club: "ランス",
-    league: "リーグ・アン（仏）",
-    comment: "右WBの切り札、スコットランド戦決勝弾",
+    club: "KRCヘンク",
+    league: "ジュピラー・プロ・リーグ（ベルギー）",
+    columnSlug: "ito-junya-japan-column-2026",
+    comment: "右WBの切り札、スコットランド戦決勝弾。2025年8月にヘンクへ復帰",
   },
   {
     name: "中村敬斗",
