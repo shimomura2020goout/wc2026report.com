@@ -310,7 +310,7 @@ export const teamDetails: Record<string, TeamDetail> = {
     coachNationality: "日本",
     nickname: "サムライブルー / SAMURAI BLUE",
     kitColors: "青・白",
-    starPlayers: ["久保建英", "三笘薫", "中村敬斗", "上田綺世", "堂安律", "鈴木彩艶", "佐野海舟", "鎌田大地", "谷口彰悟", "遠藤航", "田中碧", "守田英正", "伊東純也", "大橋祐紀", "藤田譲瑠チマ", "板倉滉", "冨安健洋", "伊藤洋輝", "長友佑都", "鈴木淳之介"],
+    starPlayers: ["久保建英", "三笘薫", "中村敬斗", "上田綺世", "堂安律", "鈴木彩艶", "佐野海舟", "鎌田大地", "谷口彰悟", "遠藤航", "田中碧", "守田英正", "伊東純也", "大橋祐紀", "藤田譲瑠チマ", "板倉滉", "冨安健洋", "伊藤洋輝", "長友佑都", "鈴木淳之介", "前田大然", "小川航基"],
     description: "アジア予選を圧倒的な成績で突破した日本代表。2022年はスペイン・ドイツを撃破してグループ首位通過。今大会の目標は「ベスト8以上」。欧州トップリーグで活躍する選手が過去最多で、史上最強の呼び声も高い。",
     strengths: ["欧州組の質と量がアジア最高", "三笘・久保の個人打開力", "2022年の経験と自信"],
     weaknesses: ["ベスト8の壁", "フィジカル面での対欧州・南米の差", "大会中のコンディション調整"],
@@ -710,4 +710,6 @@ export const playerColumnSlugs: Record<string, string> = {
   "伊藤洋輝": "ito-hiroki-japan-column-2026",
   "長友佑都": "nagatomo-yuto-japan-column-2026",
   "鈴木淳之介": "suzuki-junnosuke-japan-column-2026",
+  "前田大然": "maeda-daizen-japan-column-2026",
+  "小川航基": "ogawa-koki-japan-column-2026",
 };

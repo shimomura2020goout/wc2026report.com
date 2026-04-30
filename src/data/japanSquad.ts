@@ -236,14 +236,16 @@ export const playerSquad: SquadPlayer[] = [
     position: "FW",
     club: "セルティック",
     league: "プレミアシップ（スコットランド）",
-    comment: "スピードタイプ、ハイプレス要員",
+    columnSlug: "maeda-daizen-japan-column-2026",
+    comment: "スピードタイプ、ハイプレス要員。24/25キャリアハイ33得点でプレミアシップMVP",
   },
   {
     name: "小川航基",
     position: "FW",
     club: "NECナイメヘン",
     league: "エールディヴィジ（蘭）",
-    comment: "ポスト型2番手、2024年以降躍進",
+    columnSlug: "ogawa-koki-japan-column-2026",
+    comment: "ポスト型2番手、最終予選6戦4ゴール得点ランクトップ。中国戦ヘッドで2得点",
   },
 ];
 
