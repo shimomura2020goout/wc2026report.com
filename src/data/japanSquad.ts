@@ -62,16 +62,18 @@ export const playerSquad: SquadPlayer[] = [
   {
     name: "板倉滉",
     position: "DF",
-    club: "ボルシアMG",
-    league: "ブンデスリーガ（独）",
-    comment: "3バック中央、守備の大黒柱",
+    club: "アヤックス・アムステルダム",
+    league: "エールディヴィジ（蘭）",
+    columnSlug: "itakura-ko-japan-column-2026",
+    comment: "3バック中央、守備の大黒柱。2025/8 にボルシアMG→アヤックス（史上初の日本人）",
   },
   {
     name: "冨安健洋",
     position: "DF",
-    club: "アーセナル",
-    league: "プレミアリーグ（英）",
-    comment: "復帰後即レギュラー、3バック右",
+    club: "アヤックス・アムステルダム",
+    league: "エールディヴィジ（蘭）",
+    columnSlug: "tomiyasu-takehiro-japan-column-2026",
+    comment: "復帰後即レギュラー、3バック右。2025/12 にアーセナル→アヤックスへ（半年契約）",
   },
   {
     name: "町田浩樹",
@@ -100,7 +102,8 @@ export const playerSquad: SquadPlayer[] = [
     position: "DF",
     club: "バイエルン・ミュンヘン",
     league: "ブンデスリーガ（独）",
-    comment: "左WB／CB兼任、バイエルンで経験値",
+    columnSlug: "ito-hiroki-japan-column-2026",
+    comment: "左WB／CB兼任、バイエルンで2連覇に貢献",
   },
   {
     name: "瀬古歩夢",
@@ -114,6 +117,7 @@ export const playerSquad: SquadPlayer[] = [
     position: "DF",
     club: "FC東京",
     league: "Jリーグ",
+    columnSlug: "nagatomo-yuto-japan-column-2026",
     badge: "衝撃の予想復帰",
     comment: "39歳レジェンド、W杯5度目へ。左SBバックアップと精神的支柱",
   },
@@ -122,8 +126,9 @@ export const playerSquad: SquadPlayer[] = [
     position: "DF",
     club: "FCコペンハーゲン",
     league: "スーペルリーガ（デンマーク）",
+    columnSlug: "suzuki-junnosuke-japan-column-2026",
     badge: "電撃抜擢",
-    comment: "ブラジル戦で安定感のある対応を見せた22歳、左利きCB／SBのマルチロール",
+    comment: "ブラジル戦で左CB先発しチェルシーのエステバンを完封した22歳、CL本戦7試合経験",
   },
 
   // ─── MF 11 ───
