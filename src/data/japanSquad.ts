@@ -171,6 +171,7 @@ export const playerSquad: SquadPlayer[] = [
     position: "MF",
     club: "ブラックバーン",
     league: "チャンピオンシップ（英2部）",
+    columnSlug: "ohashi-yuki-japan-column-2026",
     badge: "電撃選出",
     comment: "英チャンピオンシップで得点を重ねる左WG／セカンドストライカー",
   },
