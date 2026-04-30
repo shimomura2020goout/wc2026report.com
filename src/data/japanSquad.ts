@@ -132,6 +132,7 @@ export const playerSquad: SquadPlayer[] = [
     position: "MF",
     club: "スポルティングCP",
     league: "プリメイラ・リーガ（葡）",
+    columnSlug: "morita-hidemasa-japan-column-2026",
     comment: "インサイドハーフの軸、従来の中盤",
   },
   {
