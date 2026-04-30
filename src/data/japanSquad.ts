@@ -162,9 +162,10 @@ export const playerSquad: SquadPlayer[] = [
   {
     name: "藤田譲瑠チマ",
     position: "MF",
-    club: "フェイエノールト",
-    league: "エールディヴィジ（蘭）",
-    comment: "ボランチのポリバレント",
+    club: "FCザンクト・パウリ",
+    league: "ブンデスリーガ（独）",
+    columnSlug: "fujita-joelchima-japan-column-2026",
+    comment: "ボランチのポリバレント。2025年7月にフェイエノールト→ザンクト・パウリへ移籍",
   },
   {
     name: "大橋祐紀",
