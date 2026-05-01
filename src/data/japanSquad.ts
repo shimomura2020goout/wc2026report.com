@@ -48,14 +48,16 @@ export const playerSquad: SquadPlayer[] = [
     position: "GK",
     club: "サンフレッチェ広島",
     league: "Jリーグ",
-    comment: "カタール経験の控え、国内GKのセカンド",
+    columnSlug: "osako-keisuke-japan-column-2026",
+    comment: "国内GKのセカンド、2024年J1ベストイレブン・E-1選手権2025最優秀GK受賞",
   },
   {
     name: "早川友基",
     position: "GK",
     club: "鹿島アントラーズ",
     league: "Jリーグ",
-    comment: "3番手争いを抜け出し第三GKを確保",
+    columnSlug: "hayakawa-tomoki-japan-column-2026",
+    comment: "3番手争いを抜け出し第三GKを確保。2025 J1MVP・鹿島9年ぶりのリーグ優勝に貢献",
   },
 
   // ─── DF 8 ───
@@ -78,9 +80,10 @@ export const playerSquad: SquadPlayer[] = [
   {
     name: "町田浩樹",
     position: "DF",
-    club: "ユニオンSG",
-    league: "ジュピラー・プロ・リーグ（ベルギー）",
-    comment: "3バック左、欧州移籍で急成長",
+    club: "TSG 1899ホッフェンハイム",
+    league: "ブンデスリーガ（独）",
+    columnSlug: "machida-koki-japan-column-2026",
+    comment: "3バック左、ユニオンSGからホッフェンハイムへステップアップ。2025/8 左ヒザ前十字靭帯断裂で長期離脱中、W杯復帰目指す",
   },
   {
     name: "谷口彰悟",
@@ -93,9 +96,10 @@ export const playerSquad: SquadPlayer[] = [
   {
     name: "菅原由勢",
     position: "DF",
-    club: "サウサンプトン",
-    league: "プレミアリーグ（英）",
-    comment: "右WB第一候補",
+    club: "ヴェルダー・ブレーメン",
+    league: "ブンデスリーガ（独）",
+    columnSlug: "sugawara-yukinari-japan-column-2026",
+    comment: "右WB第一候補。2025/8 にサウサンプトン→ブレーメンへ期限付き移籍",
   },
   {
     name: "伊藤洋輝",
@@ -108,9 +112,10 @@ export const playerSquad: SquadPlayer[] = [
   {
     name: "瀬古歩夢",
     position: "DF",
-    club: "グラスホッパー",
-    league: "スーパーリーグ（スイス）",
-    comment: "CB第4枚、若手突き上げ",
+    club: "ル・アーヴルAC",
+    league: "リーグ・アン（仏）",
+    columnSlug: "seko-ayumu-japan-column-2026",
+    comment: "CB第4枚、若手突き上げ。2025/7 にグラスホッパー→ル・アーヴルへ移籍（クラブ史上初の日本人）",
   },
   {
     name: "長友佑都",
