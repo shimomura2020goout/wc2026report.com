@@ -514,5 +514,26 @@
   "rankings.metaDescription": "User rankings by prediction accuracy, prediction count, and visits, plus FIFA rankings of qualified nations.",
 
   "mypage.metaTitle": "My Page",
-  "mypage.metaDescription": "Personal dashboard with matches, news, and prediction history for your favorite nation."
+  "mypage.metaDescription": "Personal dashboard with matches, news, and prediction history for your favorite nation.",
+
+  "common.group": "Group",
+  "common.groupName": "Group {name}",
+  "teams.byRanking": "Sorted by FIFA Ranking",
+  "teams.noResults": "No matching teams",
+  "teams.thCountry": "Country",
+  "teams.thScore": "Score",
+  "teams.thBestResult": "Best WC Finish",
+  "teams.thWcAppearances": "WC Appearances",
+  "teams.fifaRankingLabel": "FIFA Ranking",
+  "teams.wcAppearancesLabel": "WC Appearances",
+  "teams.bestResultLabel": "Best Finish",
+  "teams.regionLabelText": "Confederation",
+  "teams.rankNum": "#{rank}",
+  "teams.timesNum": "{count}x",
+  "teams.playoffPending": "Playoff TBD",
+
+  "rankings.byFifa": "Sorted by FIFA Ranking ({count} nations)",
+  "rankings.detailsLink": "Details & Groups",
+  "rankings.fifaPoints": "FIFA Points",
+  "rankings.fifaNote": "FIFA Ranking as of April 1, 2026. Playoff-pending slots excluded."
 }

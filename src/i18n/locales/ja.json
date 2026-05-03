@@ -496,5 +496,24 @@
   "rankings.metaDescription": "予想的中・予想数・訪問数のユーザランキングと出場国FIFAランキング",
 
   "mypage.metaTitle": "マイページ",
-  "mypage.metaDescription": "応援する国の試合・ニュース・予想履歴をまとめて表示するマイページ"
+  "mypage.metaDescription": "応援する国の試合・ニュース・予想履歴をまとめて表示するマイページ",
+
+  "teams.byRanking": "FIFAランキング順",
+  "teams.noResults": "該当するチームが見つかりません",
+  "teams.thCountry": "国",
+  "teams.thScore": "スコア",
+  "teams.thBestResult": "W杯最高成績",
+  "teams.thWcAppearances": "W杯出場回数",
+  "teams.fifaRankingLabel": "FIFAランキング",
+  "teams.wcAppearancesLabel": "W杯出場",
+  "teams.bestResultLabel": "最高成績",
+  "teams.regionLabelText": "大陸",
+  "teams.rankNum": "{rank}位",
+  "teams.timesNum": "{count}回",
+  "teams.playoffPending": "プレーオフ未確定",
+
+  "rankings.byFifa": "FIFAランキング順 ({count}カ国)",
+  "rankings.detailsLink": "詳細・グループ別",
+  "rankings.fifaPoints": "FIFAポイント",
+  "rankings.fifaNote": "※ FIFAランキングは2026年4月1日付。プレーオフ未確定枠は除いています。"
 }

@@ -12,6 +12,7 @@ import { getTeamDetail, hasTeamDetail, playerColumnSlugs } from "@/data/teamDeta
 import { allWorldCupMatches } from "@/data/matches";
 import { getLocale, getDictionary, createTranslator } from "@/i18n/index";
 import { pageAlternates } from "@/lib/i18nLinks";
+import { localizedTeamName, localizedRegionLabel, localizedBestResult } from "@/data/teamsI18n";
 
 // ========================================
 // 静的パス生成
@@ -36,10 +37,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!team) return { title: t("teamDetail.teamInfo") };
 
   const detail = getTeamDetail(team.code);
-  const title = `${team.flag} ${team.name}｜W杯2026 チーム情報・注目選手・試合日程`;
+  const localizedName = localizedTeamName(team, locale);
+  const title = locale === "ja"
+    ? `${team.flag} ${team.name}｜W杯2026 チーム情報・注目選手・試合日程`
+    : locale === "en"
+      ? `${team.flag} ${localizedName} | World Cup 2026 — Squad, Schedule, Star Players`
+      : `${team.flag} ${localizedName}｜월드컵 2026 — 대표팀 정보·주목 선수·경기 일정`;
   const description = detail
-    ? `${team.name}のW杯2026情報。監督: ${detail.coach}、注目選手: ${detail.starPlayers.join("・")}。${detail.description.slice(0, 80)}...`
-    : `${team.name}のW杯2026情報。FIFAランキング${team.fifaRanking}位、グループ${team.group}。`;
+    ? locale === "ja"
+      ? `${team.name}のW杯2026情報。監督: ${detail.coach}、注目選手: ${detail.starPlayers.join("・")}。${detail.description.slice(0, 80)}...`
+      : locale === "en"
+        ? `${localizedName} at FIFA World Cup 2026: head coach, star players, group ${team.group} schedule and squad analysis.`
+        : `${localizedName}의 월드컵 2026 정보. 감독, 주목 선수, ${team.group}조 일정과 대표팀 분석.`
+    : locale === "ja"
+      ? `${team.name}のW杯2026情報。FIFAランキング${team.fifaRanking}位、グループ${team.group}。`
+      : locale === "en"
+        ? `${localizedName} at FIFA World Cup 2026. FIFA ranking #${team.fifaRanking}, Group ${team.group}.`
+        : `${localizedName}의 월드컵 2026 정보. FIFA 랭킹 ${team.fifaRanking}위, ${team.group}조.`;
 
   return {
     title,
@@ -61,6 +75,9 @@ export default async function TeamDetailPage({ params }: Props) {
   if (!team || team.isPlaceholder) notFound();
 
   const detail = getTeamDetail(team.code);
+  const displayName = localizedTeamName(team, locale);
+  const displayRegion = localizedRegionLabel(team.region, locale);
+  const displayBest = localizedBestResult(team, locale);
 
   // このチームの試合を取得
   const teamMatches = allWorldCupMatches.filter(
@@ -75,7 +92,7 @@ export default async function TeamDetailPage({ params }: Props) {
       <BreadcrumbJsonLd items={[
         { name: t("teamDetail.breadcrumbTop"), url: "https://www.wc2026report.com" },
         { name: t("teamDetail.breadcrumbTeams"), url: "https://www.wc2026report.com/teams" },
-        { name: team.name, url: `https://www.wc2026report.com/teams/${team.code.toLowerCase()}` },
+        { name: displayName, url: `https://www.wc2026report.com/teams/${team.code.toLowerCase()}` },
       ]} />
 
       <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
@@ -85,7 +102,7 @@ export default async function TeamDetailPage({ params }: Props) {
           <span>/</span>
           <Link href="/teams" className="hover:text-gray-600">{t("teamDetail.breadcrumbTeams")}</Link>
           <span>/</span>
-          <span className="text-gray-700 font-medium">{team.name}</span>
+          <span className="text-gray-700 font-medium">{displayName}</span>
         </nav>
 
         {/* ── ヘッダー ── */}
@@ -99,7 +116,7 @@ export default async function TeamDetailPage({ params }: Props) {
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
                 <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-                  {team.name}
+                  {displayName}
                 </h1>
                 <span className="text-sm text-gray-400 font-mono">{team.code}</span>
               </div>
@@ -116,7 +133,7 @@ export default async function TeamDetailPage({ params }: Props) {
                   {t("teamDetail.groupLabel", { group: team.group })}
                 </span>
                 <span className="bg-gray-100 text-gray-700 px-2.5 py-1 rounded-full">
-                  {team.regionLabel}
+                  {displayRegion}
                 </span>
                 <span className="bg-gray-100 text-gray-700 px-2.5 py-1 rounded-full">
                   {t("teamDetail.wcCount", { count: String(team.wcAppearances) })}
@@ -143,7 +160,7 @@ export default async function TeamDetailPage({ params }: Props) {
               </p>
             </div>
             <InfoCard icon="checkroom" label={t("teamDetail.uniform")} value={detail.kitColors} />
-            <InfoCard icon="emoji_events" label={t("teamDetail.wcBestResult")} value={team.bestResult} />
+            <InfoCard icon="emoji_events" label={t("teamDetail.wcBestResult")} value={displayBest} />
             <InfoCard icon="route" label={t("teamDetail.qualificationPath")} value={detail.qualificationPath} />
           </div>
         )}
@@ -221,7 +238,7 @@ export default async function TeamDetailPage({ params }: Props) {
         {/* ── 試合日程 ── */}
         {teamMatches.length > 0 && (
           <section className="mb-8">
-            <SectionTitle icon="sports_soccer" title={t("teamDetail.matchSchedule", { name: team.name })} />
+            <SectionTitle icon="sports_soccer" title={t("teamDetail.matchSchedule", { name: displayName })} />
             <div className="space-y-3">
               {teamMatches.map((match) => (
                 <MatchCard key={match.id} match={match} />
@@ -234,24 +251,24 @@ export default async function TeamDetailPage({ params }: Props) {
         <section className="mb-8">
           <SectionTitle icon="shield" title={t("teamDetail.otherGroupTeams", { group: team.group })} />
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {groupTeams.map((t) => (
+            {groupTeams.map((gt) => (
               <Link
-                key={t.code}
-                href={t.isPlaceholder ? "#" : `/teams/${t.code.toLowerCase()}`}
+                key={gt.code}
+                href={gt.isPlaceholder ? "#" : `/teams/${gt.code.toLowerCase()}`}
                 className={`flex items-center gap-3 p-4 rounded-xl border transition-all ${
-                  t.isPlaceholder
+                  gt.isPlaceholder
                     ? "border-dashed border-gray-200 bg-gray-50 cursor-default"
                     : "border-gray-200 bg-white hover:shadow-md hover:border-gray-300"
                 }`}
               >
-                <span className="text-2xl">{t.flag}</span>
+                <span className="text-2xl">{gt.flag}</span>
                 <div>
-                  <p className={`font-semibold text-sm ${t.isPlaceholder ? "text-gray-400 italic" : "text-gray-900"}`}>
-                    {t.name}
+                  <p className={`font-semibold text-sm ${gt.isPlaceholder ? "text-gray-400 italic" : "text-gray-900"}`}>
+                    {localizedTeamName(gt, locale)}
                   </p>
-                  {!t.isPlaceholder && (
+                  {!gt.isPlaceholder && (
                     <p className="text-xs text-gray-400">
-                      FIFA {t.fifaRanking}位 / {t.regionLabel}
+                      {t("teamDetail.fifaRanking", { rank: String(gt.fifaRanking) })} / {localizedRegionLabel(gt.region, locale)}
                     </p>
                   )}
                 </div>

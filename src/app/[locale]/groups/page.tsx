@@ -4,6 +4,7 @@ import Icon from "@/components/Icon";
 import SourceAttribution from "@/components/SourceAttribution";
 import { worldCupGroups, getGroupMatches, formatMatchDate } from "@/data/matches";
 import { getTeamByName } from "@/data/teams";
+import { localizedTeamName, localizedTeamNameByJa } from "@/data/teamsI18n";
 import { getLocale, getDictionary, createTranslator } from "@/i18n/index";
 import { pageAlternates } from "@/lib/i18nLinks";
 
@@ -73,6 +74,9 @@ export default async function GroupsPage() {
                 {group.teams.map((team, i) => {
                   const teamData = getTeamByName(team);
                   const isPlaceholder = /PO|勝者/.test(team);
+                  const displayTeamName = teamData
+                    ? localizedTeamName(teamData, locale)
+                    : localizedTeamNameByJa(team, locale);
                   const content = (
                     <>
                       <span className="text-sm text-gray-400 font-mono w-4">{i + 1}</span>
@@ -82,7 +86,7 @@ export default async function GroupsPage() {
                         isPlaceholder ? "text-gray-400 italic text-sm" :
                         "text-gray-800"
                       }`}>
-                        {team}
+                        {displayTeamName}
                       </span>
                       {!isPlaceholder && teamData && (
                         <Icon name="chevron_right" size={14} className="text-gray-300" />
@@ -130,7 +134,7 @@ export default async function GroupsPage() {
                             }`}>
                               <span className="text-gray-400 mr-1">{formatMatchDate(m.date).slice(5, -1).split("（")[0]}</span>
                               <span className="font-medium mr-1">{m.kickoff}<span className="text-[10px] text-gray-400 ml-0.5">JST</span></span>
-                              <span className={m.isJapan ? "font-bold" : ""}>{m.homeTeam} vs {m.awayTeam}</span>
+                              <span className={m.isJapan ? "font-bold" : ""}>{localizedTeamNameByJa(m.homeTeam, locale)} vs {localizedTeamNameByJa(m.awayTeam, locale)}</span>
                             </div>
                           ))}
                         </div>

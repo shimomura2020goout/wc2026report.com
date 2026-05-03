@@ -454,5 +454,26 @@
   "mypage.metaDescription": "응원하는 나라의 경기·뉴스·예측 이력을 한곳에서 확인하는 개인 페이지.",
 
   "toto.metaTitle": "월드컵 2026 토토 — 대상 경기와 구매 가이드",
-  "toto.metaDescription": "월드컵 2026의 토토 대상 경기와 구매 가이드. 도코모 스포츠 토토·라쿠텐 토토에서의 구매 방법 안내."
+  "toto.metaDescription": "월드컵 2026의 토토 대상 경기와 구매 가이드. 도코모 스포츠 토토·라쿠텐 토토에서의 구매 방법 안내.",
+
+  "common.group": "조",
+  "common.groupName": "{name}조",
+  "teams.byRanking": "FIFA 랭킹순",
+  "teams.noResults": "검색 결과가 없습니다",
+  "teams.thCountry": "국가",
+  "teams.thScore": "점수",
+  "teams.thBestResult": "월드컵 최고 성적",
+  "teams.thWcAppearances": "월드컵 출전 횟수",
+  "teams.fifaRankingLabel": "FIFA 랭킹",
+  "teams.wcAppearancesLabel": "월드컵 출전",
+  "teams.bestResultLabel": "최고 성적",
+  "teams.regionLabelText": "대륙",
+  "teams.rankNum": "{rank}위",
+  "teams.timesNum": "{count}회",
+  "teams.playoffPending": "플레이오프 미확정",
+
+  "rankings.byFifa": "FIFA 랭킹순 ({count}개국)",
+  "rankings.detailsLink": "상세·조별",
+  "rankings.fifaPoints": "FIFA 포인트",
+  "rankings.fifaNote": "※ FIFA 랭킹은 2026년 4월 1일 기준. 플레이오프 미확정 슬롯은 제외."
 }

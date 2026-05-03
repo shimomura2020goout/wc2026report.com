@@ -7,8 +7,9 @@ import SourceAttribution from "@/components/SourceAttribution";
 import { BreadcrumbJsonLd, SportsEventJsonLd } from "@/components/JsonLd";
 import { allTeams } from "@/data/teams";
 import { allWorldCupMatches, formatMatchDate } from "@/data/matches";
-import { getLocale } from "@/i18n/index";
+import { getLocale, getDictionary, createTranslator } from "@/i18n/index";
 import { pageAlternates, absoluteLocaleUrl } from "@/lib/i18nLinks";
+import { localizedTeamName, localizedTeamNameByJa, localizedRegionLabel } from "@/data/teamsI18n";
 
 const BASE_URL = "https://www.wc2026report.com";
 
@@ -38,10 +39,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { code } = await params;
   const locale = await getLocale();
   const team = allTeams.find((t) => t.code.toLowerCase() === code.toLowerCase());
-  if (!team || team.isPlaceholder) return { title: "チームが見つかりません" };
+  if (!team || team.isPlaceholder) return { title: "Team not found" };
 
-  const title = `${team.name}代表 W杯2026 試合日程・キックオフ時間（日本時間）｜全試合まとめ`;
-  const description = `${team.name}代表のFIFAワールドカップ2026 全試合スケジュール。日本時間（JST）でのキックオフ時刻、会場、テレビ放送予定、グループ${team.group}の対戦相手情報。${team.flag} FIFAランキング${team.fifaRanking}位。`;
+  const dispName = localizedTeamName(team, locale);
+  const title = locale === "ja"
+    ? `${team.name}代表 W杯2026 試合日程・キックオフ時間（日本時間）｜全試合まとめ`
+    : locale === "en"
+      ? `${dispName} at FIFA World Cup 2026 — Match Schedule & Kickoff Times`
+      : `${dispName} 월드컵 2026 경기 일정·킥오프 시간 (한국시간)`;
+  const description = locale === "ja"
+    ? `${team.name}代表のFIFAワールドカップ2026 全試合スケジュール。日本時間（JST）でのキックオフ時刻、会場、テレビ放送予定、グループ${team.group}の対戦相手情報。${team.flag} FIFAランキング${team.fifaRanking}位。`
+    : locale === "en"
+      ? `${dispName} full FIFA World Cup 2026 match schedule with kickoff times, venues, TV broadcasts, and Group ${team.group} opponents. FIFA ranking #${team.fifaRanking}.`
+      : `${dispName}의 FIFA 월드컵 2026 전 경기 일정. 킥오프 시간, 경기장, 중계, ${team.group}조 상대 정보. FIFA 랭킹 ${team.fifaRanking}위.`;
 
   const path = `/matches/team/${team.code.toLowerCase()}`;
   return {
@@ -62,8 +72,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 // ========================================
 export default async function TeamMatchesPage({ params }: Props) {
   const { code } = await params;
-  const team = allTeams.find((t) => t.code.toLowerCase() === code.toLowerCase());
+  const locale = await getLocale();
+  const dict = await getDictionary(locale);
+  const t = createTranslator(dict);
+  const team = allTeams.find((tm) => tm.code.toLowerCase() === code.toLowerCase());
   if (!team || team.isPlaceholder) notFound();
+  const dispName = localizedTeamName(team, locale);
+  const dispRegion = localizedRegionLabel(team.region, locale);
 
   // このチームの試合（GS3試合 + プレースホルダーKOで該当しそうなもの）
   const teamMatches = allWorldCupMatches.filter(
@@ -72,7 +87,7 @@ export default async function TeamMatchesPage({ params }: Props) {
 
   // 同グループの他チーム
   const groupTeams = allTeams.filter(
-    (t) => t.group === team.group && t.code !== team.code && !t.isPlaceholder
+    (tm) => tm.group === team.group && tm.code !== team.code && !tm.isPlaceholder
   );
 
   // 構造化データ用：startDateをISO 8601 (JST) に変換
@@ -92,9 +107,9 @@ export default async function TeamMatchesPage({ params }: Props) {
   return (
     <>
       <BreadcrumbJsonLd items={[
-        { name: "ホーム", url: BASE_URL },
-        { name: "試合日程", url: `${BASE_URL}/matches` },
-        { name: `${team.name}代表`, url: `${BASE_URL}/matches/team/${team.code.toLowerCase()}` },
+        { name: t("nav.home"), url: BASE_URL },
+        { name: t("nav.matches"), url: `${BASE_URL}/matches` },
+        { name: dispName, url: `${BASE_URL}/matches/team/${team.code.toLowerCase()}` },
       ]} />
 
       {sportsEvents.map((ev) => (
@@ -113,11 +128,11 @@ export default async function TeamMatchesPage({ params }: Props) {
       <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
         {/* パンくず */}
         <nav className="flex items-center gap-1.5 text-xs text-gray-400 mb-6">
-          <Link href="/" className="hover:text-gray-600">ホーム</Link>
+          <Link href="/" className="hover:text-gray-600">{t("nav.home")}</Link>
           <span>/</span>
-          <Link href="/matches" className="hover:text-gray-600">試合日程</Link>
+          <Link href="/matches" className="hover:text-gray-600">{t("nav.matches")}</Link>
           <span>/</span>
-          <span className="text-gray-700 font-medium">{team.name}代表</span>
+          <span className="text-gray-700 font-medium">{dispName}</span>
         </nav>
 
         {/* ── ヘッダー ── */}
@@ -130,23 +145,27 @@ export default async function TeamMatchesPage({ params }: Props) {
             <span className="text-5xl sm:text-6xl">{team.flag}</span>
             <div className="flex-1">
               <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-                {team.name}代表 W杯2026 試合日程
+                {locale === "ja" ? `${team.name}代表 W杯2026 試合日程`
+                  : locale === "en" ? `${dispName} — World Cup 2026 Match Schedule`
+                  : `${dispName} — 월드컵 2026 경기 일정`}
               </h1>
               <p className="text-sm text-gray-600 mb-3">
-                FIFAワールドカップ2026における{team.name}代表の全試合キックオフ時間（日本時間／JST）一覧です。
+                {locale === "ja" ? `FIFAワールドカップ2026における${team.name}代表の全試合キックオフ時間（日本時間／JST）一覧です。`
+                  : locale === "en" ? `Full kickoff schedule for ${dispName} at FIFA World Cup 2026.`
+                  : `FIFA 월드컵 2026 ${dispName} 전 경기 킥오프 일정.`}
               </p>
               <div className="flex flex-wrap gap-2 text-xs">
                 <span className="bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full font-semibold">
-                  FIFAランキング {team.fifaRanking}位
+                  {t("teamDetail.fifaRanking", { rank: String(team.fifaRanking) })}
                 </span>
                 <span className="bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-medium">
-                  グループ {team.group}
+                  {t("teamDetail.groupLabel", { group: team.group })}
                 </span>
                 <span className="bg-gray-100 text-gray-700 px-2.5 py-1 rounded-full">
-                  {team.regionLabel}
+                  {dispRegion}
                 </span>
                 <span className="bg-gray-100 text-gray-700 px-2.5 py-1 rounded-full">
-                  W杯出場 {team.wcAppearances}回
+                  {t("teamDetail.wcCount", { count: String(team.wcAppearances) })}
                 </span>
               </div>
             </div>
@@ -157,7 +176,9 @@ export default async function TeamMatchesPage({ params }: Props) {
         <section className="mb-10">
           <h2 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
             <Icon name="sports_soccer" size={20} className="text-amber-600" />
-            {team.name}代表 全試合（日本時間）
+            {locale === "ja" ? `${team.name}代表 全試合（日本時間）`
+              : locale === "en" ? `${dispName} — All Matches`
+              : `${dispName} — 전 경기`}
           </h2>
           <p className="text-xs text-gray-500 mb-4">
             キックオフ時刻はすべて日本時間（JST）。グループステージ3試合を表示。決勝トーナメント進出時は別ページの組み合わせ表をご参照ください。
