@@ -1,15 +1,27 @@
-import Icon from "./Icon";
-import SourceAttribution from "./SourceAttribution";
+import MatchPredictionCard from "@/components/MatchPredictionCard";
+import Icon from "@/components/Icon";
+import SourceAttribution from "@/components/SourceAttribution";
+import { BreadcrumbJsonLd, FAQJsonLd } from "@/components/JsonLd";
+import { japanMatches, allWorldCupMatches } from "@/data/matches";
 import { getLocale, getDictionary, createTranslator } from "@/i18n/index";
+import { pageAlternates } from "@/lib/i18nLinks";
 
-/**
- * toto の「買い方ガイド」セクション以降を丸ごと出力する共通コンポーネント。
- * /toto と /predictions の両方に埋め込む用途。
- */
-export default async function TotoGuideSection() {
+export async function generateMetadata() {
   const locale = await getLocale();
   const dict = await getDictionary(locale);
   const t = createTranslator(dict);
+  return {
+    title: t("toto.metaTitle"),
+    description: t("toto.metaDescription"),
+    alternates: pageAlternates(locale, "/toto"),
+  };
+}
+
+export default async function TotoPage() {
+  const locale = await getLocale();
+  const dict = await getDictionary(locale);
+  const t = createTranslator(dict);
+  const totoMatches = japanMatches.filter((m) => m.isTotoTarget);
 
   const totoTypes = [
     { name: t("toto.totoName"), price: t("toto.totoPrice"), desc: t("toto.totoDesc"), maxPrize: t("toto.totoMaxPrize"), difficulty: t("toto.totoDifficulty"), icon: "trophy" },
@@ -32,11 +44,54 @@ export default async function TotoGuideSection() {
   ];
 
   return (
-    <>
+    <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Home", url: "https://www.wc2026report.com" },
+          { name: "toto Zone", url: "https://www.wc2026report.com/toto" },
+        ]}
+      />
+      <FAQJsonLd
+        questions={[
+          { question: "totoとは？", answer: "toto（スポーツ振興くじ）は、サッカーの試合結果を予想する公営のくじです。1口100円から購入でき、的中すれば最高5億円（キャリーオーバー時）が当たります。" },
+          { question: "totoの買い方は？", answer: "楽天totoやドコモスポーツくじなどのオンラインサイト、ローソン・ミニストップのLoppi端末、一部の銀行ATMやネットバンキングで購入できます。オンライン購入が最も手軽で24時間対応です。" },
+          { question: "W杯の試合はtoto対象になる？", answer: "はい、FIFA ワールドカップ 2026の試合はtoto対象となる可能性があります。対象試合はtoto公式サイトで発表されます。" },
+          { question: "totoは何歳から買える？", answer: "スポーツ振興くじ（toto）の購入は19歳以上の方に限られます。" },
+        ]}
+      />
+
+      <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 flex items-center gap-2">
+        <Icon name="confirmation_number" size={32} className="text-purple-700" />
+        {t("toto.pageTitle")}
+      </h1>
+      <p className="text-gray-500 mb-8">{t("toto.pageDescription")}</p>
+
+      {/* toto対象試合 */}
+      <section className="mb-12">
+        <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <span className="bg-purple-600 text-white text-xs px-3 py-1 rounded-full">{t("common.totoTarget")}</span>
+          {t("toto.targetMatchesTitle")}
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          {totoMatches.map((match) => (
+            <MatchPredictionCard key={match.id} match={match} />
+          ))}
+        </div>
+        <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 text-sm text-purple-800">
+          <div className="flex items-start gap-2">
+            <Icon name="info" size={18} className="text-purple-500 mt-0.5" />
+            <div>
+              <p className="font-medium">{t("toto.targetMatchesNote", { count: String(allWorldCupMatches.length) })}</p>
+              <p className="text-purple-600 mt-1">{t("toto.targetMatchesUpdateNote")}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* 購入ガイド */}
-      <section className="mt-16 pt-10 border-t border-gray-200">
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-          <Icon name="confirmation_number" size={28} className="text-purple-600" />
+      <section className="mb-12">
+        <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+          <Icon name="menu_book" size={24} className="text-gray-600" />
           {t("toto.buyGuideTitle")}
         </h2>
 
@@ -125,7 +180,7 @@ export default async function TotoGuideSection() {
       </section>
 
       {/* totoのコツ */}
-      <section className="mt-10">
+      <section>
         <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
           <Icon name="lightbulb" size={24} className="text-amber-500" />
           {t("toto.tipsTitle")}
@@ -147,8 +202,8 @@ export default async function TotoGuideSection() {
           { label: "toto -- Sports Promotion Lottery", url: "https://www.toto-dream.com/" },
           { label: "Rakuten toto", url: "https://toto.rakuten.co.jp/" },
         ]}
-        updatedAt="2026年4月15日"
+        updatedAt="2026年4月1日"
       />
-    </>
+    </div>
   );
 }

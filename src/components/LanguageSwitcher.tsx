@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useTranslation, setLocaleCookie } from "@/i18n/client";
-import type { Locale } from "@/i18n/index";
+import { usePathname } from "next/navigation";
+import { useTranslation } from "@/i18n/client";
+import type { Locale } from "@/i18n/constants";
+import { switchLocaleHref } from "@/lib/i18nLinks";
 import Icon from "./Icon";
 
 const languages: { code: Locale; label: string; flag: string }[] = [
@@ -13,6 +15,7 @@ const languages: { code: Locale; label: string; flag: string }[] = [
 
 export default function LanguageSwitcher() {
   const { locale } = useTranslation();
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const current = languages.find((l) => l.code === locale) ?? languages[0];
@@ -32,6 +35,19 @@ export default function LanguageSwitcher() {
       document.removeEventListener("keydown", onEscape);
     };
   }, [open]);
+
+  const handleSelect = (target: Locale) => {
+    setOpen(false);
+    if (target === locale) return;
+    // useSearchParams を使うと SSG がサスペンスバウンダリを要求するため、
+    // クリック時に window.location から直接クエリ文字列を読む。
+    const search = typeof window !== "undefined" ? window.location.search : "";
+    const href = switchLocaleHref(target, pathname || "/", search);
+    // Full navigation を強制：ルートレイアウトの <html lang> はクライアント側遷移では
+    // 更新されないため、ロケール切替は必ず完全な再読み込みにする。
+    // Cookie はサーバー側 middleware が URL ロケールに追従して書き換える。
+    if (typeof window !== "undefined") window.location.assign(href);
+  };
 
   return (
     <div ref={ref} className="relative">
@@ -61,10 +77,7 @@ export default function LanguageSwitcher() {
                 type="button"
                 role="option"
                 aria-selected={active}
-                onClick={() => {
-                  if (!active) setLocaleCookie(l.code);
-                  setOpen(false);
-                }}
+                onClick={() => handleSelect(l.code)}
                 className={`flex items-center gap-2 w-full px-3 py-2 text-left text-xs ${
                   active ? "font-bold bg-blue-50 text-blue-700" : "hover:bg-gray-50 text-gray-700"
                 }`}

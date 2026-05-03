@@ -2,7 +2,7 @@
 
 import { useCallback } from "react";
 import { LocaleContext } from "@/i18n/client";
-import type { Locale, Dictionary } from "@/i18n/index";
+import type { Locale, Dictionary } from "@/i18n/constants";
 
 interface LocaleProviderProps {
   locale: Locale;

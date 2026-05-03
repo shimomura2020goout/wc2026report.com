@@ -1,4 +1,5 @@
 import { getPublishedPosts } from "@/lib/notion";
+import { getLocale } from "@/i18n/index";
 import LatestNewsBannerClient from "./LatestNewsBannerClient";
 
 export interface NewsBannerItem {
@@ -11,7 +12,8 @@ export default async function LatestNewsBanner() {
   let posts: NewsBannerItem[] = [];
 
   try {
-    const allPosts = await getPublishedPosts();
+    const locale = await getLocale();
+    const allPosts = await getPublishedPosts(locale);
     const now = Date.now();
     const FIVE_DAYS = 5 * 24 * 60 * 60 * 1000;
 

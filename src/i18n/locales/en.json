@@ -464,11 +464,26 @@
   "source.title": "Sources",
   "source.lastUpdated": "Last Updated: {date}",
 
+  "meta.defaultTitle": "WC 2026 | FIFA World Cup 2026 — Groups, Schedule, Predictions & How to Watch",
+  "meta.titleTemplate": "%s | WC 2026",
+  "meta.defaultDescription": "Complete FIFA World Cup 2026 (North America) guide: all 104 match schedules, group standings, predictions, viewing guide on DAZN, and Japan squad coverage.",
+  "meta.ogTitle": "WC 2026 | World Cup 2026 Groups, Schedule & Predictions",
+  "meta.ogDescription": "Comprehensive FIFA World Cup 2026 information: groups, fixtures, predictions, and how to watch live.",
+  "meta.ogSiteName": "WC 2026",
   "meta.siteTitle": "WC2026 | FIFA World Cup 2026 Match Schedule & How to Watch",
   "meta.siteDescription": "Comprehensive coverage of FIFA World Cup 2026 (North America) — all 104 match schedules, broadcast info, and how to watch on DAZN.",
-  "meta.ogTitle": "WC2026 | Match Schedule & How to Watch",
-  "meta.ogDescription": "A comprehensive information site covering all 104 FIFA World Cup 2026 match schedules and DAZN viewing guide.",
   "meta.siteName": "WC2026",
+  "meta.keywords": [
+    "FIFA World Cup 2026", "World Cup 2026", "WC 2026",
+    "World Cup Groups", "WC Groups", "World Cup 2026 Groups",
+    "World Cup Schedule", "World Cup 2026 Schedule", "World Cup Fixtures",
+    "World Cup Calendar", "World Cup 2026 Calendar",
+    "World Cup Predictions", "World Cup 2026 Predictions",
+    "How to Watch World Cup", "World Cup TV Guide", "World Cup Live Stream",
+    "DAZN World Cup", "Japan World Cup Squad",
+    "USA World Cup", "Canada World Cup", "Mexico World Cup",
+    "World Cup Knockout", "World Cup Final 2026"
+  ],
 
   "breadcrumb.home": "Home",
   "breadcrumb.matches": "Match Schedule",
@@ -478,5 +493,26 @@
   "breadcrumb.watch": "How to Watch",
   "breadcrumb.results": "Results & Standings",
   "breadcrumb.news": "News",
-  "breadcrumb.about": "About"
+  "breadcrumb.about": "About",
+
+  "kickoff.metaTitle": "World Cup 2026 Kickoff Times Quick Reference | All 104 Matches by Time Slot",
+  "kickoff.metaDescription": "Quick reference table for all 104 FIFA World Cup 2026 matches organized by kickoff time slots. Find prime-time, daytime, and late-night matches at a glance with TV broadcast info.",
+  "kickoff.ogTitle": "World Cup 2026 Kickoff Times | All 104 Matches by Time Slot",
+  "kickoff.ogDescription": "All 104 World Cup matches sorted by time of day. Plan your live viewing or record-and-watch schedule.",
+
+  "japanSquad.metaTitleOfficial": "Japan Squad for World Cup 2026 — Official 26 Players (Photos, Clubs, Numbers)",
+  "japanSquad.metaTitlePrediction": "Japan Squad Prediction for World Cup 2026 — 26 Players Forecast | May 15 2026 Announcement",
+  "japanSquad.metaDescriptionOfficial": "FIFA World Cup 2026 Japan official 26-player squad. GK/DF/MF/FW roster with clubs, jersey numbers, and links to in-depth player columns.",
+  "japanSquad.metaDescriptionPrediction": "Japan World Cup 2026 squad announcement on May 15, 2026 at 14:00 JFA House. Our predicted 26 players by position, with bubble candidates and dropped names analyzed.",
+  "japanSquad.ogTitle": "Japan Squad for World Cup 2026 — 26 Players",
+  "japanSquad.ogDescription": "Predicted 26-player Japan squad for World Cup 2026 and the latest information ahead of the official announcement.",
+
+  "predictions.metaTitle": "Match Predictions & toto Zone",
+  "predictions.metaDescription": "Predict outcomes of all 104 World Cup 2026 matches in one tap. See community predictions, accuracy rates, and the toto buying guide.",
+
+  "rankings.metaTitle": "Rankings",
+  "rankings.metaDescription": "User rankings by prediction accuracy, prediction count, and visits, plus FIFA rankings of qualified nations.",
+
+  "mypage.metaTitle": "My Page",
+  "mypage.metaDescription": "Personal dashboard with matches, news, and prediction history for your favorite nation."
 }

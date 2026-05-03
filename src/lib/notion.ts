@@ -1,6 +1,7 @@
 import { NotionToMarkdown } from "notion-to-md";
 import { Client } from "@notionhq/client";
 import { unstable_cache } from "next/cache";
+import type { Locale } from "@/i18n/constants";
 
 const NOTION_API_KEY = process.env.NOTION_API_KEY || "";
 const DATABASE_ID = process.env.NOTION_DATABASE_ID || "";
@@ -11,14 +12,12 @@ const notionClient = new Client({ auth: NOTION_API_KEY });
 const n2m = new NotionToMarkdown({ notionClient: notionClient as any });
 
 // テーブルブロックのカスタムトランスフォーマー
-// notion-to-md はテーブルを正しく変換しないことがあるため、手動で処理
 n2m.setCustomTransformer("table", async (block) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const tableBlock = block as any;
   const hasColumnHeader = tableBlock?.table?.has_column_header ?? false;
 
   try {
-    // テーブルの子ブロック（行）を取得
     const res = await notionClient.blocks.children.list({ block_id: block.id });
     const rows = res.results;
 
@@ -35,15 +34,12 @@ n2m.setCustomTransformer("table", async (block) => {
       );
       mdRows.push(`| ${cellTexts.join(" | ")} |`);
 
-      // ヘッダー行の後にセパレーターを追加
       if (ri === 0 && hasColumnHeader) {
         mdRows.push(`| ${cellTexts.map(() => "---").join(" | ")} |`);
       }
     }
 
-    // ヘッダーなしテーブルの場合も最初の行をヘッダーとして扱う
     if (!hasColumnHeader && rows.length > 1) {
-      // セパレーターを1行目の後に挿入
       const firstRowCells = mdRows[0].split("|").filter(Boolean);
       mdRows.splice(1, 0, `| ${firstRowCells.map(() => "---").join(" | ")} |`);
     }
@@ -69,11 +65,18 @@ export interface BlogPost {
   summary: string | null;
 }
 
+// 翻訳の出処を識別するためのフラグ
+// - 'original' = ja 原文をそのまま表示（en/ko 翻訳が未生成のフォールバック状態）
+// - 'auto'     = scripts/translateArticles.ts による自動翻訳
+// - 'manual'   = Notion で「翻訳ステータス_xx」が「手動上書き」になっており、人間が編集
+export type TranslationSource = "original" | "auto" | "manual";
+
 export interface BlogPostWithContent extends BlogPost {
   content: string;
+  translationSource: TranslationSource;
 }
 
-// Notion API を直接 fetch で呼ぶ（v5 SDK の型問題を回避）
+// Notion API を直接 fetch で呼ぶ
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function queryDatabase(body: Record<string, unknown>): Promise<any> {
   if (!NOTION_API_KEY || !DATABASE_ID) {
@@ -127,11 +130,51 @@ function extractProperty(page: any, name: string, type: string): unknown {
   }
 }
 
+// Notion 上の locale 別プロパティ名の取り決め
+// ja (原文) は基本プロパティ「タイトル」「概要」「本文」を使う
+// en/ko は別プロパティに格納:
+//   - 「タイトル_en」「タイトル_ko」     (rich_text)
+//   - 「概要_en」「概要_ko」           (rich_text)
+//   - 「翻訳ステータス_en」「翻訳ステータス_ko」 (select: 未翻訳/自動翻訳/手動上書き)
+//   - 本文翻訳は子ページ（Notion 上の「__translation_en」「__translation_ko」と命名）
+function localizedTitleProp(locale: Locale): string | null {
+  if (locale === "ja") return null;
+  return `タイトル_${locale}`;
+}
+function localizedSummaryProp(locale: Locale): string | null {
+  if (locale === "ja") return null;
+  return `概要_${locale}`;
+}
+function localizedStatusProp(locale: Locale): string | null {
+  if (locale === "ja") return null;
+  return `翻訳ステータス_${locale}`;
+}
+const TRANSLATION_CHILD_PAGE_PREFIX = "__translation_";
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function pageToPost(page: any): BlogPost {
+function pageToPost(page: any, locale: Locale = "ja"): BlogPost {
+  const baseTitle = (extractProperty(page, "タイトル", "title") as string) ?? "";
+  const baseSummary = extractProperty(page, "概要", "rich_text") as string | null;
+
+  let title = baseTitle;
+  let summary = baseSummary;
+
+  if (locale !== "ja") {
+    const tProp = localizedTitleProp(locale);
+    const sProp = localizedSummaryProp(locale);
+    if (tProp) {
+      const localized = (extractProperty(page, tProp, "rich_text") as string | null) ?? "";
+      if (localized) title = localized;
+    }
+    if (sProp) {
+      const localized = extractProperty(page, sProp, "rich_text") as string | null;
+      if (localized) summary = localized;
+    }
+  }
+
   return {
     id: page.id,
-    title: extractProperty(page, "タイトル", "title") as string,
+    title,
     slug: extractProperty(page, "スラッグ", "rich_text") as string,
     status: extractProperty(page, "ステータス", "select") as string,
     category: extractProperty(page, "カテゴリ", "select") as string,
@@ -141,47 +184,63 @@ function pageToPost(page: any): BlogPost {
     eyecatchUrl: extractProperty(page, "アイキャッチURL", "url") as string | null,
     sourceName: extractProperty(page, "出典名", "rich_text") as string | null,
     sourceUrl: extractProperty(page, "出典URL", "url") as string | null,
-    summary: extractProperty(page, "概要", "rich_text") as string | null,
+    summary,
   };
 }
 
+// 翻訳ステータスを取得（ja の場合は常に 'manual' 扱い ＝原文として尊重）
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function readTranslationStatus(page: any, locale: Locale): TranslationSource {
+  if (locale === "ja") return "manual";
+  const prop = localizedStatusProp(locale);
+  if (!prop) return "original";
+  const value = extractProperty(page, prop, "select") as string;
+  if (value === "手動上書き") return "manual";
+  if (value === "自動翻訳") return "auto";
+  return "original";
+}
+
+// 子ページを名前で取得（__translation_en, __translation_ko）
+async function findTranslationChildPage(parentPageId: string, locale: Locale): Promise<string | null> {
+  if (locale === "ja") return null;
+  try {
+    const res = await notionClient.blocks.children.list({ block_id: parentPageId, page_size: 100 });
+    for (const block of res.results) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const b = block as any;
+      if (b.type === "child_page") {
+        const title: string = b.child_page?.title ?? "";
+        if (title === `${TRANSLATION_CHILD_PAGE_PREFIX}${locale}`) {
+          return b.id as string;
+        }
+      }
+    }
+  } catch {
+    // ignore — child page lookup is best-effort
+  }
+  return null;
+}
+
 // 公開記事一覧を取得（未キャッシュ）
-async function _getPublishedPosts(): Promise<BlogPost[]> {
+async function _getPublishedPosts(locale: Locale = "ja"): Promise<BlogPost[]> {
   const data = await queryDatabase({
     filter: {
       property: "ステータス",
-      select: {
-        equals: "公開",
-      },
+      select: { equals: "公開" },
     },
-    sorts: [
-      {
-        property: "公開日",
-        direction: "descending",
-      },
-    ],
+    sorts: [{ property: "公開日", direction: "descending" }],
   });
 
-  return data.results.map(pageToPost);
+  return data.results.map((p: unknown) => pageToPost(p, locale));
 }
 
 // 記事詳細（本文含む）を取得（未キャッシュ）
-async function _getPostBySlug(slug: string): Promise<BlogPostWithContent | null> {
+async function _getPostBySlug(slug: string, locale: Locale = "ja"): Promise<BlogPostWithContent | null> {
   const data = await queryDatabase({
     filter: {
       and: [
-        {
-          property: "スラッグ",
-          rich_text: {
-            equals: slug,
-          },
-        },
-        {
-          property: "ステータス",
-          select: {
-            equals: "公開",
-          },
-        },
+        { property: "スラッグ", rich_text: { equals: slug } },
+        { property: "ステータス", select: { equals: "公開" } },
       ],
     },
   });
@@ -189,34 +248,50 @@ async function _getPostBySlug(slug: string): Promise<BlogPostWithContent | null>
   if (data.results.length === 0) return null;
 
   const page = data.results[0];
-  const post = pageToPost(page);
+  const post = pageToPost(page, locale);
+  const status = readTranslationStatus(page, locale);
 
-  // ページの本文をMarkdownに変換
-  const mdBlocks = await n2m.pageToMarkdown(page.id);
+  // 本文 Markdown を取得
+  // ja: 親ページから直接
+  // en/ko: 子ページ「__translation_<locale>」から（無ければ ja 原文にフォールバック）
+  let contentSourceId: string = page.id;
+  let actualSource: TranslationSource = status;
+  if (locale !== "ja") {
+    const childId = await findTranslationChildPage(page.id, locale);
+    if (childId) {
+      contentSourceId = childId;
+    } else {
+      contentSourceId = page.id;
+      actualSource = "original";
+    }
+  }
+
+  const mdBlocks = await n2m.pageToMarkdown(contentSourceId);
   const mdString = n2m.toMarkdownString(mdBlocks);
 
   return {
     ...post,
     content: mdString.parent,
+    translationSource: actualSource,
   };
 }
 
 // ---------- キャッシュ層 ----------
-// cookies() によりページが動的レンダリングになっても、データ層をここでキャッシュすることで
-// Notion API への問い合わせは 5 分に 1 回に抑え、クリックから描画までの時間を大幅に短縮する。
-
 const CACHE_TTL_SECONDS = 300;
 
-export const getPublishedPosts = unstable_cache(
-  _getPublishedPosts,
-  ["notion:getPublishedPosts"],
-  { revalidate: CACHE_TTL_SECONDS, tags: ["notion", "notion:list"] }
-);
-
-export async function getPostBySlug(slug: string): Promise<BlogPostWithContent | null> {
+export async function getPublishedPosts(locale: Locale = "ja"): Promise<BlogPost[]> {
   const cached = unstable_cache(
-    () => _getPostBySlug(slug),
-    ["notion:getPostBySlug", slug],
+    () => _getPublishedPosts(locale),
+    ["notion:getPublishedPosts", locale],
+    { revalidate: CACHE_TTL_SECONDS, tags: ["notion", "notion:list", `notion:list:${locale}`] }
+  );
+  return cached();
+}
+
+export async function getPostBySlug(slug: string, locale: Locale = "ja"): Promise<BlogPostWithContent | null> {
+  const cached = unstable_cache(
+    () => _getPostBySlug(slug, locale),
+    ["notion:getPostBySlug", slug, locale],
     { revalidate: CACHE_TTL_SECONDS, tags: ["notion", `notion:post:${slug}`] }
   );
   return cached();
@@ -224,7 +299,7 @@ export async function getPostBySlug(slug: string): Promise<BlogPostWithContent |
 
 export const getAllSlugs = unstable_cache(
   async (): Promise<string[]> => {
-    const posts = await _getPublishedPosts();
+    const posts = await _getPublishedPosts("ja");
     return posts.map((post) => post.slug).filter(Boolean);
   },
   ["notion:getAllSlugs"],

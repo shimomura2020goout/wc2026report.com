@@ -462,10 +462,39 @@
   "news.metaTitle": "ニュース・コラム",
   "news.metaDescription": "W杯2026に関する最新ニュース、試合プレビュー、チーム分析コラムを毎日更新。",
 
-  "meta.defaultTitle": "W杯2026｜FIFA ワールドカップ 2026 試合日程・視聴ガイド",
-  "meta.titleTemplate": "%s｜W杯2026",
-  "meta.defaultDescription": "FIFA ワールドカップ 2026（北中米大会）の全104試合の日程・放映情報を網羅。DAZNでの視聴方法も詳しく解説。",
-  "meta.ogTitle": "W杯2026｜試合日程・視聴ガイド",
-  "meta.ogDescription": "FIFA ワールドカップ 2026 の全104試合の日程・DAZN視聴ガイドを網羅する総合情報サイト",
-  "meta.ogSiteName": "W杯2026"
+  "meta.defaultTitle": "W杯2026 x toto｜FIFA ワールドカップ 2026 試合日程・toto予想・購入ガイド",
+  "meta.titleTemplate": "%s｜W杯2026 x toto",
+  "meta.defaultDescription": "toto対象のW杯全104試合を網羅。toto予想・購入ガイド・ドコモスポーツくじ/楽天totoでの買い方、DAZN視聴方法まで。FIFA ワールドカップ 2026（北中米大会）総合情報サイト。",
+  "meta.ogTitle": "W杯2026 x toto｜試合日程・toto予想・購入ガイド",
+  "meta.ogDescription": "FIFA ワールドカップ 2026 の全104試合の日程・toto予想・購入ガイド・DAZN視聴方法を網羅する総合情報サイト",
+  "meta.ogSiteName": "W杯2026 x toto",
+  "meta.keywords": [
+    "toto", "toto 予想", "toto 買い方", "スポーツくじ",
+    "W杯 2026", "ワールドカップ 2026", "FIFA ワールドカップ",
+    "W杯 2026 日程", "ワールドカップ スケジュール", "W杯 日本時間",
+    "DAZN", "DAZN W杯", "日本代表", "試合日程", "放映予定", "W杯 どこで見れる",
+    "W杯 グループ", "日本 オランダ", "W杯 日程 カレンダー", "W杯 放送予定",
+    "toto 対象試合", "ドコモスポーツくじ", "楽天toto"
+  ],
+
+  "kickoff.metaTitle": "W杯2026 日本時間キックオフ早見表｜全104試合の時間帯別まとめ（JST）",
+  "kickoff.metaDescription": "FIFAワールドカップ2026の全104試合を日本時間（JST）の時間帯別にまとめた早見表。早朝・午前・深夜・夜間どの時間帯にどの試合があるか、生視聴に向く試合・録画推奨の試合を一覧で確認できます。日本代表3戦の日本時間も掲載。",
+  "kickoff.ogTitle": "W杯2026 日本時間キックオフ早見表｜全104試合の時間帯別まとめ",
+  "kickoff.ogDescription": "全104試合を日本時間の時間帯別に分類。早朝・午前・深夜・夜間どの時間帯にどの試合があるか早見表でチェック。",
+
+  "japanSquad.metaTitleOfficial": "日本代表 W杯2026 メンバー26人｜公式発表メンバー一覧（顔写真・所属・背番号）",
+  "japanSquad.metaTitlePrediction": "日本代表 W杯2026 メンバー予想26人｜2026年5月15日発表会見｜本紙予想と当落線上選手まとめ",
+  "japanSquad.metaDescriptionOfficial": "FIFAワールドカップ2026 日本代表 公式登録メンバー26人。GK・DF・MF・FW別の名鑑、所属クラブ、背番号、各選手の深掘りコラム記事へのリンクをまとめて掲載。",
+  "japanSquad.metaDescriptionPrediction": "森保ジャパンW杯2026メンバー発表は2026年5月15日（金）14:00 JFAハウス。本紙予想26人をポジション別に公開。長友佑都の予想復帰、鈴木淳之介・大橋祐紀の電撃抜擢を予想。遠藤航・南野拓実は予想落選。",
+  "japanSquad.ogTitle": "日本代表 W杯2026 メンバー26人",
+  "japanSquad.ogDescription": "森保ジャパンW杯2026メンバーの予想26人と、公式発表（5月15日14:00）に向けた最新情報まとめ",
+
+  "predictions.metaTitle": "勝敗予想 & totoゾーン",
+  "predictions.metaDescription": "W杯2026 全104試合の勝敗をワンタップで予想。みんなの予想と的中率、toto買い方ガイドまで網羅。",
+
+  "rankings.metaTitle": "ランキング",
+  "rankings.metaDescription": "予想的中・予想数・訪問数のユーザランキングと出場国FIFAランキング",
+
+  "mypage.metaTitle": "マイページ",
+  "mypage.metaDescription": "応援する国の試合・ニュース・予想履歴をまとめて表示するマイページ"
 }
