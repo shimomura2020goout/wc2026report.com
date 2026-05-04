@@ -7,7 +7,9 @@ import MatchCard from "@/components/MatchCard";
 import PredictionBadge from "@/components/PredictionBadge";
 import NicknameEditor from "@/components/NicknameEditor";
 import { allTeams } from "@/data/teams";
+import { localizedTeamName } from "@/data/teamsI18n";
 import { allWorldCupMatches, formatMatchDate } from "@/data/matches";
+import { useTranslation } from "@/i18n/client";
 import { usePreferences } from "@/context/PreferencesContext";
 import PreferencesEditor from "./PreferencesEditor";
 
@@ -45,6 +47,7 @@ interface MyPageClientProps {
 }
 
 export default function MyPageClient({ posts, todayISO }: MyPageClientProps) {
+  const { locale } = useTranslation();
   const { prefs, hydrated } = usePreferences();
   const [me, setMe] = useState<PredictionMe | null>(null);
   const [profile, setProfile] = useState<ProfileData | null>(null);
@@ -212,7 +215,7 @@ export default function MyPageClient({ posts, todayISO }: MyPageClientProps) {
                       className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white border border-red-200 text-xs font-medium text-gray-700"
                     >
                       <span>{team.flag}</span>
-                      {team.name}
+                      {localizedTeamName(team, locale)}
                     </span>
                   );
                 })}

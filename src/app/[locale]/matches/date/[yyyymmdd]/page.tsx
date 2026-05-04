@@ -6,8 +6,9 @@ import MatchCard from "@/components/MatchCard";
 import SourceAttribution from "@/components/SourceAttribution";
 import { BreadcrumbJsonLd, SportsEventJsonLd } from "@/components/JsonLd";
 import { allWorldCupMatches, formatMatchDate } from "@/data/matches";
-import { getLocale } from "@/i18n/index";
+import { getLocale, getDictionary, createTranslator } from "@/i18n/index";
 import { pageAlternates, absoluteLocaleUrl } from "@/lib/i18nLinks";
+import { localizedTeamNameByJa } from "@/data/teamsI18n";
 
 const BASE_URL = "https://www.wc2026report.com";
 
@@ -75,6 +76,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 // ========================================
 export default async function DateMatchesPage({ params }: Props) {
   const { yyyymmdd } = await params;
+  const locale = await getLocale();
+  const dict = await getDictionary(locale);
+  const t = createTranslator(dict);
   const isoDate = parseDateParam(yyyymmdd);
   if (!isoDate) notFound();
 
@@ -95,30 +99,34 @@ export default async function DateMatchesPage({ params }: Props) {
   return (
     <>
       <BreadcrumbJsonLd items={[
-        { name: "ホーム", url: BASE_URL },
-        { name: "試合日程", url: `${BASE_URL}/matches` },
+        { name: t("nav.home"), url: BASE_URL },
+        { name: t("nav.matches"), url: `${BASE_URL}/matches` },
         { name: formatted, url: `${BASE_URL}/matches/date/${yyyymmdd}` },
       ]} />
 
-      {matches.map((m) => (
-        <SportsEventJsonLd
-          key={m.id}
-          name={`W杯2026 ${m.typeLabel}: ${m.homeTeam} vs ${m.awayTeam}`}
-          startDate={`${m.date}T${m.kickoff}:00+09:00`}
-          location={`${m.venue}（${m.city}）`}
-          homeTeam={m.homeTeam}
-          awayTeam={m.awayTeam}
-          description={`FIFAワールドカップ2026 ${m.typeLabel}。${m.homeTeam}と${m.awayTeam}の対戦。`}
-          url={`${BASE_URL}/matches/date/${yyyymmdd}`}
-        />
-      ))}
+      {matches.map((m) => {
+        const homeName = localizedTeamNameByJa(m.homeTeam, locale);
+        const awayName = localizedTeamNameByJa(m.awayTeam, locale);
+        return (
+          <SportsEventJsonLd
+            key={m.id}
+            name={`W杯2026 ${m.typeLabel}: ${homeName} vs ${awayName}`}
+            startDate={`${m.date}T${m.kickoff}:00+09:00`}
+            location={`${m.venue}（${m.city}）`}
+            homeTeam={homeName}
+            awayTeam={awayName}
+            description={`FIFAワールドカップ2026 ${m.typeLabel}。${homeName} vs ${awayName}.`}
+            url={`${BASE_URL}/matches/date/${yyyymmdd}`}
+          />
+        );
+      })}
 
       <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
         {/* パンくず */}
         <nav className="flex items-center gap-1.5 text-xs text-gray-400 mb-6">
-          <Link href="/" className="hover:text-gray-600">ホーム</Link>
+          <Link href="/" className="hover:text-gray-600">{t("nav.home")}</Link>
           <span>/</span>
-          <Link href="/matches" className="hover:text-gray-600">試合日程</Link>
+          <Link href="/matches" className="hover:text-gray-600">{t("nav.matches")}</Link>
           <span>/</span>
           <span className="text-gray-700 font-medium">{formatted}</span>
         </nav>

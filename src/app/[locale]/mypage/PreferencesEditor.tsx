@@ -3,9 +3,12 @@
 import { useMemo, useState } from "react";
 import Icon from "@/components/Icon";
 import { allTeams } from "@/data/teams";
+import { localizedTeamName } from "@/data/teamsI18n";
+import { useTranslation } from "@/i18n/client";
 import { usePreferences } from "@/context/PreferencesContext";
 
 export default function PreferencesEditor() {
+  const { locale } = useTranslation();
   const { prefs, toggleFavoriteCountry, resetPreferences } = usePreferences();
   const [open, setOpen] = useState(false);
 
@@ -73,7 +76,7 @@ export default function PreferencesEditor() {
                     >
                       <span className="text-2xl leading-none">{team.flag}</span>
                       <span className="text-xs font-medium text-gray-700 text-center leading-tight">
-                        {team.name}
+                        {localizedTeamName(team, locale)}
                       </span>
                       {isSelected && (
                         <span className="absolute top-1 right-1">

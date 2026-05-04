@@ -10,6 +10,7 @@ import HomeRankingTeaser from "@/components/HomeRankingTeaser";
 import { japanMatches, worldCupGroups } from "@/data/matches";
 import { calendarEvents } from "@/data/events";
 import { getTeamByName } from "@/data/teams";
+import { localizedTeamName, localizedTeamNameByJa } from "@/data/teamsI18n";
 import { getLocale, getDictionary, createTranslator } from "@/i18n/index";
 
 export default async function Home() {
@@ -272,13 +273,16 @@ export default async function Home() {
                   {group.teams.map((team) => {
                     const teamData = getTeamByName(team);
                     const isPlaceholder = /PO|勝者/.test(team);
+                    const displayName = teamData
+                      ? localizedTeamName(teamData, locale)
+                      : localizedTeamNameByJa(team, locale);
 
                     return isPlaceholder || !teamData ? (
                       <li
                         key={team}
                         className="text-sm py-1 px-2 rounded text-gray-400 italic"
                       >
-                        {team}
+                        {displayName}
                       </li>
                     ) : (
                       <li key={team}>
@@ -291,7 +295,7 @@ export default async function Home() {
                           }`}
                         >
                           <span>{teamData.flag}</span>
-                          <span className="flex-1">{team}</span>
+                          <span className="flex-1">{displayName}</span>
                           <Icon name="chevron_right" size={12} className="text-gray-300" />
                         </Link>
                       </li>

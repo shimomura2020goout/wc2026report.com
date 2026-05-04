@@ -12,7 +12,7 @@ import { getTeamDetail, hasTeamDetail, playerColumnSlugs } from "@/data/teamDeta
 import { allWorldCupMatches } from "@/data/matches";
 import { getLocale, getDictionary, createTranslator } from "@/i18n/index";
 import { pageAlternates } from "@/lib/i18nLinks";
-import { localizedTeamName, localizedRegionLabel, localizedBestResult } from "@/data/teamsI18n";
+import { localizedTeamName, localizedRegionLabel, localizedBestResult, localizedTeamDetail } from "@/data/teamsI18n";
 
 // ========================================
 // 静的パス生成
@@ -36,7 +36,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const team = allTeams.find((t) => t.code.toLowerCase() === code.toLowerCase());
   if (!team) return { title: t("teamDetail.teamInfo") };
 
-  const detail = getTeamDetail(team.code);
+  const rawDetail = getTeamDetail(team.code);
+  const detail = rawDetail ? localizedTeamDetail(rawDetail, locale) : undefined;
   const localizedName = localizedTeamName(team, locale);
   const title = locale === "ja"
     ? `${team.flag} ${team.name}｜W杯2026 チーム情報・注目選手・試合日程`
@@ -74,7 +75,8 @@ export default async function TeamDetailPage({ params }: Props) {
   const team = allTeams.find((t) => t.code.toLowerCase() === code.toLowerCase());
   if (!team || team.isPlaceholder) notFound();
 
-  const detail = getTeamDetail(team.code);
+  const rawDetail = getTeamDetail(team.code);
+  const detail = rawDetail ? localizedTeamDetail(rawDetail, locale) : undefined;
   const displayName = localizedTeamName(team, locale);
   const displayRegion = localizedRegionLabel(team.region, locale);
   const displayBest = localizedBestResult(team, locale);

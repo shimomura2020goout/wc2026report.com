@@ -5,6 +5,19 @@
 // 生成後に `npm run sync:teams` を実行してください。
 // ========================================
 
+export interface TeamDetailLocaleOverride {
+  coach?: string;
+  coachNationality?: string;
+  nickname?: string;
+  kitColors?: string;
+  starPlayers?: string[];
+  description?: string;
+  strengths?: string[];
+  weaknesses?: string[];
+  worldCupHistory?: string;
+  qualificationPath?: string;
+}
+
 export interface TeamDetail {
   code: string;
   coach: string;
@@ -17,6 +30,10 @@ export interface TeamDetail {
   weaknesses: string[];
   worldCupHistory: string;
   qualificationPath: string;
+  i18n?: {
+    en?: TeamDetailLocaleOverride;
+    ko?: TeamDetailLocaleOverride;
+  };
 }
 
 export const teamDetails: Record<string, TeamDetail> = {

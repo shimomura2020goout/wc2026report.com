@@ -34,6 +34,20 @@ interface TeamRow {
   displayOrder: number; // グループ内表示順
 }
 
+// 各 locale 別の i18n オーバーライド。空文字列なら ja（既定）にフォールバック。
+interface DetailLocaleOverride {
+  nickname: string;
+  kitColors: string;
+  starPlayers: string[];
+  description: string;
+  strengths: string[];
+  weaknesses: string[];
+  worldCupHistory: string;
+  qualificationPath: string;
+  coach: string;
+  coachNationality: string;
+}
+
 interface DetailRow {
   code: string;
   coach: string;
@@ -46,6 +60,7 @@ interface DetailRow {
   weaknesses: string[];
   worldCupHistory: string;
   qualificationPath: string;
+  i18n?: { en?: Partial<DetailLocaleOverride>; ko?: Partial<DetailLocaleOverride> };
 }
 
 // --- Notion から取得 ---
@@ -75,6 +90,35 @@ async function fetchTeams(): Promise<TeamRow[]> {
   }));
 }
 
+// locale 別 i18n プロパティを抽出。値が無い列は undefined にして
+// 生成ファイルの i18n オブジェクトから外す（読み手はフォールバックする）。
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function extractLocaleOverride(page: any, locale: "en" | "ko"): Partial<DetailLocaleOverride> | undefined {
+  const nickname = getProp(page, `愛称_${locale}`, "rich_text") as string;
+  const kitColors = getProp(page, `ユニフォーム色_${locale}`, "rich_text") as string;
+  const description = getProp(page, `チーム紹介_${locale}`, "rich_text") as string;
+  const strengthsRaw = getProp(page, `強み_${locale}`, "rich_text") as string;
+  const weaknessesRaw = getProp(page, `弱み_${locale}`, "rich_text") as string;
+  const worldCupHistory = getProp(page, `W杯の歴史_${locale}`, "rich_text") as string;
+  const qualificationPath = getProp(page, `予選突破経緯_${locale}`, "rich_text") as string;
+  const player1 = getProp(page, `注目選手1_${locale}`, "rich_text") as string;
+  const player2 = getProp(page, `注目選手2_${locale}`, "rich_text") as string;
+  const player3 = getProp(page, `注目選手3_${locale}`, "rich_text") as string;
+
+  const players = [player1, player2, player3].filter(Boolean);
+  const out: Partial<DetailLocaleOverride> = {};
+  if (nickname) out.nickname = nickname;
+  if (kitColors) out.kitColors = kitColors;
+  if (description) out.description = description;
+  if (strengthsRaw) out.strengths = splitLines(strengthsRaw);
+  if (weaknessesRaw) out.weaknesses = splitLines(weaknessesRaw);
+  if (worldCupHistory) out.worldCupHistory = worldCupHistory;
+  if (qualificationPath) out.qualificationPath = qualificationPath;
+  if (players.length > 0) out.starPlayers = players;
+
+  return Object.keys(out).length > 0 ? out : undefined;
+}
+
 async function fetchDetails(): Promise<Map<string, Omit<DetailRow, "coach" | "coachNationality">>> {
   const dsId = getEnv("NOTION_TEAM_DETAILS_DATABASE_ID");
   const pages = await queryDataSource(dsId);
@@ -89,6 +133,10 @@ async function fetchDetails(): Promise<Map<string, Omit<DetailRow, "coach" | "co
       getProp(page, "注目選手3", "rich_text") as string,
     ].filter(Boolean);
 
+    const en = extractLocaleOverride(page, "en");
+    const ko = extractLocaleOverride(page, "ko");
+    const i18n = en || ko ? { ...(en && { en }), ...(ko && { ko }) } : undefined;
+
     map.set(code, {
       code,
       nickname: getProp(page, "愛称", "rich_text") as string,
@@ -99,15 +147,27 @@ async function fetchDetails(): Promise<Map<string, Omit<DetailRow, "coach" | "co
       weaknesses: splitLines(getProp(page, "弱み", "rich_text") as string),
       worldCupHistory: getProp(page, "W杯の歴史", "rich_text") as string,
       qualificationPath: getProp(page, "予選突破経緯", "rich_text") as string,
+      i18n,
     });
   }
   return map;
 }
 
-async function fetchCurrentCoaches(): Promise<Map<string, { coach: string; coachNationality: string }>> {
+interface CoachI18n {
+  coach?: string;
+  coachNationality?: string;
+}
+
+interface CoachRow {
+  coach: string;
+  coachNationality: string;
+  i18n?: { en?: CoachI18n; ko?: CoachI18n };
+}
+
+async function fetchCurrentCoaches(): Promise<Map<string, CoachRow>> {
   const dsId = getEnv("NOTION_COACHES_DATABASE_ID");
   const pages = await queryDataSource(dsId);
-  const map = new Map<string, { coach: string; coachNationality: string; appointedAt: string | null }>();
+  const map = new Map<string, CoachRow & { appointedAt: string | null }>();
 
   for (const page of pages) {
     const code = getProp(page, "国コード", "rich_text") as string;
@@ -119,16 +179,31 @@ async function fetchCurrentCoaches(): Promise<Map<string, { coach: string; coach
     // 同一チームに複数現職がある場合、就任日が新しい方を採用
     if (existing && existing.appointedAt && appointedAt && appointedAt < existing.appointedAt) continue;
 
+    const coachEn = getProp(page, "氏名_en", "rich_text") as string;
+    const coachKo = getProp(page, "氏名_ko", "rich_text") as string;
+    const natEn = getProp(page, "国籍_en", "rich_text") as string;
+    const natKo = getProp(page, "国籍_ko", "rich_text") as string;
+    const en: CoachI18n = {};
+    if (coachEn) en.coach = coachEn;
+    if (natEn) en.coachNationality = natEn;
+    const ko: CoachI18n = {};
+    if (coachKo) ko.coach = coachKo;
+    if (natKo) ko.coachNationality = natKo;
+    const i18n = Object.keys(en).length > 0 || Object.keys(ko).length > 0
+      ? { ...(Object.keys(en).length > 0 && { en }), ...(Object.keys(ko).length > 0 && { ko }) }
+      : undefined;
+
     map.set(code, {
       coach: getProp(page, "氏名", "title") as string,
       coachNationality: getProp(page, "国籍", "rich_text") as string,
       appointedAt,
+      i18n,
     });
   }
 
-  const result = new Map<string, { coach: string; coachNationality: string }>();
+  const result = new Map<string, CoachRow>();
   for (const [code, v] of map.entries()) {
-    result.set(code, { coach: v.coach, coachNationality: v.coachNationality });
+    result.set(code, { coach: v.coach, coachNationality: v.coachNationality, i18n: v.i18n });
   }
   return result;
 }
@@ -233,10 +308,32 @@ function generateTeamsFile(teams: TeamRow[]): string {
   return lines.join("\n");
 }
 
+function serializeI18nLiteral(i18n: unknown, indent: string): string {
+  // i18n オブジェクト（{ en: {...}, ko: {...} }）を TS リテラルに整形して返す
+  if (!i18n || typeof i18n !== "object") return "undefined";
+  const obj = i18n as Record<string, Record<string, unknown>>;
+  const lines: string[] = [];
+  lines.push("{");
+  for (const [locale, fields] of Object.entries(obj)) {
+    if (!fields || Object.keys(fields).length === 0) continue;
+    lines.push(`${indent}  ${locale}: {`);
+    for (const [k, v] of Object.entries(fields)) {
+      if (Array.isArray(v)) {
+        lines.push(`${indent}    ${k}: [${(v as string[]).map((s) => `"${escapeString(s)}"`).join(", ")}],`);
+      } else if (typeof v === "string") {
+        lines.push(`${indent}    ${k}: "${escapeString(v)}",`);
+      }
+    }
+    lines.push(`${indent}  },`);
+  }
+  lines.push(`${indent}}`);
+  return lines.join("\n");
+}
+
 function generateDetailsFile(
   teams: TeamRow[],
   details: Map<string, Omit<DetailRow, "coach" | "coachNationality">>,
-  coaches: Map<string, { coach: string; coachNationality: string }>,
+  coaches: Map<string, CoachRow>,
   playerColumnSlugsSource: string
 ): string {
   const today = new Date().toISOString().slice(0, 10);
@@ -248,6 +345,19 @@ function generateDetailsFile(
   lines.push(`// 監督情報の編集は Notion の Coaches DB、その他は TeamDetails DB で。`);
   lines.push(`// 生成後に \`npm run sync:teams\` を実行してください。`);
   lines.push(`// ========================================`);
+  lines.push(``);
+  lines.push(`export interface TeamDetailLocaleOverride {`);
+  lines.push(`  coach?: string;`);
+  lines.push(`  coachNationality?: string;`);
+  lines.push(`  nickname?: string;`);
+  lines.push(`  kitColors?: string;`);
+  lines.push(`  starPlayers?: string[];`);
+  lines.push(`  description?: string;`);
+  lines.push(`  strengths?: string[];`);
+  lines.push(`  weaknesses?: string[];`);
+  lines.push(`  worldCupHistory?: string;`);
+  lines.push(`  qualificationPath?: string;`);
+  lines.push(`}`);
   lines.push(``);
   lines.push(`export interface TeamDetail {`);
   lines.push(`  code: string;`);
@@ -261,6 +371,10 @@ function generateDetailsFile(
   lines.push(`  weaknesses: string[];`);
   lines.push(`  worldCupHistory: string;`);
   lines.push(`  qualificationPath: string;`);
+  lines.push(`  i18n?: {`);
+  lines.push(`    en?: TeamDetailLocaleOverride;`);
+  lines.push(`    ko?: TeamDetailLocaleOverride;`);
+  lines.push(`  };`);
   lines.push(`}`);
   lines.push(``);
   lines.push(`export const teamDetails: Record<string, TeamDetail> = {`);
@@ -278,6 +392,17 @@ function generateDetailsFile(
       lines.push(`  // --- グループ ${t.group} ---`);
       currentGroup = t.group;
     }
+    // i18n マージ: TeamDetails の i18n と Coaches の i18n を一つの i18n にまとめる
+    // 同 locale の coach / coachNationality を Coach 側、それ以外を Detail 側から
+    const mergedI18n: { en?: Record<string, unknown>; ko?: Record<string, unknown> } = {};
+    for (const locale of ["en", "ko"] as const) {
+      const detailLocale = d.i18n?.[locale];
+      const coachLocale = c.i18n?.[locale];
+      if (!detailLocale && !coachLocale) continue;
+      mergedI18n[locale] = { ...(detailLocale ?? {}), ...(coachLocale ?? {}) };
+    }
+    const hasI18n = mergedI18n.en || mergedI18n.ko;
+
     lines.push(`  ${t.code}: {`);
     lines.push(`    code: "${t.code}",`);
     lines.push(`    coach: "${escapeString(c.coach)}",`);
@@ -290,6 +415,9 @@ function generateDetailsFile(
     lines.push(`    weaknesses: [${d.weaknesses.map((s) => `"${escapeString(s)}"`).join(", ")}],`);
     lines.push(`    worldCupHistory: "${escapeString(d.worldCupHistory)}",`);
     lines.push(`    qualificationPath: "${escapeString(d.qualificationPath)}",`);
+    if (hasI18n) {
+      lines.push(`    i18n: ${serializeI18nLiteral(mergedI18n, "    ")},`);
+    }
     lines.push(`  },`);
   }
   lines.push(`};`);

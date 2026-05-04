@@ -10,7 +10,8 @@
     "seed:teams": "tsx scripts/seedTeams.ts",
     "sync:teams": "tsx scripts/syncTeams.ts",
     "dict:sync": "tsx scripts/translateDict.ts",
-    "translate:articles": "tsx scripts/translateArticles.ts"
+    "translate:articles": "tsx scripts/translateArticles.ts",
+    "translate:teams": "tsx scripts/translateTeamDetails.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",

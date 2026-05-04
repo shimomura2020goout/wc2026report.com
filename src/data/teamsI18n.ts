@@ -188,3 +188,73 @@ export function localizedRegionLabel(region: string, locale: Locale): string {
 export function localizedBestResult(team: Team, locale: Locale): string {
   return localizeBestResult(team.bestResult, locale);
 }
+
+// ========================================
+// TeamDetail フィールドの locale 解決
+// ja を真実とし、Notion 側 i18n_xx カラムが入っていれば優先。空なら ja にフォールバック。
+// ========================================
+
+import type { TeamDetail, TeamDetailLocaleOverride } from "./teamDetails";
+
+// detail フィールドを locale 別に解決した「平らな」オブジェクトを返す。
+// 配列フィールド (starPlayers, strengths, weaknesses) と string フィールドのどちらも安全に返せる。
+export interface LocalizedTeamDetail {
+  code: string;
+  coach: string;
+  coachNationality: string;
+  nickname: string;
+  kitColors: string;
+  starPlayers: string[];
+  description: string;
+  strengths: string[];
+  weaknesses: string[];
+  worldCupHistory: string;
+  qualificationPath: string;
+}
+
+function pickOverride<T>(override: T | undefined, fallback: T): T {
+  if (override === undefined) return fallback;
+  if (typeof override === "string" && override.trim() === "") return fallback;
+  if (Array.isArray(override) && override.length === 0) return fallback;
+  return override;
+}
+
+export function localizedTeamDetail(detail: TeamDetail, locale: Locale): LocalizedTeamDetail {
+  if (locale === "ja") {
+    return {
+      code: detail.code,
+      coach: detail.coach,
+      coachNationality: detail.coachNationality,
+      nickname: detail.nickname,
+      kitColors: detail.kitColors,
+      starPlayers: detail.starPlayers,
+      description: detail.description,
+      strengths: detail.strengths,
+      weaknesses: detail.weaknesses,
+      worldCupHistory: detail.worldCupHistory,
+      qualificationPath: detail.qualificationPath,
+    };
+  }
+  // ここに来る時点で locale === "en" | "ko"（"ja" は早期 return 済み）
+  const nonJaLocale: "en" | "ko" = locale;
+  const ov: TeamDetailLocaleOverride = detail.i18n?.[nonJaLocale] ?? {};
+  // 連盟ラベルは coachNationality に来るので、ja 国名を i18n 国名に変換してフォールバックする
+  const fallbackCoachNationality = (() => {
+    const code = TEAM_NAME_JA_TO_CODE[detail.coachNationality];
+    if (!code) return detail.coachNationality;
+    return TEAM_NAMES_I18N[code]?.[nonJaLocale] ?? detail.coachNationality;
+  })();
+  return {
+    code: detail.code,
+    coach: pickOverride(ov.coach, detail.coach),
+    coachNationality: pickOverride(ov.coachNationality, fallbackCoachNationality),
+    nickname: pickOverride(ov.nickname, detail.nickname),
+    kitColors: pickOverride(ov.kitColors, detail.kitColors),
+    starPlayers: pickOverride(ov.starPlayers, detail.starPlayers),
+    description: pickOverride(ov.description, detail.description),
+    strengths: pickOverride(ov.strengths, detail.strengths),
+    weaknesses: pickOverride(ov.weaknesses, detail.weaknesses),
+    worldCupHistory: pickOverride(ov.worldCupHistory, detail.worldCupHistory),
+    qualificationPath: pickOverride(ov.qualificationPath, detail.qualificationPath),
+  };
+}
