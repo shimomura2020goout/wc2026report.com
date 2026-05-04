@@ -512,6 +512,13 @@
   "teams.timesNum": "{count}回",
   "teams.playoffPending": "プレーオフ未確定",
 
+  "playerTooltip.teamSuffix": "{team}代表",
+  "playerTooltip.readColumn": "コラム記事を読む",
+  "playerTooltip.viewWiki": "Wikipediaで詳しく見る",
+  "playerTooltip.close": "閉じる",
+  "playerTooltip.ariaColumn": "{name}のコラムを読む",
+  "playerTooltip.ariaWiki": "{name}をWikipediaで開く",
+
   "rankings.byFifa": "FIFAランキング順 ({count}カ国)",
   "rankings.detailsLink": "詳細・グループ別",
   "rankings.fifaPoints": "FIFAポイント",

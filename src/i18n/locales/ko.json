@@ -472,6 +472,13 @@
   "teams.timesNum": "{count}회",
   "teams.playoffPending": "플레이오프 미확정",
 
+  "playerTooltip.teamSuffix": "{team} 대표팀",
+  "playerTooltip.readColumn": "칼럼 읽기",
+  "playerTooltip.viewWiki": "Wikipedia에서 자세히 보기",
+  "playerTooltip.close": "닫기",
+  "playerTooltip.ariaColumn": "{name} 칼럼 읽기",
+  "playerTooltip.ariaWiki": "{name} Wikipedia에서 열기",
+
   "rankings.byFifa": "FIFA 랭킹순 ({count}개국)",
   "rankings.detailsLink": "상세·조별",
   "rankings.fifaPoints": "FIFA 포인트",

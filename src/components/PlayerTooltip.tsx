@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
+import { useTranslation } from "@/i18n/client";
 import Icon from "./Icon";
 
 interface PlayerTooltipProps {
@@ -10,17 +11,22 @@ interface PlayerTooltipProps {
   columnSlug?: string;
 }
 
-function getWikipediaUrl(name: string): string {
-  const isJapanese = /[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF]/.test(name);
-  const lang = isJapanese ? "ja" : "en";
-  const suffix = isJapanese ? " サッカー" : " footballer";
+function getWikipediaUrl(name: string, locale: string): string {
+  const isJapaneseScript = /[぀-ゟ゠-ヿ一-鿿]/.test(name);
+  // 文字種が日本語ならja Wikipedia、そうでなければ閲覧者の locale → en の優先順
+  const lang = isJapaneseScript ? "ja" : locale === "ko" ? "ko" : "en";
+  const suffix =
+    lang === "ja" ? " サッカー" : lang === "ko" ? " 축구 선수" : " footballer";
   return `https://${lang}.wikipedia.org/wiki/Special:Search?search=${encodeURIComponent(name + suffix)}`;
 }
 
+// クリックは「コラムがあればコラム / 無ければ Wikipedia」へ即時遷移する。
+// ホバー（デスクトップ）でツールチップは引き続き出して情報も見せる。
 export default function PlayerTooltip({ playerName, teamName, teamFlag, columnSlug }: PlayerTooltipProps) {
+  const { locale, t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLSpanElement>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -54,24 +60,35 @@ export default function PlayerTooltip({ playerName, teamName, teamFlag, columnSl
     closeTimer.current = setTimeout(() => setIsOpen(false), 300);
   }, []);
 
-  const wikiUrl = getWikipediaUrl(playerName);
+  const wikiUrl = getWikipediaUrl(playerName, locale);
+  const columnHref = columnSlug ? `/${locale}/news/${columnSlug}` : null;
+  // 1タップ少なく：クリックで直接遷移する。コラム優先、無ければ Wikipedia。
+  const primaryHref = columnHref ?? wikiUrl;
+  const opensExternal = !columnHref;
 
   return (
-    <div
+    <span
       ref={containerRef}
       className="relative inline-block"
       onMouseEnter={() => { if (!isMobile) open(); }}
       onMouseLeave={() => { if (!isMobile) scheduleClose(); }}
     >
-      <button
-        onClick={() => setIsOpen((prev) => !prev)}
-        className="bg-white border border-gray-200 rounded-xl px-4 py-3 shadow-sm hover:border-blue-300 hover:shadow-md transition-all group text-left"
+      <a
+        href={primaryHref}
+        target={opensExternal ? "_blank" : undefined}
+        rel={opensExternal ? "noopener noreferrer" : undefined}
+        aria-label={
+          columnHref
+            ? t("playerTooltip.ariaColumn", { name: playerName })
+            : t("playerTooltip.ariaWiki", { name: playerName })
+        }
+        className="inline-block bg-white border border-gray-200 rounded-xl px-4 py-3 shadow-sm hover:border-blue-300 hover:shadow-md transition-all group text-left no-underline"
       >
         <span className="text-sm font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
           {playerName}
         </span>
         <span className="text-[10px] text-gray-400 ml-1.5 group-hover:text-blue-400">↗</span>
-      </button>
+      </a>
 
       {isOpen && (
         <>
@@ -102,21 +119,21 @@ export default function PlayerTooltip({ playerName, teamName, teamFlag, columnSl
                 <Icon name="sports_soccer" size={20} className="text-blue-500" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-bold text-gray-900 text-sm">{playerName}</p>
-                <p className="text-xs text-gray-500 flex items-center gap-1">
-                  <span>{teamFlag}</span> {teamName}代表
-                </p>
+                <span className="block font-bold text-gray-900 text-sm">{playerName}</span>
+                <span className="block text-xs text-gray-500">
+                  <span>{teamFlag}</span> {t("playerTooltip.teamSuffix", { team: teamName })}
+                </span>
               </div>
             </div>
 
             <div className="mt-3 flex flex-col gap-2">
               {columnSlug && (
                 <a
-                  href={`/news/${columnSlug}`}
+                  href={`/${locale}/news/${columnSlug}`}
                   className="flex items-center justify-center gap-1.5 w-full py-2 bg-blue-50 hover:bg-blue-100 rounded-lg text-xs font-medium text-blue-700 transition-colors border border-blue-200"
                 >
                   <Icon name="article" size={14} />
-                  コラム記事を読む
+                  {t("playerTooltip.readColumn")}
                 </a>
               )}
               <a
@@ -126,7 +143,7 @@ export default function PlayerTooltip({ playerName, teamName, teamFlag, columnSl
                 className="flex items-center justify-center gap-1.5 w-full py-2 bg-gray-50 hover:bg-gray-100 rounded-lg text-xs font-medium text-gray-700 transition-colors border border-gray-200"
               >
                 <Icon name="open_in_new" size={14} />
-                Wikipediaで詳しく見る
+                {t("playerTooltip.viewWiki")}
               </a>
             </div>
 
@@ -135,12 +152,12 @@ export default function PlayerTooltip({ playerName, teamName, teamFlag, columnSl
                 onClick={() => setIsOpen(false)}
                 className="mt-2 w-full py-2.5 text-sm text-gray-500 font-medium"
               >
-                閉じる
+                {t("playerTooltip.close")}
               </button>
             )}
           </div>
         </>
       )}
-    </div>
+    </span>
   );
 }

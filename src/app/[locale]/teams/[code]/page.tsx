@@ -153,13 +153,13 @@ export default async function TeamDetailPage({ params }: Props) {
                 <Icon name="person" size={16} className="text-gray-400" />
                 <span className="text-xs text-gray-500 font-medium">{t("teamDetail.coach")}</span>
               </div>
-              <p className="text-sm font-semibold text-gray-900">
+              <div className="text-sm font-semibold text-gray-900">
                 <CoachTooltip
                   coachName={detail.coach}
                   coachNationality={detail.coachNationality}
                   teamName={team.name}
                 />
-              </p>
+              </div>
             </div>
             <InfoCard icon="checkroom" label={t("teamDetail.uniform")} value={detail.kitColors} />
             <InfoCard icon="emoji_events" label={t("teamDetail.wcBestResult")} value={displayBest} />

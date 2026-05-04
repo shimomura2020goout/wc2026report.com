@@ -532,6 +532,13 @@
   "teams.timesNum": "{count}x",
   "teams.playoffPending": "Playoff TBD",
 
+  "playerTooltip.teamSuffix": "{team} National Team",
+  "playerTooltip.readColumn": "Read column",
+  "playerTooltip.viewWiki": "Read more on Wikipedia",
+  "playerTooltip.close": "Close",
+  "playerTooltip.ariaColumn": "Read column on {name}",
+  "playerTooltip.ariaWiki": "Open {name} on Wikipedia",
+
   "rankings.byFifa": "Sorted by FIFA Ranking ({count} nations)",
   "rankings.detailsLink": "Details & Groups",
   "rankings.fifaPoints": "FIFA Points",

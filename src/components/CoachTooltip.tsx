@@ -21,7 +21,7 @@ function getWikipediaUrl(coachName: string): string {
 export default function CoachTooltip({ coachName, coachNationality, teamName }: CoachTooltipProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLSpanElement>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // モバイル判定
@@ -80,7 +80,7 @@ export default function CoachTooltip({ coachName, coachNationality, teamName }: 
   const wikiUrl = getWikipediaUrl(coachName);
 
   return (
-    <div
+    <span
       ref={containerRef}
       className="relative inline-block"
       onMouseEnter={handleMouseEnter}
@@ -88,6 +88,9 @@ export default function CoachTooltip({ coachName, coachNationality, teamName }: 
     >
       <span
         onClick={handleClick}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") handleClick(); }}
         className="cursor-pointer underline decoration-dotted decoration-gray-400 underline-offset-2 hover:text-blue-700 transition-colors"
       >
         {coachName}（{coachNationality}）
@@ -150,6 +153,6 @@ export default function CoachTooltip({ coachName, coachNationality, teamName }: 
           </div>
         </>
       )}
-    </div>
+    </span>
   );
 }
