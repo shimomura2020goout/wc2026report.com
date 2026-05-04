@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Match, formatMatchDate, getMatchTypeColor } from "@/data/matches";
 import { getTeamByName } from "@/data/teams";
+import { localizedTeamNameByJa } from "@/data/teamsI18n";
 import { useTranslation } from "@/i18n/client";
 import Icon from "./Icon";
 
@@ -12,8 +13,10 @@ interface MatchListItemProps {
 }
 
 function TeamName({ name, isJapan, isPlaceholderTeam }: { name: string; isJapan: boolean; isPlaceholderTeam: boolean }) {
+  const { locale } = useTranslation();
   const team = getTeamByName(name);
   const canLink = team && !team.isPlaceholder;
+  const display = localizedTeamNameByJa(name, locale);
 
   const className = `font-medium truncate ${
     isJapan ? "text-red-700" :
@@ -27,11 +30,11 @@ function TeamName({ name, isJapan, isPlaceholderTeam }: { name: string; isJapan:
         href={`/teams/${team.code.toLowerCase()}`}
         className={`${className} hover:underline`}
       >
-        {name}
+        {display}
       </Link>
     );
   }
-  return <span className={className}>{name}</span>;
+  return <span className={className}>{display}</span>;
 }
 
 export default function MatchListItem({ match, showGroup = true }: MatchListItemProps) {

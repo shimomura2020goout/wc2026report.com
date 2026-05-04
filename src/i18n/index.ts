@@ -1,16 +1,27 @@
 // ========================================
 // i18n コアモジュール
-// サーバーコンポーネント用
+// サーバーコンポーネント用（next/headers, next/cookies を使用）
 // ========================================
 
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
+import {
+  type Locale,
+  type Dictionary,
+  LOCALES,
+  DEFAULT_LOCALE,
+  COOKIE_NAME,
+  LOCALE_HEADER,
+} from "./constants";
 
-export type Locale = "ja" | "ko" | "en";
-export const LOCALES: Locale[] = ["ja", "ko", "en"];
-export const DEFAULT_LOCALE: Locale = "ja";
-export const COOKIE_NAME = "locale";
-
-export type Dictionary = Record<string, string | string[]>;
+// 型・定数は constants.ts から来る。クライアントから参照する場合も
+// constants.ts を直接 import すれば next/headers の連鎖が起きない。
+export {
+  LOCALES,
+  DEFAULT_LOCALE,
+  COOKIE_NAME,
+  LOCALE_HEADER,
+};
+export type { Locale, Dictionary };
 
 // 翻訳ファイルの遅延読み込み
 const dictionaries: Record<Locale, () => Promise<Dictionary>> = {
@@ -24,7 +35,17 @@ export async function getDictionary(locale: Locale): Promise<Dictionary> {
 }
 
 // サーバーコンポーネントでのlocale取得
-export async function getLocaleFromCookies(): Promise<Locale> {
+// 優先順位: middleware が設定した x-locale ヘッダー → cookie → DEFAULT_LOCALE
+export async function getLocale(): Promise<Locale> {
+  try {
+    const h = await headers();
+    const headerLocale = h.get(LOCALE_HEADER);
+    if (headerLocale && LOCALES.includes(headerLocale as Locale)) {
+      return headerLocale as Locale;
+    }
+  } catch {
+    // ignore
+  }
   try {
     const cookieStore = await cookies();
     const locale = cookieStore.get(COOKIE_NAME)?.value;
@@ -32,7 +53,18 @@ export async function getLocaleFromCookies(): Promise<Locale> {
       return locale as Locale;
     }
   } catch {
-    // cookies() がビルド時に呼べない場合のフォールバック
+    // ignore
+  }
+  return DEFAULT_LOCALE;
+}
+
+// 後方互換
+export const getLocaleFromCookies = getLocale;
+
+// URL params から locale を取り出す（[locale] セグメントを持つ page で使用）
+export function resolveLocaleParam(value: string | undefined): Locale {
+  if (value && (LOCALES as readonly string[]).includes(value)) {
+    return value as Locale;
   }
   return DEFAULT_LOCALE;
 }

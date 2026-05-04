@@ -1,13 +1,13 @@
 import Icon from "./Icon";
 import SourceAttribution from "./SourceAttribution";
-import { getLocaleFromCookies, getDictionary, createTranslator } from "@/i18n/index";
+import { getLocale, getDictionary, createTranslator } from "@/i18n/index";
 
 /**
  * toto の「買い方ガイド」セクション以降を丸ごと出力する共通コンポーネント。
  * /toto と /predictions の両方に埋め込む用途。
  */
 export default async function TotoGuideSection() {
-  const locale = await getLocaleFromCookies();
+  const locale = await getLocale();
   const dict = await getDictionary(locale);
   const t = createTranslator(dict);
 

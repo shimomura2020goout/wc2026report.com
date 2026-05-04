@@ -12,7 +12,8 @@ import DonationBanner from "@/components/DonationBanner";
 import OnboardingModal from "@/components/OnboardingModal";
 import VisitBeacon from "@/components/VisitBeacon";
 import { PreferencesProvider } from "@/context/PreferencesContext";
-import { getLocaleFromCookies, getDictionary } from "@/i18n/index";
+import { getLocale, getDictionary, createTranslator, getTranslationArray } from "@/i18n/index";
+import { localeAlternates, OG_LOCALES, SITE_BASE_URL, absoluteLocaleUrl } from "@/lib/i18nLinks";
 import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist({
@@ -21,63 +22,68 @@ const geistSans = Geist({
   display: "swap",
 });
 
-const BASE_URL = "https://www.wc2026report.com";
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  const dict = await getDictionary(locale);
+  const t = createTranslator(dict);
 
-export const metadata: Metadata = {
-  metadataBase: new URL(BASE_URL),
-  title: {
-    default: "W杯2026 x toto｜FIFA ワールドカップ 2026 試合日程・toto予想・購入ガイド",
-    template: "%s｜W杯2026 x toto",
-  },
-  description:
-    "toto対象のW杯全104試合を網羅。toto予想・購入ガイド・ドコモスポーツくじ/楽天totoでの買い方、DAZN視聴方法まで。FIFA ワールドカップ 2026（北中米大会）総合情報サイト。",
-  keywords: [
-    "toto", "toto 予想", "toto 買い方", "スポーツくじ",
-    "W杯 2026", "ワールドカップ 2026", "FIFA ワールドカップ",
-    "W杯 2026 日程", "ワールドカップ スケジュール", "W杯 日本時間",
-    "DAZN", "DAZN W杯", "日本代表", "試合日程", "放映予定", "W杯 どこで見れる",
-    "W杯 グループ", "日本 オランダ", "W杯 日程 カレンダー", "W杯 放送予定",
-    "toto 対象試合", "ドコモスポーツくじ", "楽天toto",
-  ],
-  openGraph: {
-    title: "W杯2026 x toto｜試合日程・toto予想・購入ガイド",
-    description: "FIFA ワールドカップ 2026 の全104試合の日程・toto予想・購入ガイド・DAZN視聴方法を網羅する総合情報サイト",
-    locale: "ja_JP",
-    type: "website",
-    siteName: "W杯2026 x toto",
-    url: BASE_URL,
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "W杯2026 x toto｜試合日程・toto予想・購入ガイド",
-    description: "FIFA ワールドカップ 2026 の全104試合の日程・toto予想・DAZN視聴ガイドを網羅",
-  },
-  alternates: {
-    canonical: BASE_URL,
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+  const titleDefault = t("meta.defaultTitle");
+  const titleTemplate = t("meta.titleTemplate");
+  const description = t("meta.defaultDescription");
+  const keywords = getTranslationArray(dict, "meta.keywords");
+  const ogTitle = t("meta.ogTitle");
+  const ogDescription = t("meta.ogDescription");
+  const siteName = t("meta.ogSiteName");
+
+  return {
+    metadataBase: new URL(SITE_BASE_URL),
+    title: {
+      default: titleDefault,
+      template: titleTemplate,
+    },
+    description,
+    keywords,
+    openGraph: {
+      title: ogTitle,
+      description: ogDescription,
+      locale: OG_LOCALES[locale],
+      type: "website",
+      siteName,
+      url: absoluteLocaleUrl(locale, "/"),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: ogTitle,
+      description: ogDescription,
+    },
+    alternates: {
+      canonical: absoluteLocaleUrl(locale, "/"),
+      languages: localeAlternates("/").languages,
+    },
+    robots: {
       index: true,
       follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
     },
-  },
-  verification: {
-    // Google Search Console の確認コードを後で設定
-    // google: "xxxxxx",
-  },
-};
+    verification: {
+      // Google Search Console の確認コードを後で設定
+      // google: "xxxxxx",
+    },
+  };
+}
 
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const locale = await getLocaleFromCookies();
+  const locale = await getLocale();
   const dictionary = await getDictionary(locale);
 
   return (

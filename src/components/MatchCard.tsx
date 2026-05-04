@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Match, formatMatchDate, getMatchTypeColor } from "@/data/matches";
 import { getTeamByName } from "@/data/teams";
+import { localizedTeamNameByJa } from "@/data/teamsI18n";
 import { useTranslation } from "@/i18n/client";
 import Icon from "./Icon";
 
@@ -14,9 +15,11 @@ interface MatchCardProps {
 }
 
 function CardTeamName({ name }: { name: string }) {
+  const { locale } = useTranslation();
   const team = getTeamByName(name);
   const canLink = team && !team.isPlaceholder;
   const isJapan = name === "日本";
+  const display = localizedTeamNameByJa(name, locale);
   // whitespace-nowrap で日本語文字の間で改行されないよう保証。
   // カード幅が極端に狭い場合は truncate で末尾省略（改行よりマシ）。
   const base = `text-sm sm:text-base font-bold whitespace-nowrap ${
@@ -29,11 +32,11 @@ function CardTeamName({ name }: { name: string }) {
         href={`/teams/${team.code.toLowerCase()}`}
         className={`${base} hover:underline relative z-10 inline-block max-w-full truncate`}
       >
-        {name}
+        {display}
       </Link>
     );
   }
-  return <span className={`${base} inline-block max-w-full truncate`}>{name}</span>;
+  return <span className={`${base} inline-block max-w-full truncate`}>{display}</span>;
 }
 
 export default function MatchCard({ match, showType = true, linkToPrediction = true }: MatchCardProps) {

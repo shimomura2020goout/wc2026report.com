@@ -11,6 +11,10 @@
     {
       "path": "/api/predictions/lock",
       "schedule": "0 * * * *"
+    },
+    {
+      "path": "/api/cron/translate",
+      "schedule": "0 */2 * * *"
     }
   ]
 }

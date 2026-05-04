@@ -5,8 +5,8 @@
 // クライアントコンポーネント用 Context + Hook
 // ========================================
 
-import { createContext, useContext, useCallback } from "react";
-import type { Locale, Dictionary } from "./index";
+import { createContext, useContext } from "react";
+import type { Locale, Dictionary } from "./constants";
 
 interface LocaleContextValue {
   locale: Locale;
