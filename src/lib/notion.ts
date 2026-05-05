@@ -18,7 +18,8 @@ async function withRetry<T>(label: string, fn: () => Promise<T>, maxRetries = 10
       const e = err as { code?: string; status?: number; message?: string };
       const msg = String(e?.message ?? err);
       const isRateLimit = e?.code === "rate_limited" || e?.status === 429 || /429|rate_limited/.test(msg);
-      const isTransient = isRateLimit || e?.status === 502 || e?.status === 503 || /502|503/.test(msg);
+      const isTimeout = e?.code === "notionhq_client_request_timeout" || /timed out|timeout|ECONNRESET|ETIMEDOUT/i.test(msg);
+      const isTransient = isRateLimit || isTimeout || e?.status === 502 || e?.status === 503 || /502|503|504/.test(msg);
       if (!isTransient || i === maxRetries) throw err;
       // exponential backoff: 1s, 2s, 4s, 8s, 16s, 32s, 60s, 60s, 60s, 60s
       const delay = Math.min(1000 * Math.pow(2, i), 60000);
@@ -56,7 +57,9 @@ async function withLimit<T>(fn: () => Promise<T>): Promise<T> {
 }
 
 // notion-to-md 用のクライアント（ページ本文取得）
-const rawNotionClient = new Client({ auth: NOTION_API_KEY });
+// Notion 公式 SDK のデフォルトタイムアウトは 60s。Vercel ビルド時は遅延が大きく
+// 60s では足りないことがあるため 120s に拡張（withRetry でリトライもされる）。
+const rawNotionClient = new Client({ auth: NOTION_API_KEY, timeoutMs: 120000 });
 // notionClient.blocks.children.list はビルド時に 500+ 回呼ばれるため
 // リトライ・並列制限ラッパで包む（n2m.pageToMarkdown が内部でこれを呼ぶ）
 const originalBlocksList = rawNotionClient.blocks.children.list.bind(rawNotionClient.blocks.children);
