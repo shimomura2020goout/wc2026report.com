@@ -26,7 +26,11 @@
  *   3. commit → デプロイ
  */
 
-import "dotenv/config";
+import * as dotenv from "dotenv";
+import path from "node:path";
+// dotenv/config だと .env のみ。本プロジェクトは .env.local を使うため明示ロード。
+// override: true でシェル側の空文字列値を確実に上書き。
+dotenv.config({ path: path.resolve(process.cwd(), ".env.local"), override: true });
 import crypto from "node:crypto";
 import { Client } from "@notionhq/client";
 import Anthropic from "@anthropic-ai/sdk";

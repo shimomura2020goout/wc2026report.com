@@ -19,9 +19,12 @@
  *  - 既存の手動翻訳（既に値があるキー）は --force-key で明示しない限り上書きしない
  */
 
-import "dotenv/config";
+import * as dotenv from "dotenv";
 import { readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
+// dotenv/config だと .env のみ。本プロジェクトは .env.local を使うため明示ロード。
+// override: true でシェル側の空文字列値を確実に上書き。
+dotenv.config({ path: path.resolve(process.cwd(), ".env.local"), override: true });
 import Anthropic from "@anthropic-ai/sdk";
 
 type Locale = "ja" | "en" | "ko";
