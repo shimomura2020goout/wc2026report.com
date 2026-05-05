@@ -34,6 +34,13 @@ const TARGETS: Locale[] = ["en", "ko"];
 const notion = new Client({ auth: NOTION_API_KEY });
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const n2m = new NotionToMarkdown({ notionClient: notion as any });
+// __translation_* 子ページをハッシュ計算から除外（翻訳後に追加されてハッシュが変わるのを防ぐ）
+n2m.setCustomTransformer("child_page", async (block) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const b = block as any;
+  if (b.child_page?.title?.startsWith("__translation_")) return "";
+  return false;
+});
 
 const SYSTEM_PROMPT_BODY = `You are a professional translator for a FIFA World Cup 2026 fan site (Japanese → target language).
 Strict rules: preserve markdown structure exactly (headings, tables, lists, links, images). Never change numbers, rankings, dates, or scores. Use FIFA official romanization for Japanese player names. Keep brand names like "DAZN", "toto", "WC 2026" verbatim. Output ONLY translated markdown.`;
@@ -58,7 +65,7 @@ function readPlainTextProp(prop: any, type: "title" | "rich_text"): string {
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function readSelect(prop: any): string {
-  return prop?.select?.name ?? "";
+  return prop?.multi_select?.[0]?.name ?? prop?.select?.name ?? "";
 }
 
 interface PostMeta {
@@ -261,7 +268,7 @@ async function processOne(client: Anthropic, post: PostMeta, target: Locale): Pr
       properties: {
         [titleProp]: { rich_text: richText(translatedMeta.title) },
         [summaryProp]: { rich_text: richText(translatedMeta.summary) },
-        [statusProp]: { select: { name: "自動翻訳" } },
+        [statusProp]: { multi_select: [{ name: "自動翻訳" }] },
         [hashProp]: { rich_text: richText(currentHash) },
       },
     });

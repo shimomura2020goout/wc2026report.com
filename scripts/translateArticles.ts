@@ -74,6 +74,13 @@ function parseArgs(argv: string[]): CliOpts {
 const notion = new Client({ auth: NOTION_API_KEY });
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const n2m = new NotionToMarkdown({ notionClient: notion as any });
+// __translation_* 子ページはハッシュ計算から除外（翻訳後に追加されてハッシュが変わるのを防ぐ）
+n2m.setCustomTransformer("child_page", async (block) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const b = block as any;
+  if (b.child_page?.title?.startsWith("__translation_")) return "";
+  return false;
+});
 
 const SYSTEM_PROMPT_BODY = `You are a professional translator for a FIFA World Cup 2026 fan site (Japanese → target language).
 
@@ -120,7 +127,8 @@ function readPlainTextProp(prop: any, type: "title" | "rich_text"): string {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function readSelect(prop: any): string {
-  return prop?.select?.name ?? "";
+  // Notion DB上では multi_select として作成されている場合がある
+  return prop?.multi_select?.[0]?.name ?? prop?.select?.name ?? "";
 }
 
 interface PostMeta {
@@ -409,7 +417,7 @@ async function processPostForLocale(
     properties: {
       [titleProp]: { rich_text: richText(translatedMeta.title) },
       [summaryProp]: { rich_text: richText(translatedMeta.summary) },
-      [statusProp]: { select: { name: "自動翻訳" } },
+      [statusProp]: { multi_select: [{ name: "自動翻訳" }] },
       [hashProp]: { rich_text: richText(currentHash) },
     },
   });
