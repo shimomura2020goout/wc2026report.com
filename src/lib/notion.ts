@@ -6,8 +6,63 @@ import type { Locale } from "@/i18n/constants";
 const NOTION_API_KEY = process.env.NOTION_API_KEY || "";
 const DATABASE_ID = process.env.NOTION_DATABASE_ID || "";
 
+// 429 / 502 / 503 を指数バックオフで自動リトライ
+// ビルド時に 500+ ページが Notion API に殺到してレート制限に当たるため必須
+async function withRetry<T>(label: string, fn: () => Promise<T>, maxRetries = 10): Promise<T> {
+  let lastErr: unknown;
+  for (let i = 0; i <= maxRetries; i++) {
+    try {
+      return await fn();
+    } catch (err) {
+      lastErr = err;
+      const e = err as { code?: string; status?: number; message?: string };
+      const msg = String(e?.message ?? err);
+      const isRateLimit = e?.code === "rate_limited" || e?.status === 429 || /429|rate_limited/.test(msg);
+      const isTransient = isRateLimit || e?.status === 502 || e?.status === 503 || /502|503/.test(msg);
+      if (!isTransient || i === maxRetries) throw err;
+      // exponential backoff: 1s, 2s, 4s, 8s, 16s, 32s, 60s, 60s, 60s, 60s
+      const delay = Math.min(1000 * Math.pow(2, i), 60000);
+      console.warn(`[notion] retry ${i + 1}/${maxRetries} for ${label} after ${delay}ms`);
+      await new Promise((r) => setTimeout(r, delay));
+    }
+  }
+  throw lastErr;
+}
+
+// グローバル並列数 1 + 最低 350ms 間隔（≈ 2.85 req/s, Notion 公式上限 3 req/s 内）
+// 並列に投げると bursting 扱いになり長時間ロックされるため逐次化
+const MAX_CONCURRENT = 1;
+const MIN_INTERVAL_MS = 350;
+let activeRequests = 0;
+let lastRequestAt = 0;
+const queue: Array<() => void> = [];
+async function withLimit<T>(fn: () => Promise<T>): Promise<T> {
+  if (activeRequests >= MAX_CONCURRENT) {
+    await new Promise<void>((resolve) => queue.push(resolve));
+  }
+  activeRequests++;
+  try {
+    const elapsed = Date.now() - lastRequestAt;
+    if (elapsed < MIN_INTERVAL_MS) {
+      await new Promise((r) => setTimeout(r, MIN_INTERVAL_MS - elapsed));
+    }
+    lastRequestAt = Date.now();
+    return await fn();
+  } finally {
+    activeRequests--;
+    const next = queue.shift();
+    if (next) next();
+  }
+}
+
 // notion-to-md 用のクライアント（ページ本文取得）
-const notionClient = new Client({ auth: NOTION_API_KEY });
+const rawNotionClient = new Client({ auth: NOTION_API_KEY });
+// notionClient.blocks.children.list はビルド時に 500+ 回呼ばれるため
+// リトライ・並列制限ラッパで包む（n2m.pageToMarkdown が内部でこれを呼ぶ）
+const originalBlocksList = rawNotionClient.blocks.children.list.bind(rawNotionClient.blocks.children);
+rawNotionClient.blocks.children.list = ((args: Parameters<typeof originalBlocksList>[0]) =>
+  withLimit(() => withRetry(`blocks.children.list(${args.block_id})`, () => originalBlocksList(args)))) as typeof originalBlocksList;
+const notionClient = rawNotionClient;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const n2m = new NotionToMarkdown({ notionClient: notionClient as any });
 
@@ -83,22 +138,29 @@ async function queryDatabase(body: Record<string, unknown>): Promise<any> {
     return { results: [] };
   }
 
-  const res = await fetch(`https://api.notion.com/v1/databases/${DATABASE_ID}/query`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${NOTION_API_KEY}`,
-      "Notion-Version": "2022-06-28",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body),
-    next: { revalidate: 300 }, // ISR: 5分キャッシュ
-  });
+  return withLimit(() =>
+    withRetry("queryDatabase", async () => {
+      const res = await fetch(`https://api.notion.com/v1/databases/${DATABASE_ID}/query`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${NOTION_API_KEY}`,
+          "Notion-Version": "2022-06-28",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+        next: { revalidate: 300 }, // ISR: 5分キャッシュ
+      });
 
-  if (!res.ok) {
-    throw new Error(`Notion API error: ${res.status} ${await res.text()}`);
-  }
+      if (!res.ok) {
+        const text = await res.text();
+        const err = new Error(`Notion API error: ${res.status} ${text}`) as Error & { status?: number };
+        err.status = res.status;
+        throw err;
+      }
 
-  return res.json();
+      return res.json();
+    })
+  );
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -221,33 +283,47 @@ async function findTranslationChildPage(parentPageId: string, locale: Locale): P
   return null;
 }
 
+// ビルド時の重複DBクエリを排除する process 内キャッシュ
+// 全 locale 共通のページオブジェクト配列を一度だけ取得し、再利用する
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let _allPagesPromise: Promise<any[]> | null = null;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function _fetchAllPagesOnce(): Promise<any[]> {
+  if (_allPagesPromise) return _allPagesPromise;
+  _allPagesPromise = (async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const out: any[] = [];
+    let cursor: string | undefined;
+    do {
+      const data = await queryDatabase({
+        filter: { property: "ステータス", select: { equals: "公開" } },
+        sorts: [{ property: "公開日", direction: "descending" }],
+        ...(cursor ? { start_cursor: cursor } : {}),
+      });
+      out.push(...data.results);
+      cursor = data.has_more ? data.next_cursor : undefined;
+    } while (cursor);
+    return out;
+  })();
+  return _allPagesPromise;
+}
+
 // 公開記事一覧を取得（未キャッシュ）
 async function _getPublishedPosts(locale: Locale = "ja"): Promise<BlogPost[]> {
-  const data = await queryDatabase({
-    filter: {
-      property: "ステータス",
-      select: { equals: "公開" },
-    },
-    sorts: [{ property: "公開日", direction: "descending" }],
-  });
-
-  return data.results.map((p: unknown) => pageToPost(p, locale));
+  const pages = await _fetchAllPagesOnce();
+  return pages.map((p: unknown) => pageToPost(p, locale));
 }
 
 // 記事詳細（本文含む）を取得（未キャッシュ）
 async function _getPostBySlug(slug: string, locale: Locale = "ja"): Promise<BlogPostWithContent | null> {
-  const data = await queryDatabase({
-    filter: {
-      and: [
-        { property: "スラッグ", rich_text: { equals: slug } },
-        { property: "ステータス", select: { equals: "公開" } },
-      ],
-    },
+  const pages = await _fetchAllPagesOnce();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const page = pages.find((p: any) => {
+    const sl = extractProperty(p, "スラッグ", "rich_text") as string;
+    return sl === slug;
   });
+  if (!page) return null;
 
-  if (data.results.length === 0) return null;
-
-  const page = data.results[0];
   const post = pageToPost(page, locale);
   const status = readTranslationStatus(page, locale);
 
