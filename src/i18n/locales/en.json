@@ -737,6 +737,8 @@
   "about.privacyArticle10Intro": "For inquiries regarding the handling of personal information, please contact us at the address below.",
   "about.lastUpdatedDate": "Last updated: {date}",
   "news.notFound": "Article not found",
+  "news.transientTitle": "Temporarily unavailable",
+  "news.transientMessage": "We couldn't load this article right now due to high traffic. Please try again in a few minutes.",
   "news.breadcrumbTop": "Home",
   "news.breadcrumbNews": "News",
   "news.categoryTeamAnalysis": "Team Analysis"

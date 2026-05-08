@@ -22,7 +22,13 @@ export default async function OGImage({
   const { slug, locale } = await params;
   // OG image は params.locale を直接使う（middleware ヘッダーは OG ルートに通らない場合があるため）
   const validLocale = (["ja", "en", "ko"] as const).includes(locale as never) ? (locale as "ja" | "en" | "ko") : "ja";
-  const post = await getPostBySlug(slug, validLocale);
+  // Notion 一時障害時はフォールバック画像（タイトル無し）を返し、5xx を回避する
+  let post: Awaited<ReturnType<typeof getPostBySlug>> = null;
+  try {
+    post = await getPostBySlug(slug, validLocale);
+  } catch {
+    post = null;
+  }
 
   const title = post?.title || "記事が見つかりません";
   const category = post?.category || "";

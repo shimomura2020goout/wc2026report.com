@@ -452,6 +452,8 @@
   "news.readArticle": "記事を読む",
   "news.backToNews": "ニュース一覧に戻る",
   "news.notFound": "記事が見つかりません",
+  "news.transientTitle": "一時的に読み込めません",
+  "news.transientMessage": "ただいまアクセスが集中しているため、記事を読み込めませんでした。少し時間をおいて再度お試しください。",
   "news.breadcrumbTop": "トップ",
   "news.breadcrumbNews": "ニュース",
   "news.categoryPreview": "試合プレビュー",
