@@ -93,7 +93,7 @@ export default function NewsFilteredList({ posts, categoryColors, labels }: News
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={labels.searchPlaceholder}
             aria-label={labels.searchPlaceholder}
-            className="w-full text-sm pl-9 pr-9 py-2 rounded-full border border-gray-200 bg-white text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-gray-300"
+            className="w-full text-base sm:text-sm pl-9 pr-9 py-2 rounded-full border border-gray-200 bg-white text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-gray-300"
           />
           {hasSearchQuery && (
             <button

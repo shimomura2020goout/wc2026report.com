@@ -4,6 +4,29 @@
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
+/* ルート遷移プログレスバー（next-nprogress-bar + nprogress-v2 のCSSセレクタ不一致回避）
+   ライブラリ同梱CSSは `#nprogress .bar` を指定するが、生成要素は class="nprogress" のためclass選択子で再定義 */
+.nprogress { pointer-events: none; }
+.nprogress .bar {
+  background: #fbbf24;
+  position: fixed;
+  z-index: 99999;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+}
+.nprogress .peg {
+  display: block;
+  position: absolute;
+  right: 0;
+  width: 100px;
+  height: 100%;
+  box-shadow: 0 0 10px #fbbf24, 0 0 5px #fbbf24;
+  opacity: 1;
+  transform: rotate(3deg) translate(0, -4px);
+}
+
 /* Material Symbols Outlined - ローカルフォント */
 @font-face {
   font-family: "Material Symbols Outlined";
