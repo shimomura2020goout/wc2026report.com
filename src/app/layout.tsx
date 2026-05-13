@@ -3,6 +3,7 @@ import { Geist } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import RouteProgressBar from "@/components/RouteProgressBar";
 import LatestNewsBanner from "@/components/LatestNewsBanner";
 import LatestNewsBannerWrapper from "@/components/LatestNewsBannerWrapper";
 import InstallPrompt from "@/components/InstallPrompt";
@@ -119,6 +120,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <WebsiteJsonLd />
         <LocaleProvider locale={locale} dictionary={dictionary}>
           <PreferencesProvider>
+            <RouteProgressBar />
             <Header />
             <LatestNewsBannerWrapper>
               <LatestNewsBanner />

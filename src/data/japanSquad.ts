@@ -191,6 +191,7 @@ export const playerSquad: SquadPlayer[] = [
     position: "MF",
     club: "モナコ",
     league: "リーグ・アン（仏）",
+    columnSlug: "minamino-takumi-japan-column-2026",
     badge: "電撃選出",
     comment: "31歳。昨年12月から離脱中だったが5月にボール使った練習を再開し復帰へ前進。三笘の長期離脱（全治2カ月）を受け左シャドーの即戦力として電撃選出",
   },

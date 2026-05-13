@@ -1982,4 +1982,5 @@ export const playerColumnSlugs: Record<string, string> = {
   "瀬古歩夢": "seko-ayumu-japan-column-2026",
   "大迫敬介": "osako-keisuke-japan-column-2026",
   "早川友基": "hayakawa-tomoki-japan-column-2026",
+  "南野拓実": "minamino-takumi-japan-column-2026",
 };
