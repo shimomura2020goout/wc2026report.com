@@ -61,6 +61,9 @@ export default async function NewsPage() {
           all: t("news.filterAll") || "すべて",
           readArticle: t("news.readArticle"),
           noArticles: t("news.noArticles"),
+          searchPlaceholder: t("news.searchPlaceholder") || "タイトル・説明文で記事を検索",
+          searchNoResults: t("news.searchNoResults") || "検索条件に一致する記事は見つかりませんでした",
+          searchClear: t("news.searchClear") || "検索をクリア",
         }}
       />
     </div>

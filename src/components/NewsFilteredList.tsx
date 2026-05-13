@@ -24,6 +24,9 @@ interface NewsFilteredListProps {
     all: string;
     readArticle: string;
     noArticles: string;
+    searchPlaceholder: string;
+    searchNoResults: string;
+    searchClear: string;
   };
 }
 
@@ -32,6 +35,7 @@ const FAVORITE_TAB_ID = "__favorite__";
 export default function NewsFilteredList({ posts, categoryColors, labels }: NewsFilteredListProps) {
   const { prefs, hydrated } = usePreferences();
   const [activeTab, setActiveTab] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const favoriteCountries = prefs.favoriteCountries;
   const hasFavorites = hydrated && favoriteCountries.length > 0;
@@ -49,20 +53,59 @@ export default function NewsFilteredList({ posts, categoryColors, labels }: News
     return cats.sort((a, b) => order.indexOf(a) - order.indexOf(b));
   }, [posts, categoryColors]);
 
+  const normalizedQuery = searchQuery.trim().toLocaleLowerCase();
+  const hasSearchQuery = normalizedQuery.length > 0;
+
   const filteredPosts = useMemo(() => {
+    let result = posts;
     if (activeTab === FAVORITE_TAB_ID) {
-      return posts.filter((p) =>
+      result = result.filter((p) =>
         (p.relatedTeams || []).some((code) => favoriteCountries.includes(code))
       );
+    } else if (activeTab) {
+      result = result.filter((p) => p.category === activeTab);
     }
-    if (!activeTab) return posts;
-    return posts.filter((p) => p.category === activeTab);
-  }, [posts, activeTab, favoriteCountries]);
+    if (hasSearchQuery) {
+      result = result.filter((p) => {
+        const title = p.title?.toLocaleLowerCase() ?? "";
+        const summary = p.summary?.toLocaleLowerCase() ?? "";
+        return title.includes(normalizedQuery) || summary.includes(normalizedQuery);
+      });
+    }
+    return result;
+  }, [posts, activeTab, favoriteCountries, hasSearchQuery, normalizedQuery]);
 
   return (
     <>
-      {/* ── カテゴリフィルタバー（スティッキー） ── */}
-      <div className="sticky top-16 z-30 bg-white/95 backdrop-blur-sm border-b border-gray-100 -mx-4 px-4 py-3">
+      {/* ── 検索 & カテゴリフィルタ（スティッキー） ── */}
+      <div className="sticky top-16 z-30 bg-white/95 backdrop-blur-sm border-b border-gray-100 -mx-4 px-4 py-3 space-y-3">
+        {/* 検索バー */}
+        <div className="relative">
+          <Icon
+            name="search"
+            size={18}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+          />
+          <input
+            type="search"
+            inputMode="search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={labels.searchPlaceholder}
+            aria-label={labels.searchPlaceholder}
+            className="w-full text-sm pl-9 pr-9 py-2 rounded-full border border-gray-200 bg-white text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-gray-300"
+          />
+          {hasSearchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery("")}
+              aria-label={labels.searchClear}
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+            >
+              <Icon name="close" size={16} />
+            </button>
+          )}
+        </div>
         <div className="flex gap-2 overflow-x-auto scrollbar-hide">
           {hasFavorites && (
             <button
@@ -113,11 +156,13 @@ export default function NewsFilteredList({ posts, categoryColors, labels }: News
       {/* ── 記事リスト ── */}
       {filteredPosts.length === 0 ? (
         <div className="text-center py-16 text-gray-400">
-          <Icon name="edit_note" size={48} className="mb-4" />
+          <Icon name={hasSearchQuery ? "search_off" : "edit_note"} size={48} className="mb-4" />
           <p>
-            {activeTab === FAVORITE_TAB_ID
-              ? "応援国に関連する記事はまだありません"
-              : labels.noArticles}
+            {hasSearchQuery
+              ? labels.searchNoResults
+              : activeTab === FAVORITE_TAB_ID
+                ? "応援国に関連する記事はまだありません"
+                : labels.noArticles}
           </p>
         </div>
       ) : (
