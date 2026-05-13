@@ -66,8 +66,10 @@ const originalBlocksList = rawNotionClient.blocks.children.list.bind(rawNotionCl
 rawNotionClient.blocks.children.list = ((args: Parameters<typeof originalBlocksList>[0]) =>
   withLimit(() => withRetry(`blocks.children.list(${args.block_id})`, () => originalBlocksList(args)))) as typeof originalBlocksList;
 const notionClient = rawNotionClient;
+// `parseChildPages: false` で `__translation_en` / `__translation_ko` 子ページの本文が
+// 親記事に連結されないようにする（無効化しないと /ja の記事末尾に英訳・韓国語訳が連結表示される）
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const n2m = new NotionToMarkdown({ notionClient: notionClient as any });
+const n2m = new NotionToMarkdown({ notionClient: notionClient as any, config: { parseChildPages: false } });
 
 // テーブルブロックのカスタムトランスフォーマー
 n2m.setCustomTransformer("table", async (block) => {

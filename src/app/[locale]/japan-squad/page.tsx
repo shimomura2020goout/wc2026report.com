@@ -216,7 +216,7 @@ export default async function JapanSquadPage() {
           <section className="mb-8">
             <h2 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
               <Icon name="warning" size={20} className="text-orange-500" />
-              本紙予想落選（ボーダーラインから外れると予想する5名）
+              本紙予想落選（ボーダーラインから外れると予想する{predictedExclusions.length}名）
             </h2>
             <p className="text-xs text-gray-500 mb-4">
               長年の代表主軸でありつつも、4月時点での代表離れや若手台頭を理由に外れると本紙が予想する選手。森保監督の最終決断は5月15日に下されます。
