@@ -2,7 +2,7 @@
 // 日本代表 W杯2026 メンバー（26名）
 // ========================================
 // メンバー発表会見：2026年5月15日（金）14:00 JFAハウス
-// 現在は本紙予想（2026-04-25時点）。発表後は phase: "official" に切り替え、
+// 現在は本紙予想（2026-05-13時点 最新版）。発表後は phase: "official" に切り替え、
 // 公式26名で playerSquad を更新する。
 //
 // データソース：
@@ -178,21 +178,21 @@ export const playerSquad: SquadPlayer[] = [
     comment: "ボランチのポリバレント。2025年7月にフェイエノールト→ザンクト・パウリへ移籍",
   },
   {
-    name: "大橋祐紀",
+    name: "遠藤航",
     position: "MF",
-    club: "ブラックバーン",
-    league: "チャンピオンシップ（英2部）",
-    columnSlug: "ohashi-yuki-japan-column-2026",
-    badge: "電撃選出",
-    comment: "英チャンピオンシップで得点を重ねる左WG／セカンドストライカー",
+    club: "リヴァプール",
+    league: "プレミアリーグ（英）",
+    columnSlug: "endo-wataru-japan-column-2026",
+    badge: "滑り込み選出",
+    comment: "33歳キャプテン、土壇場で復帰。リヴァプールでローテーション起用も、佐野・守田・田中の経験不足を補う精神的支柱として5月13日時点で選出ラインへ滑り込む",
   },
   {
-    name: "三笘薫",
+    name: "南野拓実",
     position: "MF",
-    club: "ブライトン",
-    league: "プレミアリーグ（英）",
-    columnSlug: "mitoma-kaoru-column-2026-04-20",
-    comment: "左WG／シャドー、攻撃の最大の武器（イングランド戦決勝弾）",
+    club: "モナコ",
+    league: "リーグ・アン（仏）",
+    badge: "電撃選出",
+    comment: "31歳。昨年12月から離脱中だったが5月にボール使った練習を再開し復帰へ前進。三笘の長期離脱（全治2カ月）を受け左シャドーの即戦力として電撃選出",
   },
   {
     name: "久保建英",
@@ -260,14 +260,14 @@ export const playerSquad: SquadPlayer[] = [
  */
 export const predictedExclusions: { name: string; club: string; reason: string }[] = [
   {
-    name: "遠藤航",
-    club: "リヴァプール（英）",
-    reason: "33歳。リヴァプールで出場機会激減、4月遠征メンバー外。佐野海舟・守田・田中碧が中盤の軸に",
+    name: "三笘薫",
+    club: "ブライトン（英）",
+    reason: "5月9日のウルブス戦で左足を負傷し全治2カ月との診断。W杯GL初戦（6月15日）までの復帰は絶望的と判断され、森保監督が苦渋の非選出を決断する見込み",
   },
   {
-    name: "南野拓実",
-    club: "モナコ（仏）",
-    reason: "2025-26で出場時間激減。中村敬斗・堂安律が左右シャドーの序列を上げて押し出される",
+    name: "大橋祐紀",
+    club: "ブラックバーン（英2部）",
+    reason: "三笘の代役として一時候補に挙がるも、遠藤航の滑り込み選出と南野拓実の電撃復帰により26名の枠から押し出される",
   },
   {
     name: "橋岡大樹",
@@ -282,7 +282,7 @@ export const predictedExclusions: { name: string; club: string; reason: string }
   {
     name: "旗手怜央",
     club: "セルティック",
-    reason: "大橋祐紀の電撃選出により左サイド攻撃要員枠から押し出される",
+    reason: "中盤・サイドのユーティリティだが、遠藤航と南野拓実の同時復活で攻撃ユニットの枠から押し出される",
   },
 ];
 
