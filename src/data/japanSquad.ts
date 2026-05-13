@@ -88,10 +88,10 @@ export const playerSquad: SquadPlayer[] = [
   {
     name: "谷口彰悟",
     position: "DF",
-    club: "アルラヤン",
-    league: "QSL（カタール）",
+    club: "シント＝トロイデンVV",
+    league: "ジュピラー・プロ・リーグ（ベルギー）",
     columnSlug: "taniguchi-shogo-japan-column-2026",
-    comment: "ベテランの経験でCB陣を補完",
+    comment: "34歳。2024/7 にアル・ラーヤン→STVV、25/26シーズン新キャプテン就任。ベテランの経験でCB陣を補完",
   },
   {
     name: "菅原由勢",
@@ -222,9 +222,9 @@ export const playerSquad: SquadPlayer[] = [
     name: "中村敬斗",
     position: "MF",
     club: "スタッド・ランス",
-    league: "リーグ・アン（仏）",
+    league: "リーグ・ドゥ（仏2部）",
     columnSlug: "player-story-keito-nakamura",
-    comment: "左WG、シャドーでの躍動",
+    comment: "左WG、シャドーでの躍動。ランスは24/25で2部降格し25/26はリーグ・ドゥで戦う",
   },
 
   // ─── FW 4 ───
