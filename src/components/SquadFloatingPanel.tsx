@@ -67,7 +67,7 @@ export default function SquadFloatingPanel() {
         type="button"
         onClick={() => setOpen(true)}
         aria-label="日本代表26名を見る"
-        className={`fixed bottom-4 right-4 z-40 group flex items-center gap-2 bg-gradient-to-r from-[#bc002d] to-[#0a1e5c] text-white px-4 py-3 rounded-full shadow-2xl hover:scale-105 transition-transform ${
+        className={`fixed bottom-20 right-4 sm:bottom-24 sm:right-6 z-[55] group flex items-center gap-2 bg-gradient-to-r from-[#bc002d] to-[#0a1e5c] text-white px-4 py-3 rounded-full shadow-2xl hover:scale-105 transition-transform ${
           open ? "opacity-0 pointer-events-none" : "opacity-100"
         }`}
         style={{ paddingRight: "1.25rem" }}
@@ -84,7 +84,7 @@ export default function SquadFloatingPanel() {
 
       {/* スライドインパネル */}
       <div
-        className={`fixed inset-0 z-50 ${open ? "" : "pointer-events-none"}`}
+        className={`fixed inset-0 z-[60] ${open ? "" : "pointer-events-none"}`}
         aria-hidden={!open}
       >
         {/* オーバーレイ */}
