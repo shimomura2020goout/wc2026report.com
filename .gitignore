@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# 5/15発表当日に生成されるローカル入力・出力データ
+scripts/squad-input.json
+scripts/output/

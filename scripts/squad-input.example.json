@@ -1,0 +1,66 @@
+{
+  "$schema": "./squad-input.schema.json",
+  "_comment": "5/15 14:00の発表内容に合わせて name / club / league / comment を埋め、surprises（任意）と coachQuotes（任意）を追記。あとはコマンド一発で記事公開 → japanSquad.ts 更新 → commit&push まで自走します。",
+
+  "announcement": {
+    "date": "2026-05-15",
+    "weekday": "金",
+    "time": "14:00",
+    "venue": "JFAハウス（東京都文京区サッカー通り）",
+    "presenter": "森保一 日本代表監督"
+  },
+
+  "squad": {
+    "GK": [
+      { "name": "", "club": "", "league": "", "comment": "" },
+      { "name": "", "club": "", "league": "", "comment": "" },
+      { "name": "", "club": "", "league": "", "comment": "" }
+    ],
+    "DF": [
+      { "name": "", "club": "", "league": "", "comment": "" },
+      { "name": "", "club": "", "league": "", "comment": "" },
+      { "name": "", "club": "", "league": "", "comment": "" },
+      { "name": "", "club": "", "league": "", "comment": "" },
+      { "name": "", "club": "", "league": "", "comment": "" },
+      { "name": "", "club": "", "league": "", "comment": "" },
+      { "name": "", "club": "", "league": "", "comment": "" },
+      { "name": "", "club": "", "league": "", "comment": "" },
+      { "name": "", "club": "", "league": "", "comment": "" }
+    ],
+    "MF": [
+      { "name": "", "club": "", "league": "", "comment": "" },
+      { "name": "", "club": "", "league": "", "comment": "" },
+      { "name": "", "club": "", "league": "", "comment": "" },
+      { "name": "", "club": "", "league": "", "comment": "" },
+      { "name": "", "club": "", "league": "", "comment": "" },
+      { "name": "", "club": "", "league": "", "comment": "" },
+      { "name": "", "club": "", "league": "", "comment": "" },
+      { "name": "", "club": "", "league": "", "comment": "" },
+      { "name": "", "club": "", "league": "", "comment": "" },
+      { "name": "", "club": "", "league": "", "comment": "" },
+      { "name": "", "club": "", "league": "", "comment": "" }
+    ],
+    "FW": [
+      { "name": "", "club": "", "league": "", "comment": "" },
+      { "name": "", "club": "", "league": "", "comment": "" },
+      { "name": "", "club": "", "league": "", "comment": "" }
+    ]
+  },
+
+  "surprises": {
+    "selectedIn": [
+      { "name": "", "club": "", "reason": "" }
+    ],
+    "selectedOut": [
+      { "name": "", "club": "", "reason": "" }
+    ]
+  },
+
+  "coachQuotes": [
+    { "topic": "ベスト8突破について", "quote": "" },
+    { "topic": "グループF（オランダ・チュニジア・スウェーデン）対策", "quote": "" },
+    { "topic": "サプライズ選出について", "quote": "" }
+  ],
+
+  "eyecatchUrl": ""
+}

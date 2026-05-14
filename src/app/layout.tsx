@@ -6,6 +6,8 @@ import Footer from "@/components/Footer";
 import RouteProgressBar from "@/components/RouteProgressBar";
 import LatestNewsBanner from "@/components/LatestNewsBanner";
 import LatestNewsBannerWrapper from "@/components/LatestNewsBannerWrapper";
+import SquadCelebration from "@/components/SquadCelebration";
+import SquadFloatingPanel from "@/components/SquadFloatingPanel";
 import InstallPrompt from "@/components/InstallPrompt";
 import LocaleProvider from "@/components/LocaleProvider";
 import { WebsiteJsonLd } from "@/components/JsonLd";
@@ -131,6 +133,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <InstallPrompt />
             <OnboardingModal />
             <VisitBeacon />
+            <SquadCelebration />
+            <SquadFloatingPanel />
           </PreferencesProvider>
         </LocaleProvider>
         <Analytics />

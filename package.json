@@ -11,7 +11,9 @@
     "sync:teams": "tsx scripts/syncTeams.ts",
     "dict:sync": "tsx scripts/translateDict.ts",
     "translate:articles": "tsx scripts/translateArticles.ts",
-    "translate:teams": "tsx scripts/translateTeamDetails.ts"
+    "translate:teams": "tsx scripts/translateTeamDetails.ts",
+    "squad:article": "tsx scripts/buildSquadArticle.ts",
+    "squad:update": "tsx scripts/updateOfficialSquad.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
