@@ -47,9 +47,25 @@ function sendGA4Event(action: string, promoId: string, label: string) {
 }
 
 // ========================================
-// DAZN・WOWOW・LINE を交互に表示
+// 確率分布での重み付き抽選
+// showProbability は「割合（=重み）」として扱う。
+// 楽天toto:5割 / ドコモスポーツくじ:3割 / WOWOW:1割 / DAZN for BUSINESS:1割。
+// DMM × DAZNホーダイ は当面フッタ非表示なので含めない。
 // ========================================
 const fallbackPromos: PromoFromNotion[] = [
+  {
+    id: "toto-rakuten",
+    title: "楽天totoでW杯を予想",
+    label: "W杯を予想",
+    description: "楽天IDでそのまま購入。toto・BIG・WINNERで試合結果を予想しよう",
+    ctaText: "楽天totoを見る",
+    ctaUrl: "https://hb.afl.rakuten.co.jp/hsc/27bd08bb.b74c49ca.27b9c67d.af1b1692/?link_type=text&ut=eyJwYWdlIjoic2hvcCIsInR5cGUiOiJ0ZXh0IiwiY29sIjoxLCJjYXQiOjEsImJhbiI6Im5hbWUiLCJhbXAiOmZhbHNlfQ%3D%3D",
+    trackingPixel: null,
+    bgColor: "red",
+    showProbability: 0.5,
+    cooldownHours: 48,
+    sortOrder: 1,
+  },
   {
     id: "toto-docomo",
     title: "ドコモスポーツくじ",
@@ -59,20 +75,7 @@ const fallbackPromos: PromoFromNotion[] = [
     ctaUrl: "https://tr.affiliate-sp.docomo.ne.jp/cl/d0000000359/4739/3",
     trackingPixel: null,
     bgColor: "purple",
-    showProbability: 0.5,
-    cooldownHours: 48,
-    sortOrder: 1,
-  },
-  {
-    id: "dazn-business",
-    title: "DAZN for BUSINESS",
-    label: "法人向け",
-    description: "お店でW杯全試合を上映！飲食店・スポーツバー向け",
-    ctaText: "詳細を見る",
-    ctaUrl: "https://h.accesstrade.net/sp/cc?rk=0100ph9q00opav",
-    trackingPixel: "https://h.accesstrade.net/sp/rr?rk=0100ph9q00opav",
-    bgColor: "dark",
-    showProbability: 0.5,
+    showProbability: 0.3,
     cooldownHours: 48,
     sortOrder: 2,
   },
@@ -85,20 +88,20 @@ const fallbackPromos: PromoFromNotion[] = [
     ctaUrl: "https://h.accesstrade.net/sp/cc?rk=0100pjmj00opav",
     trackingPixel: "https://h.accesstrade.net/sp/rr?rk=0100pjmj00opav",
     bgColor: "blue",
-    showProbability: 0.3,
+    showProbability: 0.1,
     cooldownHours: 48,
     sortOrder: 3,
   },
   {
-    id: "line-friend",
-    title: "LINE で最新情報を受け取る",
-    label: "無料",
-    description: "試合速報・toto予想・代表ニュースをLINEでお届け",
-    ctaText: "友だち追加",
-    ctaUrl: "https://line.me/R/ti/p/@517lriub",
-    trackingPixel: null,
-    bgColor: "green",
-    showProbability: 0.5,
+    id: "dazn-business",
+    title: "DAZN for BUSINESS",
+    label: "法人向け",
+    description: "お店でW杯全試合を上映！飲食店・スポーツバー向け",
+    ctaText: "詳細を見る",
+    ctaUrl: "https://h.accesstrade.net/sp/cc?rk=0100ph9q00opav",
+    trackingPixel: "https://h.accesstrade.net/sp/rr?rk=0100ph9q00opav",
+    bgColor: "dark",
+    showProbability: 0.1,
     cooldownHours: 48,
     sortOrder: 4,
   },
@@ -128,8 +131,32 @@ function setDismissed(promoId: string): void {
 }
 
 // ========================================
+// 確率に応じた重み付き選択
+// 各 promo の showProbability を重みとして扱い、合計で正規化して抽選する
+// ========================================
+function pickWeighted(promos: PromoFromNotion[]): PromoFromNotion | null {
+  if (promos.length === 0) return null;
+  const totalWeight = promos.reduce((s, p) => s + Math.max(0, p.showProbability), 0);
+  if (totalWeight <= 0) {
+    // 全て0なら順序通り最初の一つを返す
+    return promos[0];
+  }
+  const r = Math.random() * totalWeight;
+  let acc = 0;
+  for (const p of promos) {
+    acc += Math.max(0, p.showProbability);
+    if (r < acc) return p;
+  }
+  return promos[promos.length - 1];
+}
+
+// ========================================
 // メインコンポーネント
 // ========================================
+// 遷移直後にバナーが下部に張り付いて表示されるのを避けるため、
+// 一定スクロール（=ユーザーがページを読み始めた合図）後に初めて出す
+const SCROLL_THRESHOLD_PX = 600;
+
 export default function StickyPromoBanner() {
   const [promo, setPromo] = useState<PromoFromNotion | null>(null);
   const [visible, setVisible] = useState(false);
@@ -161,27 +188,37 @@ export default function StickyPromoBanner() {
       );
       if (candidates.length === 0) return;
 
-      // 交互表示: ページビュー数に基づいて DAZN → WOWOW → LINE を切り替え
-      let viewCount = 0;
-      try {
-        viewCount = parseInt(localStorage.getItem("promo_view_count") || "0", 10);
-        localStorage.setItem("promo_view_count", (viewCount + 1).toString());
-      } catch { /* localStorage unavailable */ }
-      const selected = candidates[viewCount % candidates.length];
+      // showProbability を重みとした確率分布で選出
+      const selected = pickWeighted(candidates);
+      if (!selected) return;
       setPromo(selected);
+
+      // ページビュー数も従来通り保持（A/Bや他機能で利用可）
+      try {
+        const vc = parseInt(localStorage.getItem("promo_view_count") || "0", 10);
+        localStorage.setItem("promo_view_count", (vc + 1).toString());
+      } catch { /* localStorage unavailable */ }
 
       // GA4: バナー表示イベント
       sendGA4Event("promo_view", selected.id, selected.title);
-
-      // 2秒後にスライドイン
-      setTimeout(() => {
-        if (!cancelled) setVisible(true);
-      }, 2000);
     }
 
     loadAndSelect();
     return () => { cancelled = true; };
   }, []);
+
+  // スクロールで一定量読み進めたら初めてスライドインさせる
+  useEffect(() => {
+    if (!promo || visible) return;
+    const checkScroll = () => {
+      if (window.scrollY >= SCROLL_THRESHOLD_PX) {
+        setVisible(true);
+      }
+    };
+    checkScroll();
+    window.addEventListener("scroll", checkScroll, { passive: true });
+    return () => window.removeEventListener("scroll", checkScroll);
+  }, [promo, visible]);
 
   const handleClick = () => {
     if (!promo) return;

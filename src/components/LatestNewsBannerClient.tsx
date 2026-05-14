@@ -1,32 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
 import Icon from "./Icon";
 import type { NewsBannerItem } from "./LatestNewsBanner";
 
 export default function LatestNewsBannerClient({ posts }: { posts: NewsBannerItem[] }) {
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 80);
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   const now = Date.now();
 
   return (
-    <div
-      className={`z-40 text-white sticky top-16 transition-colors duration-300 ${
-        isScrolled
-          ? "bg-[#1a1a2e]/90 backdrop-blur-sm border-b border-white/5"
-          : "bg-gradient-to-r from-blue-600 to-indigo-700"
-      }`}
-    >
+    <div className="z-40 text-white bg-gradient-to-r from-blue-600 to-indigo-700">
       <div className="max-w-7xl mx-auto px-4">
         {posts.map((post, i) => {
           const isRecent = post.publishedAt
@@ -42,9 +24,7 @@ export default function LatestNewsBannerClient({ posts }: { posts: NewsBannerIte
               }`}
             >
               {isRecent && (
-                <span className={`text-white text-[10px] font-bold px-1.5 py-0.5 rounded-sm tracking-wider shrink-0 ${
-                  isScrolled ? "bg-red-500/70" : "bg-red-500 animate-pulse"
-                }`}>
+                <span className="text-white text-[10px] font-bold px-1.5 py-0.5 rounded-sm tracking-wider shrink-0 bg-red-500 animate-pulse">
                   NEW
                 </span>
               )}
