@@ -45,13 +45,6 @@ export interface SquadInput {
   eyecatchUrl?: string;
 }
 
-const EXPECTED_COUNTS: Record<SquadPosition, number> = {
-  GK: 3,
-  DF: 9,
-  MF: 11,
-  FW: 3,
-};
-
 export function validateSquadInput(input: SquadInput): string[] {
   const errors: string[] = [];
 
@@ -61,10 +54,8 @@ export function validateSquadInput(input: SquadInput): string[] {
     const list = input.squad?.[pos] ?? [];
     const filled = list.filter((p) => p.name.trim() !== "");
     total += filled.length;
-    if (filled.length !== EXPECTED_COUNTS[pos]) {
-      errors.push(
-        `${pos}: ${filled.length}名（期待値 ${EXPECTED_COUNTS[pos]}名）`,
-      );
+    if (filled.length === 0) {
+      errors.push(`${pos}: 0名（最低1名は必要）`);
     }
     for (const [i, p] of list.entries()) {
       if (!p.name.trim()) continue;

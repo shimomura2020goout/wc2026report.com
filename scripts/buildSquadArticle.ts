@@ -177,7 +177,16 @@ function buildNotionPayload(input: SquadInput, content: string) {
           出典名: "JFA公式 / Sports Nippon / スポーツ報知 / NHK / 日刊スポーツ",
           出典URL: "https://www.jfa.jp/samuraiblue/",
           ...(input.eyecatchUrl ? { アイキャッチURL: input.eyecatchUrl } : {}),
-          概要: `2026年${input.announcement.date.slice(5).replace("-", "月")}日（${input.announcement.weekday}）${input.announcement.time}、日本サッカー協会がW杯2026最終登録メンバー26名を正式発表。森保ジャパンが選んだGK3・DF9・MF11・FW3名の全顔ぶれと、サプライズ選出・落選を速報。`,
+          概要: (() => {
+            const c = {
+              GK: input.squad.GK.filter((p) => p.name).length,
+              DF: input.squad.DF.filter((p) => p.name).length,
+              MF: input.squad.MF.filter((p) => p.name).length,
+              FW: input.squad.FW.filter((p) => p.name).length,
+            };
+            const total = c.GK + c.DF + c.MF + c.FW;
+            return `${input.announcement.date}（${input.announcement.weekday}）${input.announcement.time}、日本サッカー協会がW杯2026最終登録メンバー${total}名を正式発表。森保ジャパンが選んだGK${c.GK}・DF${c.DF}・MF${c.MF}・FW${c.FW}名の全顔ぶれと、サプライズ選出・落選を速報。`;
+          })(),
         },
         content,
       },
