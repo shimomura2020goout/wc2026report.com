@@ -309,7 +309,7 @@ function EventDetail({
                   )}
 
                   {/* カレンダー追加ボタン */}
-                  <div className="flex items-center gap-2 mt-2 pt-2 border-t border-gray-100">
+                  <div className="flex items-center gap-2 mt-2 pt-2 border-t border-gray-100 flex-wrap">
                     <a
                       href={buildGoogleCalendarUrl(evt)}
                       target="_blank"
@@ -328,6 +328,18 @@ function EventDetail({
                       <Icon name="download" size={12} />
                       .ics
                     </button>
+                    {evt.cta && (
+                      <a
+                        href={evt.cta.url}
+                        target="_blank"
+                        rel="nofollow sponsored noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-[11px] text-pink-800 hover:text-pink-900 bg-gradient-to-r from-pink-100 to-rose-100 hover:from-pink-200 hover:to-rose-200 px-2 py-1 rounded transition-colors font-semibold"
+                        title={evt.cta.label}
+                      >
+                        <Icon name="shopping_cart" size={12} />
+                        {evt.cta.label}
+                      </a>
+                    )}
                   </div>
                 </div>
               </div>

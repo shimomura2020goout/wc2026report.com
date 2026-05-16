@@ -10,6 +10,7 @@ export type EventCategory =
   | "club"          // クラブ大会（CL・EL等）
   | "international" // その他国際大会
   | "transfer"      // 移籍市場
+  | "toto"          // toto・WINNER 販売関連
   | "other";        // その他
 
 export interface CalendarEvent {
@@ -23,6 +24,10 @@ export interface CalendarEvent {
   description?: string;
   isHighlight?: boolean; // カレンダー上で強調表示
   link?: string;         // 内部リンク
+  cta?: {                // 追加CTAボタン（外部リンク）。toto販売イベント等で使用
+    label: string;
+    url: string;
+  };
 }
 
 // カテゴリ表示情報
@@ -33,8 +38,13 @@ export const categoryConfig: Record<EventCategory, { label: string; color: strin
   club:          { label: "クラブ大会",        color: "text-blue-700",   bgColor: "bg-blue-100",   dotColor: "bg-blue-500" },
   international: { label: "国際大会",          color: "text-green-700",  bgColor: "bg-green-100",  dotColor: "bg-green-500" },
   transfer:      { label: "移籍マーケット",     color: "text-purple-700", bgColor: "bg-purple-100", dotColor: "bg-purple-500" },
+  toto:          { label: "toto販売",          color: "text-pink-700",   bgColor: "bg-pink-100",   dotColor: "bg-pink-500" },
   other:         { label: "その他",            color: "text-gray-700",   bgColor: "bg-gray-100",   dotColor: "bg-gray-400" },
 };
+
+// 楽天totoキーイベントURL（NotionプロモバナーDBの楽天totoエントリと同一）
+const RAKUTEN_TOTO_CTA_URL =
+  "https://hb.afl.rakuten.co.jp/hsc/27bd08bb.b74c49ca.27b9c67d.af1b1692/?link_type=text&ut=eyJwYWdlIjoic2hvcCIsInR5cGUiOiJ0ZXh0IiwiY29sIjoxLCJjYXQiOjEsImJhbiI6Im5hbWUiLCJhbXAiOmZhbHNlfQ%3D%3D";
 
 // ========================================
 // 2026年 主要サッカーイベント
@@ -139,6 +149,55 @@ export const calendarEvents: CalendarEvent[] = [
     description: "キリンチャレンジカップ2026。W杯開幕約10日前の最終強化マッチ。19:20 KO 国立競技場",
     isHighlight: true,
     link: "/matches",
+  },
+
+  // ── toto/WINNER W杯版 販売開始（予測ゾーン）──
+  // 本サイト予測: 5/28〜6/1のいずれかでJSCから発表が出る濃厚。最有力日は6/1（月）
+  {
+    id: "evt-toto-launch-528",
+    title: "🎯 W杯toto/WINNER 販売開始（予測）",
+    startDate: "2026-05-28",
+    category: "toto",
+    description: "本サイト予測: 開幕14日前ジャスト。2022年カタール大会の14日前ルールに合致",
+    link: "/news/wcup-toto-launch-prediction-may-june-2026",
+    cta: { label: "楽天totoを見る", url: RAKUTEN_TOTO_CTA_URL },
+  },
+  {
+    id: "evt-toto-launch-529",
+    title: "🎯 W杯toto/WINNER 販売開始（予測）",
+    startDate: "2026-05-29",
+    category: "toto",
+    description: "本サイト予測: 予備枠。万一に備えてチェック",
+    link: "/news/wcup-toto-launch-prediction-may-june-2026",
+    cta: { label: "楽天totoを見る", url: RAKUTEN_TOTO_CTA_URL },
+  },
+  {
+    id: "evt-toto-launch-530",
+    title: "🎯 W杯toto/WINNER 販売開始（予測）",
+    startDate: "2026-05-30",
+    category: "toto",
+    description: "本サイト予測: 予備枠。万一に備えてチェック",
+    link: "/news/wcup-toto-launch-prediction-may-june-2026",
+    cta: { label: "楽天totoを見る", url: RAKUTEN_TOTO_CTA_URL },
+  },
+  {
+    id: "evt-toto-launch-531",
+    title: "🎯 W杯toto/WINNER 販売開始（予測）",
+    startDate: "2026-05-31",
+    category: "toto",
+    description: "本サイト予測: 予備枠。万一に備えてチェック",
+    link: "/news/wcup-toto-launch-prediction-may-june-2026",
+    cta: { label: "楽天totoを見る", url: RAKUTEN_TOTO_CTA_URL },
+  },
+  {
+    id: "evt-toto-launch-601",
+    title: "🎯 W杯toto/WINNER 販売開始（予測・最有力日）",
+    startDate: "2026-06-01",
+    category: "toto",
+    description: "本サイト予測: 開幕10日前の月曜プレス。2022年カタール大会の慣例から最有力",
+    isHighlight: true,
+    link: "/news/wcup-toto-launch-prediction-may-june-2026",
+    cta: { label: "楽天totoを見る", url: RAKUTEN_TOTO_CTA_URL },
   },
 
   // ── 6月：W杯本大会 ──

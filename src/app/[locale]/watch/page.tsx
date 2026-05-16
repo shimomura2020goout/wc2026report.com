@@ -180,7 +180,7 @@ export default async function WatchPage() {
           <p className="text-[10px] text-gray-500">※ 個人向けDAZNのリンクは準備中です。確定次第更新します。</p>
         </div>
 
-        <p className="text-xs text-gray-600 mt-3">※ {t("watch.affiliateNote")}</p>
+        <p className="text-xs text-gray-600 mt-3">{t("watch.affiliateNote")}</p>
       </section>
 
       {/* 地上波・BS */}

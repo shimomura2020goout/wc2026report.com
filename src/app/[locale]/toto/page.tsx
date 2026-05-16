@@ -175,7 +175,7 @@ export default async function TotoPage() {
               </div>
             </a>
           </div>
-          <p className="text-xs text-purple-300 mt-4">※ {t("watch.affiliateNote")}</p>
+          <p className="text-xs text-purple-300 mt-4">{t("watch.affiliateNote")}</p>
         </div>
       </section>
 
