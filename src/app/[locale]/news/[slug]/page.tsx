@@ -396,6 +396,58 @@ function markdownToHtml(markdown: string): string {
         quoteLines.push(lines[i].replace(/^> /, ""));
         i++;
       }
+      // LINE風チャット吹き出し: 引用ブロック内で @[L:話者名] / @[R:話者名] パターンを検出。
+      // 1引用ブロックに複数の @[L|R:〜] 行が混在する場合（Notionが連続する > 行を1ブロックにまとめる）、
+      // 各 @ マーカーを起点に個別のチャット吹き出しとして描画する。
+      const hasChatMarker = quoteLines.some((l) => /^@\[(L|R):/.test(l.trim()));
+      if (hasChatMarker) {
+        type Chat = { side: "left" | "right"; speaker: string; messages: string[] };
+        const chats: Chat[] = [];
+        let current: Chat | null = null;
+        for (const ql of quoteLines) {
+          const m = ql.match(/^@\[(L|R):([^\]]+)\]\s*(.*)$/);
+          if (m) {
+            if (current) chats.push(current);
+            current = {
+              side: m[1] === "L" ? "left" : "right",
+              speaker: m[2].trim(),
+              messages: m[3] ? [m[3]] : [],
+            };
+          } else if (current) {
+            current.messages.push(ql);
+          }
+        }
+        if (current) chats.push(current);
+
+        for (const chat of chats) {
+          const isLeft = chat.side === "left";
+          const messages = chat.messages
+            .filter((m) => m && m.trim() !== "")
+            .map((m) => inlineMarkdown(m))
+            .join("<br/>");
+          const avatarChar = chat.speaker.charAt(0);
+          const containerCls = isLeft
+            ? "flex gap-2 items-start"
+            : "flex gap-2 items-start flex-row-reverse";
+          const avatarCls = isLeft
+            ? "flex-shrink-0 w-9 h-9 rounded-full bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center text-xs font-bold text-white shadow-sm"
+            : "flex-shrink-0 w-9 h-9 rounded-full bg-gradient-to-br from-green-400 to-green-500 flex items-center justify-center text-xs font-bold text-white shadow-sm";
+          const bubbleCls = isLeft
+            ? "bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-2.5 text-sm text-gray-800 shadow-sm leading-relaxed"
+            : "bg-green-100 border border-green-200 rounded-2xl rounded-tr-sm px-4 py-2.5 text-sm text-gray-800 shadow-sm leading-relaxed";
+          const nameCls = isLeft
+            ? "text-xs text-gray-500 mb-1 ml-1"
+            : "text-xs text-gray-500 mb-1 mr-1 text-right";
+          output.push(`<div class="not-prose my-2.5 ${containerCls}">
+            <div class="${avatarCls}">${avatarChar}</div>
+            <div class="flex-1 max-w-[78%] min-w-0">
+              <p class="${nameCls}">${inlineMarkdown(chat.speaker)}</p>
+              <div class="${bubbleCls}">${messages}</div>
+            </div>
+          </div>`);
+        }
+        continue;
+      }
       output.push(`<blockquote>${quoteLines.map((q) => `<p>${inlineMarkdown(q)}</p>`).join("\n")}</blockquote>`);
       continue;
     }
