@@ -13,7 +13,8 @@
     "translate:articles": "tsx scripts/translateArticles.ts",
     "translate:teams": "tsx scripts/translateTeamDetails.ts",
     "squad:article": "tsx scripts/buildSquadArticle.ts",
-    "squad:update": "tsx scripts/updateOfficialSquad.ts"
+    "squad:update": "tsx scripts/updateOfficialSquad.ts",
+    "indexnow:notify": "tsx scripts/notifyIndexNow.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
