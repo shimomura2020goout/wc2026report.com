@@ -43,7 +43,7 @@ async function fetchAllPublishedSlugs(): Promise<string[]> {
     const body: Record<string, unknown> = {
       filter: {
         property: "ステータス",
-        status: { equals: "公開" },
+        select: { equals: "公開" },
       },
       page_size: 100,
     };
