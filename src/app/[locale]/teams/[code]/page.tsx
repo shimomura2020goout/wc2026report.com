@@ -14,6 +14,12 @@ import { getLocale, getDictionary, createTranslator } from "@/i18n/index";
 import { pageAlternates } from "@/lib/i18nLinks";
 import { localizedTeamName, localizedRegionLabel, localizedBestResult, localizedTeamDetail } from "@/data/teamsI18n";
 
+// 監督コラム（「監督の素顔」シリーズ）のチーム別 slug マッピング
+const COACH_COLUMN_SLUGS: Record<string, string> = {
+  JPN: "moriyasu-hajime-japan-column-2026",
+  NED: "koeman-ronald-netherlands-column-2026",
+};
+
 // ========================================
 // 静的パス生成
 // ========================================
@@ -158,6 +164,7 @@ export default async function TeamDetailPage({ params }: Props) {
                   coachName={detail.coach}
                   coachNationality={detail.coachNationality}
                   teamName={team.name}
+                  columnSlug={COACH_COLUMN_SLUGS[team.code]}
                 />
               </div>
             </div>

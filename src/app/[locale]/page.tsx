@@ -159,7 +159,7 @@ export default async function Home() {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-8">
             <span className="inline-block text-xs font-bold text-rose-600 bg-rose-100 px-3 py-1 rounded-full mb-3">
-              🎉 W杯2026 開催まで約2か月
+              🎉 W杯2026 開幕間近
             </span>
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
               みんなでW杯2026を盛り上げよう
@@ -177,7 +177,7 @@ export default async function Home() {
           {/* 4つの動線カード */}
           <h3 className="text-center text-sm font-bold text-gray-600 mb-4 flex items-center justify-center gap-2">
             <Icon name="route" size={18} className="text-indigo-500" />
-            開催までの約2か月、こう楽しもう
+            開幕までの今、こう楽しもう
           </h3>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             <Link
