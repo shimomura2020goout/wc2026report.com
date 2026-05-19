@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
+import Link from "next/link";
 import Icon from "./Icon";
 
 interface CoachTooltipProps {
   coachName: string;
   coachNationality: string;
   teamName: string;
+  columnSlug?: string;
 }
 
 // 監督名からWikipedia検索URLを生成
@@ -18,7 +20,7 @@ function getWikipediaUrl(coachName: string): string {
   return `https://${lang}.wikipedia.org/wiki/Special:Search?search=${query}`;
 }
 
-export default function CoachTooltip({ coachName, coachNationality, teamName }: CoachTooltipProps) {
+export default function CoachTooltip({ coachName, coachNationality, teamName, columnSlug }: CoachTooltipProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const containerRef = useRef<HTMLSpanElement>(null);
@@ -131,11 +133,21 @@ export default function CoachTooltip({ coachName, coachNationality, teamName }: 
               </div>
             </div>
 
+            {columnSlug && (
+              <Link
+                href={`/news/${columnSlug}`}
+                className="mt-3 flex items-center justify-center gap-1.5 w-full py-2 bg-blue-50 hover:bg-blue-100 rounded-lg text-xs font-bold text-blue-700 transition-colors border border-blue-200"
+              >
+                <Icon name="article" size={14} />
+                監督コラムを読む
+              </Link>
+            )}
+
             <a
               href={wikiUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-3 flex items-center justify-center gap-1.5 w-full py-2 bg-gray-50 hover:bg-gray-100 rounded-lg text-xs font-medium text-gray-700 transition-colors border border-gray-200"
+              className="mt-2 flex items-center justify-center gap-1.5 w-full py-2 bg-gray-50 hover:bg-gray-100 rounded-lg text-xs font-medium text-gray-700 transition-colors border border-gray-200"
             >
               <Icon name="open_in_new" size={14} />
               Wikipediaで詳しく見る

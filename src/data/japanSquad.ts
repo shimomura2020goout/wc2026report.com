@@ -127,6 +127,7 @@ export const playerSquad: SquadPlayer[] = [
     position: "DF",
     club: "フェイエノールト",
     league: "エールディヴィジ（蘭）",
+    columnSlug: "tsuyoshi-watanabe-japan-column-2026",
     badge: "町田負傷代替",
     comment: "上田綺世とともにフェイエノールトでプレー。3/31イングランド戦CB先発・代表アピール成功。町田負傷の3バック左候補として急浮上し選出",
   },
@@ -202,6 +203,7 @@ export const playerSquad: SquadPlayer[] = [
     position: "MF",
     club: "SCフライブルク",
     league: "ブンデスリーガ（独）",
+    columnSlug: "yuito-suzuki-japan-column-2026",
     comment: "23歳。5/13に鎖骨骨折の手術を受けたばかりだが、ブレンビーで2年間21得点の活躍を経てフライブルク移籍を決めた攻撃的MF。本大会復帰を見越して滑り込み選出",
   },
 
@@ -235,6 +237,7 @@ export const playerSquad: SquadPlayer[] = [
     position: "FW",
     club: "VfLヴォルフスブルク",
     league: "ブンデスリーガ（独）",
+    columnSlug: "kento-shiogai-japan-column-2026",
     comment: "23歳。慶大退部から欧州5大リーグへ駆け上がった異色の経歴。2026/1にNEC→ヴォルフスブルクへ18億円規模で完全移籍した若き“最強の負けず嫌い”がW杯本大会の切り札に",
   },
   {
@@ -242,6 +245,7 @@ export const playerSquad: SquadPlayer[] = [
     position: "FW",
     club: "シント＝トロイデンVV",
     league: "ジュピラー・プロ・リーグ（ベルギー）",
+    columnSlug: "keisuke-goto-japan-column-2026",
     comment: "20歳。アンデルレヒトから期限付き移籍中のSTVVで25/26シーズン2桁ゴール、所属元との対戦で決勝弾を奪うなどの活躍。代表初選出から半年で本大会切符を掴んだ未来のエース候補",
   },
 ];
