@@ -133,9 +133,9 @@ export default function MatchCard({ match, showType = true, linkToPrediction = t
 
         {/* Broadcast (for upcoming matches without resultLink) */}
         {match.status !== "finished" && match.broadcast && (
-          <div className={`${match.resultNote ? "mt-2" : "mt-3 pt-3 border-t border-gray-100"} text-xs text-gray-500 text-center flex items-center justify-center gap-1`}>
-            <Icon name="live_tv" size={14} className="text-gray-400" />
-            {match.broadcast}
+          <div className={`${match.resultNote ? "mt-2" : "mt-3 pt-3 border-t border-gray-100"} text-[11px] sm:text-xs text-gray-500 text-center flex items-center justify-center gap-1 whitespace-nowrap`}>
+            <Icon name="live_tv" size={14} className="text-gray-400 flex-shrink-0" />
+            <span>{match.broadcast}</span>
           </div>
         )}
 

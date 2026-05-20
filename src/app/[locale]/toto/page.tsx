@@ -1,3 +1,4 @@
+import Link from "next/link";
 import MatchPredictionCard from "@/components/MatchPredictionCard";
 import Icon from "@/components/Icon";
 import SourceAttribution from "@/components/SourceAttribution";
@@ -5,6 +6,10 @@ import { BreadcrumbJsonLd, FAQJsonLd } from "@/components/JsonLd";
 import { japanMatches, allWorldCupMatches } from "@/data/matches";
 import { getLocale, getDictionary, createTranslator } from "@/i18n/index";
 import { pageAlternates } from "@/lib/i18nLinks";
+
+// 楽天totoキーイベントURL（NotionプロモバナーDBの楽天totoエントリと同一）
+const RAKUTEN_TOTO_CTA_URL =
+  "https://hb.afl.rakuten.co.jp/hsc/27bd08bb.b74c49ca.27b9c67d.af1b1692/?link_type=text&ut=eyJwYWdlIjoic2hvcCIsInR5cGUiOiJ0ZXh0IiwiY29sIjoxLCJjYXQiOjEsImJhbiI6Im5hbWUiLCJhbXAiOmZhbHNlfQ%3D%3D";
 
 export async function generateMetadata() {
   const locale = await getLocale();
@@ -64,7 +69,37 @@ export default async function TotoPage() {
         <Icon name="confirmation_number" size={32} className="text-purple-700" />
         {t("toto.pageTitle")}
       </h1>
-      <p className="text-gray-500 mb-8">{t("toto.pageDescription")}</p>
+      <p className="text-gray-500 mb-6">{t("toto.pageDescription")}</p>
+
+      {/* toto販売開始間近 告知バナー */}
+      <Link
+        href="/news/wcup-toto-launch-prediction-may-june-2026"
+        className="group block mb-8 rounded-2xl border-2 border-pink-300 bg-gradient-to-r from-pink-50 via-rose-50 to-amber-50 p-4 sm:p-5 hover:border-pink-400 hover:shadow-md transition-all"
+      >
+        <div className="flex items-start gap-3 sm:gap-4">
+          <div className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center shadow-md">
+            <Icon name="local_fire_department" size={28} className="text-white" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1 flex-wrap">
+              <span className="text-[10px] sm:text-xs px-2 py-0.5 rounded-full bg-pink-600 text-white font-bold">
+                販売開始間近
+              </span>
+              <span className="text-[10px] sm:text-xs text-pink-700 font-medium">5/28〜6/1濃厚 ／ 6/1が最有力</span>
+            </div>
+            <p className="text-sm sm:text-base font-bold text-gray-900 leading-snug">
+              W杯2026 toto・WINNER販売開始の公式発表は「5/28〜6/1」が濃厚
+            </p>
+            <p className="text-xs sm:text-sm text-gray-600 mt-1 line-clamp-2">
+              2022年カタール大会の「開幕14日前ルール」から逆算した独自予測。楽天totoのチェックリスト＆カレンダー登録リンクを掲載中。
+            </p>
+            <span className="inline-flex items-center gap-1 text-xs text-pink-700 font-semibold mt-2 group-hover:translate-x-1 transition-transform">
+              予測記事を読む
+              <Icon name="arrow_forward" size={14} />
+            </span>
+          </div>
+        </div>
+      </Link>
 
       {/* toto対象試合 */}
       <section className="mb-12">
@@ -99,7 +134,13 @@ export default async function TotoPage() {
           <h3 className="font-bold text-gray-800">{t("toto.typesTitle")}</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {totoTypes.map((type) => (
-              <div key={type.name} className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+              <a
+                key={type.name}
+                href={RAKUTEN_TOTO_CTA_URL}
+                target="_blank"
+                rel="nofollow sponsored noopener noreferrer"
+                className="group block bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:border-purple-300 hover:shadow-md transition-all"
+              >
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-bold text-gray-900 flex items-center gap-2">
                     <Icon name={type.icon} size={20} className="text-purple-600" />
@@ -113,7 +154,11 @@ export default async function TotoPage() {
                   <Icon name="emoji_events" size={14} className="text-amber-500" />
                   {type.maxPrize}
                 </p>
-              </div>
+                <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-purple-700 group-hover:translate-x-1 transition-transform">
+                  楽天totoで購入する
+                  <Icon name="arrow_forward" size={14} />
+                </span>
+              </a>
             ))}
           </div>
         </div>
@@ -121,19 +166,44 @@ export default async function TotoPage() {
         <div className="mb-8">
           <h3 className="font-bold text-gray-800 mb-4">{t("toto.howToBuyTitle")}</h3>
           <div className="space-y-3">
-            {buyMethods.map(({ step, title, desc, icon, highlight }) => (
-              <div key={step} className={`rounded-xl p-5 ${highlight ? "bg-purple-50 border-2 border-purple-200" : "bg-white border border-gray-100 shadow-sm"}`}>
+            {buyMethods.map(({ step, title, desc, icon, highlight }) => {
+              const inner = (
                 <div className="flex items-start gap-3">
                   <span className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${highlight ? "bg-purple-600 text-white" : "bg-gray-200 text-gray-600"}`}>
                     <Icon name={icon} size={20} />
                   </span>
-                  <div>
-                    <h4 className="font-bold text-gray-900">{title}</h4>
+                  <div className="flex-1">
+                    <h4 className="font-bold text-gray-900 flex items-center gap-2 flex-wrap">
+                      {title}
+                      {highlight && (
+                        <span className="inline-flex items-center gap-1 text-xs font-semibold text-purple-700 group-hover:translate-x-1 transition-transform">
+                          <Icon name="arrow_forward" size={14} />
+                        </span>
+                      )}
+                    </h4>
                     <p className="text-sm text-gray-600 mt-1">{desc}</p>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+              const baseClass = highlight
+                ? "group block rounded-xl p-5 bg-purple-50 border-2 border-purple-200 hover:border-purple-400 hover:shadow-md transition-all"
+                : "rounded-xl p-5 bg-white border border-gray-100 shadow-sm";
+              return highlight ? (
+                <a
+                  key={step}
+                  href={RAKUTEN_TOTO_CTA_URL}
+                  target="_blank"
+                  rel="nofollow sponsored noopener noreferrer"
+                  className={baseClass}
+                >
+                  {inner}
+                </a>
+              ) : (
+                <div key={step} className={baseClass}>
+                  {inner}
+                </div>
+              );
+            })}
           </div>
         </div>
 
@@ -144,7 +214,7 @@ export default async function TotoPage() {
           </h3>
           <div className="space-y-3">
             <a
-              href="https://tr.affiliate-sp.docomo.ne.jp/cl/d0000000359/4739/3"
+              href={RAKUTEN_TOTO_CTA_URL}
               target="_blank"
               rel="nofollow sponsored noopener noreferrer"
               className="block bg-white/20 hover:bg-white/30 rounded-xl p-4 transition-colors ring-2 ring-white/30"
@@ -153,23 +223,23 @@ export default async function TotoPage() {
                 <div>
                   <p className="font-bold flex items-center gap-2">
                     <span className="bg-white text-purple-800 text-xs px-2 py-0.5 rounded font-bold">おすすめ</span>
-                    {t("toto.docomoToto")}
+                    {t("toto.rakutenToto")}
                   </p>
-                  <p className="text-sm text-purple-200">{t("toto.docomoTotoNote")}</p>
+                  <p className="text-sm text-purple-200">{t("toto.rakutenTotoNote")}</p>
                 </div>
                 <Icon name="arrow_forward" size={24} />
               </div>
             </a>
             <a
-              href="https://hb.afl.rakuten.co.jp/hsc/27bd08bb.b74c49ca.27b9c67d.af1b1692/?link_type=text&ut=eyJwYWdlIjoic2hvcCIsInR5cGUiOiJ0ZXh0IiwiY29sIjoxLCJjYXQiOjEsImJhbiI6Im5hbWUiLCJhbXAiOmZhbHNlfQ%3D%3D"
+              href="https://tr.affiliate-sp.docomo.ne.jp/cl/d0000000359/4739/3"
               target="_blank"
               rel="nofollow sponsored noopener noreferrer"
               className="block bg-white/10 hover:bg-white/20 rounded-xl p-4 transition-colors"
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-bold">{t("toto.rakutenToto")}</p>
-                  <p className="text-sm text-purple-200">{t("toto.rakutenTotoNote")}</p>
+                  <p className="font-bold">{t("toto.docomoToto")}</p>
+                  <p className="text-sm text-purple-200">{t("toto.docomoTotoNote")}</p>
                 </div>
                 <Icon name="arrow_forward" size={24} />
               </div>
