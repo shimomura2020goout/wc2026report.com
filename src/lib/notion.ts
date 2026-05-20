@@ -6,6 +6,18 @@ import type { Locale } from "@/i18n/constants";
 const NOTION_API_KEY = process.env.NOTION_API_KEY || "";
 const DATABASE_ID = process.env.NOTION_DATABASE_ID || "";
 
+// 429 / 5xx / timeout を「一時障害」として識別する
+// ランタイム ISR でこれを検知したらページ側で 200+noindex フォールバックに振り、
+// Googlebot に 5xx を返さない（GSC のサーバーエラー誤計上を防ぐ）
+export function isNotionTransientError(err: unknown): boolean {
+  const e = err as { code?: string; status?: number; message?: string } | null | undefined;
+  const msg = String(e?.message ?? err ?? "");
+  const isRateLimit = e?.code === "rate_limited" || e?.status === 429 || /\b429\b|rate_limited/.test(msg);
+  const isTimeout = e?.code === "notionhq_client_request_timeout" || /timed out|timeout|ECONNRESET|ETIMEDOUT/i.test(msg);
+  const is5xx = e?.status === 502 || e?.status === 503 || e?.status === 504 || /\b50[234]\b/.test(msg);
+  return isRateLimit || isTimeout || is5xx;
+}
+
 // 429 / 502 / 503 を指数バックオフで自動リトライ
 // ビルド時に 500+ ページが Notion API に殺到してレート制限に当たるため必須
 async function withRetry<T>(label: string, fn: () => Promise<T>, maxRetries = 10): Promise<T> {
@@ -15,12 +27,7 @@ async function withRetry<T>(label: string, fn: () => Promise<T>, maxRetries = 10
       return await fn();
     } catch (err) {
       lastErr = err;
-      const e = err as { code?: string; status?: number; message?: string };
-      const msg = String(e?.message ?? err);
-      const isRateLimit = e?.code === "rate_limited" || e?.status === 429 || /429|rate_limited/.test(msg);
-      const isTimeout = e?.code === "notionhq_client_request_timeout" || /timed out|timeout|ECONNRESET|ETIMEDOUT/i.test(msg);
-      const isTransient = isRateLimit || isTimeout || e?.status === 502 || e?.status === 503 || /502|503|504/.test(msg);
-      if (!isTransient || i === maxRetries) throw err;
+      if (!isNotionTransientError(err) || i === maxRetries) throw err;
       // exponential backoff: 1s, 2s, 4s, 8s, 16s, 32s, 60s, 60s, 60s, 60s
       const delay = Math.min(1000 * Math.pow(2, i), 60000);
       console.warn(`[notion] retry ${i + 1}/${maxRetries} for ${label} after ${delay}ms`);

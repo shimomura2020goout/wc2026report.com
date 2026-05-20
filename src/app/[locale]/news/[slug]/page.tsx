@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import Icon from "@/components/Icon";
 import SourceAttribution from "@/components/SourceAttribution";
 import { ArticleJsonLd, BreadcrumbJsonLd } from "@/components/JsonLd";
-import { getPostBySlug, getAllSlugs, getPublishedPosts } from "@/lib/notion";
+import { getPostBySlug, getAllSlugs, getPublishedPosts, isNotionTransientError } from "@/lib/notion";
 import { getLocale, getDictionary, createTranslator } from "@/i18n/index";
 import { pageAlternates, absoluteLocaleUrl } from "@/lib/i18nLinks";
 
@@ -31,7 +31,20 @@ export async function generateMetadata({
   const dict = await getDictionary(locale);
   const t = createTranslator(dict);
 
-  const post = await getPostBySlug(slug, locale);
+  let post: Awaited<ReturnType<typeof getPostBySlug>> = null;
+  try {
+    post = await getPostBySlug(slug, locale);
+  } catch (err) {
+    if (isNotionTransientError(err)) {
+      // Notion 一時障害: noindex を付けて Google に再クロールを促す
+      // (5xx を返すと GSC「サーバーエラー」に計上されるため避ける)
+      return {
+        title: t("news.transientTitle"),
+        robots: { index: false, follow: false },
+      };
+    }
+    throw err;
+  }
   if (!post) return { title: t("news.notFound") };
 
   // 翻訳が無く原文（ja）にフォールバックしている場合は canonical を /ja に向ける
@@ -69,7 +82,23 @@ export default async function NewsArticlePage({
   const dict = await getDictionary(locale);
   const t = createTranslator(dict);
 
-  const post = await getPostBySlug(slug, locale);
+  let post: Awaited<ReturnType<typeof getPostBySlug>> = null;
+  let transient = false;
+  try {
+    post = await getPostBySlug(slug, locale);
+  } catch (err) {
+    if (isNotionTransientError(err)) {
+      transient = true;
+    } else {
+      throw err;
+    }
+  }
+
+  if (transient) {
+    // Notion 一時障害: 200 + noindex のフォールバックを返す
+    // 4xx/5xx を返すと Google にデインデックスされる可能性があるため避ける
+    return <TransientUnavailable t={t} />;
+  }
 
   if (!post) {
     notFound();
@@ -78,6 +107,7 @@ export default async function NewsArticlePage({
   const articleUrl = absoluteLocaleUrl(locale, `/news/${post.slug}`);
 
   // 関連記事（同じチームタグを持つ他記事を最大3件）
+  // Notion 障害時は関連記事を諦めても記事本体は表示する
   let relatedPosts: Array<{
     id: string;
     title: string;
@@ -86,21 +116,25 @@ export default async function NewsArticlePage({
     publishedAt: string | null;
   }> = [];
   if (post.relatedTeams && post.relatedTeams.length > 0) {
-    const allPosts = await getPublishedPosts(locale);
-    relatedPosts = allPosts
-      .filter(
-        (p) =>
-          p.slug !== post.slug &&
-          (p.relatedTeams || []).some((c) => post.relatedTeams.includes(c))
-      )
-      .slice(0, 3)
-      .map((p) => ({
-        id: p.id,
-        title: p.title,
-        slug: p.slug,
-        category: p.category,
-        publishedAt: p.publishedAt,
-      }));
+    try {
+      const allPosts = await getPublishedPosts(locale);
+      relatedPosts = allPosts
+        .filter(
+          (p) =>
+            p.slug !== post.slug &&
+            (p.relatedTeams || []).some((c) => post.relatedTeams.includes(c))
+        )
+        .slice(0, 3)
+        .map((p) => ({
+          id: p.id,
+          title: p.title,
+          slug: p.slug,
+          category: p.category,
+          publishedAt: p.publishedAt,
+        }));
+    } catch (err) {
+      if (!isNotionTransientError(err)) throw err;
+    }
   }
 
   return (
@@ -230,6 +264,31 @@ export default async function NewsArticlePage({
       </div>
     </article>
     </>
+  );
+}
+
+// Notion 一時障害時のフォールバック表示
+// generateMetadata 側で robots: noindex を返しているため、Google はこの版をインデックスしない
+function TransientUnavailable({ t }: { t: (key: string) => string }) {
+  return (
+    <article className="max-w-2xl mx-auto px-4 py-16 text-center">
+      <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-amber-100 text-amber-600 mb-4">
+        <Icon name="schedule" size={28} />
+      </div>
+      <h1 className="text-xl font-bold text-gray-900 mb-3">
+        {t("news.transientTitle")}
+      </h1>
+      <p className="text-gray-500 leading-relaxed mb-8">
+        {t("news.transientMessage")}
+      </p>
+      <Link
+        href="/news"
+        className="inline-flex items-center gap-1 text-sm text-blue-600 font-medium hover:text-blue-800"
+      >
+        <Icon name="arrow_back" size={16} />
+        {t("news.backToNews")}
+      </Link>
+    </article>
   );
 }
 

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Icon from "@/components/Icon";
 import NewsFilteredList from "@/components/NewsFilteredList";
-import { getPublishedPosts } from "@/lib/notion";
+import { getPublishedPosts, isNotionTransientError, type BlogPost } from "@/lib/notion";
 import { getLocale, getDictionary, createTranslator } from "@/i18n/index";
 import { pageAlternates } from "@/lib/i18nLinks";
 
@@ -32,7 +32,13 @@ export default async function NewsPage() {
   const dict = await getDictionary(locale);
   const t = createTranslator(dict);
 
-  const posts = await getPublishedPosts(locale);
+  // Notion 一時障害時は空リストでレンダリング (5xx を避けて GSC のサーバーエラー誤計上を防ぐ)
+  let posts: BlogPost[] = [];
+  try {
+    posts = await getPublishedPosts(locale);
+  } catch (err) {
+    if (!isNotionTransientError(err)) throw err;
+  }
   const listPosts = posts.map((p) => ({
     id: p.id,
     title: p.title,
